@@ -5,11 +5,13 @@
 3. Set `NEXT_PUBLIC_SITE_URL` to your application origin. For this local preview use `http://127.0.0.1:3000` if that is the URL you use in the browser; use the same host consistently.
 4. Apply `migrations/202610070001_foundation.sql` using the Supabase SQL editor, or the Supabase CLI migration workflow. Apply once to a new project. The migration is transactional; review it before applying to an existing database.
 5. In Auth URL configuration, set Site URL to the same origin and allow `<origin>/auth/confirm` as a redirect URL.
-6. Enable email/password authentication and email confirmation. In the confirmation email template, use:
+6. Enable email/password authentication and email confirmation. The default `{{ .ConfirmationURL }}` template works with the app's PKCE callback. Keep it for initial testing. If custom SMTP is configured later, an optional token-hash template can use the exact redirect supplied by the app:
 
 ```html
-<a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email">Confirm your TradeMirror account</a>
+<a href="{{ .RedirectTo }}?token_hash={{ .TokenHash }}&type=email">Confirm your TradeMirror account</a>
 ```
+
+The default Supabase sender only sends to organization-member addresses. Use custom SMTP for public-user signup; do not disable email confirmation to work around this limitation.
 
 7. Restart the app after changing environment variables. Sign up, follow the email link, log out, and log back in. Test with two accounts.
 
@@ -35,3 +37,7 @@ Hosted acceptance checklist:
 - A real account sees an empty workspace, never demo trades as its own data.
 
 Official references: [SSR client and session refresh](https://supabase.com/docs/guides/auth/server-side/creating-a-client), [row-level security](https://supabase.com/docs/guides/database/postgres/row-level-security).
+
+## Connected instance
+
+The supplied project is connected to local development and Vercel. The migration is applied, with nine RLS-enabled tables. Production Site URL is `https://trademirror-ten.vercel.app`; redirects allow its `/auth/confirm` plus exact `127.0.0.1:3000` and `localhost:3000` confirmation callbacks. First real-account signup/email/session validation remains pending.

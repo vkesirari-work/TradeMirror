@@ -6,8 +6,8 @@
 
 TradeMirror is being built as a trading journal and performance analytics platform for Indian options traders. The goal is to bring trade history, charges-aware P&L, session comparisons, and AI-assisted behavioural reviews into one focused workspace.
 
-> **Current status: Phase 2 implemented · Supabase activation pending · version 0.2.0.**
-> All dashboard numbers, reports, scores, and insights are sample data. Supabase account integration is implemented but needs project configuration and migration application. Imports, broker syncing, and AI generation remain planned.
+> **Current status: Phase 2 connected · first account acceptance pending · version 0.2.0.**
+> All dashboard numbers, reports, scores, and insights are sample data. Supabase account integration is connected and the database migration is applied. Imports, broker syncing, and AI generation remain planned.
 
 ![TradeMirror dashboard preview](public/dashboard-preview.jpg)
 
@@ -17,7 +17,7 @@ TradeMirror is being built as a trading journal and performance analytics platfo
 - **Dashboard:** [Open demo](https://trademirror-ten.vercel.app/dashboard)
 - **Vercel project:** `trademirror` in `vkesirariwork-2297s-projects`
 - **Git source:** this repository, `main` branch. Future pushes trigger Vercel deployments.
-- **Mode:** public sample demo; Supabase project configuration and hosted activation are still pending.
+- **Mode:** authenticated workspace. Supabase is connected; signed-out workspace requests redirect to login. Account trade import remains planned.
 
 First deployment completed on 7 October 2026 from commit `bfec0f9`; landing page and dashboard verified in the browser. Before activating authentication, set the public Supabase variables and `NEXT_PUBLIC_SITE_URL=https://trademirror-ten.vercel.app`, apply the database migration, and configure that origin in Supabase Auth.
 
@@ -87,7 +87,7 @@ The roadmap is a proposed sequence, not a release-date commitment. Later version
 | Phase | Scope | Status |
 | --- | --- | --- |
 | 1 | Frontend foundation, design, routes, sample data, normalized types | **Complete** |
-| 2 | Supabase authentication, PostgreSQL schema, user isolation and access policies | **Implemented; hosted activation pending** |
+| 2 | Supabase authentication, PostgreSQL schema, user isolation and access policies | **Connected; first account test pending** |
 | 3 | Zerodha CSV parsing, validation, import history, duplicate protection | Planned |
 | 4 | Deterministic trade matching, partial fills, open positions, reconciliation | Planned |
 | 5 | P&L and cost analytics with explicit estimated / confirmed cost handling | Planned |
@@ -151,9 +151,9 @@ Phase-by-phase pushes are authorized for this project. Each completion update sh
 | Documentation & roadmap | 7 October 2026 | Added current/planned product flows, V1–V3 roadmap, delivery workflow, limitations, and project description. |
 | Phase 2: auth & database foundation | 7 October 2026 | Supabase integration, protected accounts, migration and access-policy tests implemented; hosted activation pending. |
 
-**Current work:** Phase 2 code and migration are implemented. Embedded PostgreSQL policy tests pass. Hosted migration application, email delivery, and live auth acceptance remain pending project configuration.
+**Current work:** Phase 2 is connected locally and on Vercel. The hosted migration is applied; all nine tables have RLS. Email/password signup and email confirmation are enabled. Signed-out redirects and anonymous table denial passed. First real-account email/session acceptance remains pending.
 
-**Next implementation step:** Configure Supabase and complete hosted auth acceptance, then implement the validated Zerodha CSV pipeline (Phase 3).
+**Next implementation step:** Complete first-account hosted auth acceptance, then implement the validated Zerodha CSV pipeline (Phase 3).
 
 ## Run locally
 
@@ -195,7 +195,7 @@ npm start
 
 ## Stack & architecture
 
-Current stack: Next.js 16.4 App Router, React, TypeScript, Tailwind CSS, Recharts, and Lucide. Implemented integration: Supabase Auth / PostgreSQL (activation pending). Planned service: an AI interpretation API.
+Current stack: Next.js 16.4 App Router, React, TypeScript, Tailwind CSS, Recharts, and Lucide. Implemented integration: Supabase Auth / PostgreSQL (connected). Planned service: an AI interpretation API.
 
 | Location | Responsibility |
 | --- | --- |
@@ -219,7 +219,7 @@ Future implementations belong in `lib/brokers/adapters/`. Normalized trades must
 
 ## Current limitations
 
-Supabase auth and profile persistence are implemented but not activated on this local instance. No broker OAuth/API, CSV parsing, matching engine, production P&L or charges engine, AI generation, payments, notifications, cron jobs, or background workers.
+Supabase auth and profile persistence are configured locally and in production. No broker OAuth/API, CSV parsing, matching engine, production P&L or charges engine, AI generation, payments, notifications, cron jobs, or background workers.
 
 Auth forms validate on the client and server. With project configuration, credentials go only to the configured Supabase Auth service through server actions. Files are not uploaded or parsed. Trade notes only remain in the mounted page session. Connect buttons explain future availability; AI generation and PDF export are disabled. Without Supabase configuration, workspace routes are public demo pages. With configuration, they require a valid session and display an empty account workspace; sample trades are never presented as account-owned records. Scores are illustrative rather than computed from rule adherence.
 
@@ -248,6 +248,12 @@ Implemented:
 - `npm test` executes migration and adversarial ownership checks in embedded PostgreSQL.
 - Phase 2 lint, TypeScript, and production build passed. All configured workspace routes redirected signed-out requests to login; invalid confirmation returned login feedback; the unconfigured auth action displayed a setup notice.
 
-**Activation required:** Create/configure a Supabase project, apply the migration, configure email confirmation, and test the hosted login/session flow. Follow [the setup guide](supabase/README.md). No hosted database was modified during this phase. Embedded PostgreSQL tests do not prove hosted email delivery or API behaviour.
+**Hosted activation:** The migration was applied to the supplied Supabase project on 7 October 2026. All nine application tables have row-level security. Local configuration is in ignored `.env.local`; Vercel configuration is in environment settings. Production origin and exact localhost confirmation callbacks are allowed. Live/local signed-out dashboard redirects and anonymous REST denial were verified.
+
+**Remaining acceptance:** The first real signup, email delivery, confirmation, login and logout still need an account test. The default Supabase email sender only delivers to organization members; custom SMTP is required for general public signup. Default confirmation templates remain in place, supported by the PKCE callback. See [Supabase email limits](https://supabase.com/changelog/29370-supabase-auth-changes-to-default-email-provider).
 
 Authenticated accounts currently show an empty workspace. Real dashboards, trade loading, persistent trade notes, and import flows will be connected in subsequent phases. The unconfigured demo retains Phase 1 sample screens.
+
+### Supabase connection milestone — 7 October 2026
+
+Configured public project settings, applied the initial migration to an empty public schema, verified nine RLS-enabled tables, saved Vercel environment variables, and redeployed. Signup is enabled and email auto-confirmation remains disabled. Verified live login routing and anonymous denial without creating test accounts or sending emails. Public configuration values and credentials are not stored in Git.
