@@ -1,6 +1,7 @@
 'use server';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
+import { loginErrorMessage } from '@/lib/auth/feedback';
 import { createClient } from '@/lib/supabase/server';
 export interface AuthState { message: string; success?: boolean }
 export async function authenticate(signup: boolean, _previous: AuthState, form: FormData): Promise<AuthState> {
@@ -15,10 +16,10 @@ export async function authenticate(signup: boolean, _previous: AuthState, form: 
     if (!origin) return { message: 'The application confirmation URL has not been configured. Contact the project owner.' };
     const { data, error } = await client.auth.signUp({ email, password, options: { data: { display_name: name }, emailRedirectTo: `${origin.replace(/\/$/,'')}/auth/confirm` } });
     if (error) return { message: 'Unable to create an account. Please try again later or log in if you already have one.' };
-    if (!data.session) return { success: true, message: 'Check your email for a confirmation link. If an account already exists, you can log in.' };
+    if (!data.session) return { success: true, message: 'Check your email for a confirmation link. Open it in this same browser and site. If an account already exists, you can log in.' };
   } else {
     const { error } = await client.auth.signInWithPassword({ email, password });
-    if (error) return { message: 'Unable to log in. Check your email and password, and confirm your email if required.' };
+    if (error) return { message: loginErrorMessage(error.code) };
   }
   revalidatePath('/', 'layout');
   redirect('/dashboard');
