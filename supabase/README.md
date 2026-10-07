@@ -41,3 +41,7 @@ Official references: [SSR client and session refresh](https://supabase.com/docs/
 ## Connected instance
 
 The supplied project is connected to local development and Vercel. The migration is applied, with nine RLS-enabled tables. Production Site URL is `https://trademirror-ten.vercel.app`; redirects allow its `/auth/confirm` plus exact `127.0.0.1:3000` and `localhost:3000` confirmation callbacks. First real-account signup/email/session validation remains pending.
+
+## Password recovery
+
+Use **Forgot password?** on the login screen, enter the account email, and open the reset email in the same browser and site. Recovery reuses the already allowed `/auth/confirm` redirect, then opens `/reset-password`. Do not switch between localhost and production during that flow. An expired link requires a new request. Enter and confirm your new password yourself. Custom SMTP is needed to deliver emails beyond the default sender's permitted organization addresses.
