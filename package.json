@@ -28,5 +28,6 @@
   },
   "engines": {
     "node": ">=20.19.0"
-  }
+  },
+  "description": "A trading journal for Indian options traders \u2014 understand performance, costs, and behaviour. Phase-one demo with broker-sync-ready architecture."
 }
