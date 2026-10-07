@@ -11,6 +11,16 @@ TradeMirror is being built as a trading journal and performance analytics platfo
 
 ![TradeMirror dashboard preview](public/dashboard-preview.jpg)
 
+## Live deployment
+
+- **Website:** [trademirror-ten.vercel.app](https://trademirror-ten.vercel.app)
+- **Dashboard:** [Open demo](https://trademirror-ten.vercel.app/dashboard)
+- **Vercel project:** `trademirror` in `vkesirariwork-2297s-projects`
+- **Git source:** this repository, `main` branch. Future pushes trigger Vercel deployments.
+- **Mode:** public sample demo; Supabase project configuration and hosted activation are still pending.
+
+First deployment completed on 7 October 2026 from commit `bfec0f9`; landing page and dashboard verified in the browser. Before activating authentication, set the public Supabase variables and `NEXT_PUBLIC_SITE_URL=https://trademirror-ten.vercel.app`, apply the database migration, and configure that origin in Supabase Auth.
+
 ## Product flow
 
 ### What works today
