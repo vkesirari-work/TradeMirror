@@ -1,0 +1,1 @@
+export default function Loading(){return <div className="loading-state" role="status"><div className="skeleton title-skeleton"/><div className="metric-grid">{Array.from({length:8},(_,i)=><div className="card skeleton" style={{height:130}} key={i}/>)}</div><p>Loading your workspace…</p></div>;}

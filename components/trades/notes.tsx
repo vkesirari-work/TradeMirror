@@ -1,0 +1,4 @@
+'use client';
+import { useState } from 'react';
+import { Card,SectionTitle } from '@/components/ui/primitives';
+export function TradeNotes({id}:{id:string}) {const [note,setNote]=useState('');const [saved,setSaved]=useState(false);return <Card className="notes-card"><SectionTitle title="Trade notes" subtitle="Preview only · notes stay in this page session"/><label className="sr-only" htmlFor={`notes-${id}`}>Trade notes</label><textarea id={`notes-${id}`} value={note} placeholder="What was the plan? What influenced your exit?" onChange={e=>{setNote(e.target.value);setSaved(false);}}/><div className="spread"><span role="status" className="fineprint">{saved?'Demo note saved for this page session.':'No database is connected.'}</span><button className="button secondary" onClick={()=>setSaved(true)}>Save demo note</button></div></Card>;}
