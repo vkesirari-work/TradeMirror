@@ -6,8 +6,8 @@
 
 TradeMirror is being built as a trading journal and performance analytics platform for Indian options traders. The goal is to bring trade history, charges-aware P&L, session comparisons, and AI-assisted behavioural reviews into one focused workspace.
 
-> **Current status: Phase 2 connected · first account acceptance pending · version 0.2.0.**
-> All dashboard numbers, reports, scores, and insights are sample data. Supabase account integration is connected and the database migration is applied. Imports, broker syncing, and AI generation remain planned.
+> **Current status: Phase 2 connected · login accepted · account settings ready · version 0.2.0.**
+> Unconfigured demo dashboard numbers, reports, scores, and insights are sample data. Configured accounts show an empty workspace and real profile settings. Supabase account integration is connected and the database migration is applied. Imports, broker syncing, and AI generation remain planned.
 
 ![TradeMirror dashboard preview](public/dashboard-preview.jpg)
 
@@ -87,7 +87,7 @@ The roadmap is a proposed sequence, not a release-date commitment. Later version
 | Phase | Scope | Status |
 | --- | --- | --- |
 | 1 | Frontend foundation, design, routes, sample data, normalized types | **Complete** |
-| 2 | Supabase authentication, PostgreSQL schema, user isolation and access policies | **Connected; first account test pending** |
+| 2 | Supabase authentication, PostgreSQL schema, user isolation and access policies | **Connected; login accepted** |
 | 3 | Zerodha CSV parsing, validation, import history, duplicate protection | Planned |
 | 4 | Deterministic trade matching, partial fills, open positions, reconciliation | Planned |
 | 5 | P&L and cost analytics with explicit estimated / confirmed cost handling | Planned |
@@ -151,9 +151,9 @@ Phase-by-phase pushes are authorized for this project. Each completion update sh
 | Documentation & roadmap | 7 October 2026 | Added current/planned product flows, V1–V3 roadmap, delivery workflow, limitations, and project description. |
 | Phase 2: auth & database foundation | 7 October 2026 | Supabase integration, protected accounts, migration and access-policy tests implemented; hosted activation pending. |
 
-**Current work:** Phase 2 is connected locally and on Vercel. The hosted migration is applied; all nine tables have RLS. Email/password signup and email confirmation are enabled. Signed-out redirects and anonymous table denial passed. First real-account email/session acceptance remains pending.
+**Current work:** Phase 2 is connected locally and on Vercel. The hosted migration is applied; all nine tables have RLS. Email/password signup and email confirmation are enabled. Signed-out redirects and anonymous table denial passed. The owner confirmed successful login. Password recovery and editable account settings are available.
 
-**Next implementation step:** Complete first-account hosted auth acceptance, then implement the validated Zerodha CSV pipeline (Phase 3).
+**Next implementation step:** Implement the validated Zerodha CSV preview and parsing pipeline (Phase 3), followed by trusted persistence and duplicate protection.
 
 ## Run locally
 
@@ -184,7 +184,8 @@ npm start
 | --- | --- |
 | `/` | Landing page |
 | `/login`, `/signup` | Signup/login with configured Supabase; setup notice otherwise |
-| `/auth/confirm` | Confirmation token / PKCE callback with fixed local redirect |
+| `/auth/confirm` | Confirmation / recovery PKCE callback with fixed app destinations |
+| `/forgot-password`, `/reset-password` | Email recovery and authenticated password update |
 | `/dashboard` | Performance overview |
 | `/trades` | Searchable and filterable journal |
 | `/trades/tm-1` | Example trade detail; sample IDs `tm-1` through `tm-8` |
@@ -221,7 +222,7 @@ Future implementations belong in `lib/brokers/adapters/`. Normalized trades must
 
 Supabase auth and profile persistence are configured locally and in production. No broker OAuth/API, CSV parsing, matching engine, production P&L or charges engine, AI generation, payments, notifications, cron jobs, or background workers.
 
-Auth forms validate on the client and server. With project configuration, credentials go only to the configured Supabase Auth service through server actions. Files are not uploaded or parsed. Trade notes only remain in the mounted page session. Connect buttons explain future availability; AI generation and PDF export are disabled. Without Supabase configuration, workspace routes are public demo pages. With configuration, they require a valid session and display an empty account workspace; sample trades are never presented as account-owned records. Scores are illustrative rather than computed from rule adherence.
+Auth forms validate on the client and server. With project configuration, credentials go only to the configured Supabase Auth service through server actions. Files are not uploaded or parsed. Trade notes only remain in the mounted page session. Connect buttons explain future availability; AI generation and PDF export are disabled. Without Supabase configuration, workspace routes are public demo pages. With configuration, they require a valid session and display an empty account workspace with editable profile settings; sample trades are never presented as account-owned records. Scores are illustrative rather than computed from rule adherence.
 
 ## Validation & dependency status
 
@@ -269,3 +270,9 @@ Validation: three tests, lint, TypeScript, and production build passed using Web
 Login now links to **Forgot password**. `/forgot-password` requests a Supabase reset email with account-neutral success feedback, rate-limit handling, and same-browser instructions. The existing approved `/auth/confirm` callback exchanges the recovery code before considering an existing session, then opens `/reset-password`. A short-lived HttpOnly browser marker selects the recovery destination; it does not grant authentication. Invalid links return to recovery with guidance. Password updates require a server-validated account session and matching 8–128 character passwords.
 
 Validation: six tests passed, including mocked recovery requests, authenticated update checks, existing-session callback handling, and expired-code rejection. Lint, TypeScript, and Webpack production build passed. Reset email delivery and an actual password change must be completed by the account owner; no new password was entered or changed by the agent. Default Supabase email restrictions still apply. Next: owner recovery acceptance, then real trade imports.
+
+### Final milestone for today — account settings, 7 October 2026
+
+The owner confirmed successful login. Authenticated Settings now loads the real profile and email, saves the display name to Supabase, and links to password recovery. The server derives ownership from the validated session and updates only `display_name`; RLS enforces account isolation. Save revalidates the workspace so sidebar and welcome names update. The remaining account routes keep their empty states; sample trades are available only in the unconfigured demo.
+
+Validation: seven tests, including profile character limits and PostgreSQL ownership/column restrictions, plus lint, TypeScript, and Webpack production build. No new database migration or privileged key is required. Broker imports and analytics remain planned. Tomorrow's starting point: Phase 3 Zerodha CSV parsing and validation preview, then trusted import persistence and duplicate protection.

@@ -19,6 +19,10 @@ test('migration enforces ownership, privileged writes, and consistent metrics', 
   await assert.rejects(db.query(`insert into broker_imports(user_id,broker,source,fingerprint) values($1,'ZERODHA','CSV','file-a')`,[a]),/unique/);
   await db.exec(`set role authenticated; select set_config('request.jwt.claim.sub','${a}',false);`);
   assert.deepEqual((await db.query('select id from profiles')).rows,[{id:a}]);
+  await db.query('update profiles set display_name=$1 where id=$2',['Alice updated',a]);
+  assert.equal((await db.query('select display_name from profiles')).rows[0].display_name,'Alice updated');
+  assert.equal((await db.query('update profiles set display_name=$1 where id=$2 returning id',['Blocked',b])).rows.length,0);
+  await assert.rejects(db.query('update profiles set id=$1 where id=$2',[b,a]),/permission denied/);
   assert.deepEqual((await db.query('select id from trades')).rows,[{id:ta}]);
   await db.query('update trades set notes=$1 where id=$2',['My plan',ta]);
   assert.equal((await db.query('select notes from trades')).rows[0].notes,'My plan');
@@ -27,6 +31,7 @@ test('migration enforces ownership, privileged writes, and consistent metrics', 
   await assert.rejects(db.query('update trades set user_id=$1 where id=$2',[b,ta]),/permission denied/);
   await assert.rejects(db.query(`insert into daily_metrics(user_id,trading_date,gross_pnl,charges,net_pnl,total_trades) values($1,current_date,100,10,90,1)`,[a]),/permission denied/);
   await db.exec(`select set_config('request.jwt.claim.sub','${b}',false);`);
+  assert.equal((await db.query('select display_name from profiles')).rows[0].display_name,'Bob');
   assert.deepEqual((await db.query('select id from trades')).rows,[{id:tb}]);
   assert.equal((await db.query('select notes from trades')).rows[0].notes,null);
   await db.exec('reset role;');
