@@ -6,8 +6,8 @@
 
 TradeMirror is being built as a trading journal and performance analytics platform for Indian options traders. The goal is to bring trade history, charges-aware P&L, session comparisons, and AI-assisted behavioural reviews into one focused workspace.
 
-> **Current status: Phase 1 complete · frontend demo · version 0.1.0.**
-> All dashboard numbers, reports, scores, and insights are sample data. Real accounts, imports, broker syncing, and AI generation are planned, not active.
+> **Current status: Phase 2 implemented · Supabase activation pending · version 0.2.0.**
+> All dashboard numbers, reports, scores, and insights are sample data. Supabase account integration is implemented but needs project configuration and migration application. Imports, broker syncing, and AI generation remain planned.
 
 ![TradeMirror dashboard preview](public/dashboard-preview.jpg)
 
@@ -24,7 +24,7 @@ Landing page → Explore demo → Dashboard
                               └─ Settings & report lifecycle explanation
 ```
 
-Login and signup have validated frontend forms. They show a preview notice and do not create accounts or send credentials. CSV selection stays local; the preview rows are fixed fixtures.
+With Supabase configured, signup/login use server actions, email confirmation establishes a session, and workspace routes require a validated user. Without configuration, forms show a setup notice and no credentials are sent to a provider. CSV selection stays local; preview rows remain fixed fixtures.
 
 ### Planned end-to-end experience
 
@@ -77,7 +77,7 @@ The roadmap is a proposed sequence, not a release-date commitment. Later version
 | Phase | Scope | Status |
 | --- | --- | --- |
 | 1 | Frontend foundation, design, routes, sample data, normalized types | **Complete** |
-| 2 | Supabase authentication, PostgreSQL schema, user isolation and access policies | Next |
+| 2 | Supabase authentication, PostgreSQL schema, user isolation and access policies | **Implemented; hosted activation pending** |
 | 3 | Zerodha CSV parsing, validation, import history, duplicate protection | Planned |
 | 4 | Deterministic trade matching, partial fills, open positions, reconciliation | Planned |
 | 5 | P&L and cost analytics with explicit estimated / confirmed cost handling | Planned |
@@ -139,10 +139,11 @@ Phase-by-phase pushes are authorized for this project. Each completion update sh
 | --- | --- | --- |
 | Phase 1: frontend foundation | 7 October 2026 | All requested demo routes built; lint, TypeScript, production build, route checks, journal filters, report tabs, and mobile navigation verified. Initial implementation commit: `be1d940`. |
 | Documentation & roadmap | 7 October 2026 | Added current/planned product flows, V1–V3 roadmap, delivery workflow, limitations, and project description. |
+| Phase 2: auth & database foundation | 7 October 2026 | Supabase integration, protected accounts, migration and access-policy tests implemented; hosted activation pending. |
 
-**Current work:** Phase 1 is complete; this update documents the roadmap. Phase 2 has not started.
+**Current work:** Phase 2 code and migration are implemented. Embedded PostgreSQL policy tests pass. Hosted migration application, email delivery, and live auth acceptance remain pending project configuration.
 
-**Next implementation step:** Supabase authentication and user-isolated database storage, followed by the validated Zerodha CSV pipeline.
+**Next implementation step:** Configure Supabase and complete hosted auth acceptance, then implement the validated Zerodha CSV pipeline (Phase 3).
 
 ## Run locally
 
@@ -165,14 +166,15 @@ npm run build
 npm start
 ```
 
-`npm start` runs the production build; run `npm run build` first. No API keys or environment variables are required for the current demo.
+`npm start` runs the production build; run `npm run build` first. The unconfigured sample demo requires no keys. For real authentication, follow [Supabase setup](supabase/README.md) and configure `.env.local` from `.env.example`. Never commit that file.
 
 ## Routes
 
 | Route | Purpose |
 | --- | --- |
 | `/` | Landing page |
-| `/login`, `/signup` | Account form previews |
+| `/login`, `/signup` | Signup/login with configured Supabase; setup notice otherwise |
+| `/auth/confirm` | Confirmation token / PKCE callback with fixed local redirect |
 | `/dashboard` | Performance overview |
 | `/trades` | Searchable and filterable journal |
 | `/trades/tm-1` | Example trade detail; sample IDs `tm-1` through `tm-8` |
@@ -183,7 +185,7 @@ npm start
 
 ## Stack & architecture
 
-Current stack: Next.js 16.4 App Router, React, TypeScript, Tailwind CSS, Recharts, and Lucide. Planned services: Supabase Auth / PostgreSQL and an AI interpretation API.
+Current stack: Next.js 16.4 App Router, React, TypeScript, Tailwind CSS, Recharts, and Lucide. Implemented integration: Supabase Auth / PostgreSQL (activation pending). Planned service: an AI interpretation API.
 
 | Location | Responsibility |
 | --- | --- |
@@ -194,7 +196,7 @@ Current stack: Next.js 16.4 App Router, React, TypeScript, Tailwind CSS, Rechart
 | `lib/analytics/` | Formatting today; deterministic matching and analytics in later phases |
 | `lib/brokers/adapter.ts` | Future broker adapter contract |
 
-Future implementations belong in `lib/brokers/adapters/`. Normalized trades must remain independent of broker payloads; `rawDataId` provides a reference for separately stored raw records. Database migrations and row-level policies will be added in Phase 2.
+Future implementations belong in `lib/brokers/adapters/`. Normalized trades must remain independent of broker payloads; `rawDataId` provides a reference for separately stored raw records. The initial migration and row-level policies are in `supabase/migrations/`. Setup and hosted acceptance checks are in `supabase/README.md`.
 
 ### Core rules
 
@@ -207,9 +209,9 @@ Future implementations belong in `lib/brokers/adapters/`. Normalized trades must
 
 ## Current limitations
 
-No Supabase connection, persistence, real authentication, broker OAuth/API, CSV parsing, matching engine, production P&L or charges engine, AI generation, payments, notifications, cron jobs, or background workers.
+Supabase auth and profile persistence are implemented but not activated on this local instance. No broker OAuth/API, CSV parsing, matching engine, production P&L or charges engine, AI generation, payments, notifications, cron jobs, or background workers.
 
-Auth forms validate inputs locally and show a preview notice. Files are not uploaded or parsed. Trade notes only remain in the mounted page session. Connect buttons explain future availability; AI generation and PDF export are disabled. Workspace routes are public demo pages. Scores are illustrative rather than computed from rule adherence.
+Auth forms validate on the client and server. With project configuration, credentials go only to the configured Supabase Auth service through server actions. Files are not uploaded or parsed. Trade notes only remain in the mounted page session. Connect buttons explain future availability; AI generation and PDF export are disabled. Without Supabase configuration, workspace routes are public demo pages. With configuration, they require a valid session and display an empty account workspace; sample trades are never presented as account-owned records. Scores are illustrative rather than computed from rule adherence.
 
 ## Validation & dependency status
 
@@ -222,3 +224,20 @@ At Phase 1 completion:
 - The Next.js ESLint toolchain had a development-only `braces` advisory with five transitive audit entries. The offered automated fix was a lint-config downgrade; an upstream fix should be reviewed before changing the toolchain.
 
 These are recorded validation results, not a continuous assurance. Re-run relevant checks as dependencies and implementations change.
+
+## Phase 2 — Authentication & database foundation
+
+Implemented:
+
+- Official `@supabase/ssr` cookie client and Next.js Proxy session refresh.
+- Signup, password login, email confirmation / PKCE callback, sign-out, and server-validated route protection.
+- Configuration validation rejects partial configuration and privileged keys; no service-role client is shipped.
+- A transactional migration for profiles, broker connections, imports, raw records, orders, trades, trade metrics, daily metrics, and AI reports.
+- Row-level policies and column grants: users read their own records and can edit display names, notes, and planned risk fields; financial and broker records require a future trusted backend.
+- Decimal financial storage, composite ownership foreign keys, uniqueness constraints, and signup profile creation/backfill.
+- `npm test` executes migration and adversarial ownership checks in embedded PostgreSQL.
+- Phase 2 lint, TypeScript, and production build passed. All configured workspace routes redirected signed-out requests to login; invalid confirmation returned login feedback; the unconfigured auth action displayed a setup notice.
+
+**Activation required:** Create/configure a Supabase project, apply the migration, configure email confirmation, and test the hosted login/session flow. Follow [the setup guide](supabase/README.md). No hosted database was modified during this phase. Embedded PostgreSQL tests do not prove hosted email delivery or API behaviour.
+
+Authenticated accounts currently show an empty workspace. Real dashboards, trade loading, persistent trade notes, and import flows will be connected in subsequent phases. The unconfigured demo retains Phase 1 sample screens.

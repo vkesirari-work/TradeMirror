@@ -1,2 +1,3 @@
 import { AuthForm } from '@/components/auth-form';
-export default function Login(){return <AuthForm/>;}
+import { getSupabaseConfig } from '@/lib/supabase/config';
+export default async function Login({searchParams}:{searchParams:Promise<{confirmation?:string}>}) {const params=await searchParams;return <AuthForm configured={!!getSupabaseConfig()} confirmationFailed={params.confirmation==='failed'}/>;}

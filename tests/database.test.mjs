@@ -1,0 +1,41 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+import { PGlite } from '@electric-sql/pglite';
+const a='11111111-1111-4111-8111-111111111111';
+const b='22222222-2222-4222-8222-222222222222';
+const ta='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
+const tb='bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb';
+test('migration enforces ownership, privileged writes, and consistent metrics', async () => {
+ const db=new PGlite();
+ try {
+  await db.exec(`create role anon; create role authenticated; create role service_role bypassrls; create schema auth; create table auth.users(id uuid primary key,raw_user_meta_data jsonb); create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid $$; grant usage on schema auth,public to authenticated,anon,service_role; grant execute on function auth.uid() to authenticated;`);
+  await db.exec(await readFile(new URL('../supabase/migrations/202610070001_foundation.sql',import.meta.url),'utf8'));
+  await db.query('insert into auth.users values ($1,$2),($3,$4)',[a,{display_name:'Alice'},b,{display_name:'Bob'}]);
+  assert.equal((await db.query('select count(*)::int as n from profiles')).rows[0].n,2);
+  for(const [id,user] of [[ta,a],[tb,b]]) await db.query(`insert into trades(id,user_id,broker,instrument,side,entry_price,quantity,entry_time,gross_pnl,charges,net_pnl) values($1,$2,'ZERODHA','NIFTY','LONG',100,75,now(),1000,50,950)`,[id,user]);
+  await db.query(`insert into broker_imports(id,user_id,broker,source,fingerprint) values($1,$2,'ZERODHA','CSV','file-a')`,[ta,a]);
+  await assert.rejects(db.query(`insert into raw_broker_records(user_id,import_id,record_key,payload) values($1,$2,'x','{}')`,[b,ta]),/foreign key/);
+  await assert.rejects(db.query(`insert into broker_imports(user_id,broker,source,fingerprint) values($1,'ZERODHA','CSV','file-a')`,[a]),/unique/);
+  await db.exec(`set role authenticated; select set_config('request.jwt.claim.sub','${a}',false);`);
+  assert.deepEqual((await db.query('select id from profiles')).rows,[{id:a}]);
+  assert.deepEqual((await db.query('select id from trades')).rows,[{id:ta}]);
+  await db.query('update trades set notes=$1 where id=$2',['My plan',ta]);
+  assert.equal((await db.query('select notes from trades')).rows[0].notes,'My plan');
+  await db.query('update trades set notes=$1 where id=$2',['Wrong user',tb]);
+  await assert.rejects(db.query('update trades set net_pnl=999 where id=$1',[ta]),/permission denied/);
+  await assert.rejects(db.query('update trades set user_id=$1 where id=$2',[b,ta]),/permission denied/);
+  await assert.rejects(db.query(`insert into daily_metrics(user_id,trading_date,gross_pnl,charges,net_pnl,total_trades) values($1,current_date,100,10,90,1)`,[a]),/permission denied/);
+  await db.exec(`select set_config('request.jwt.claim.sub','${b}',false);`);
+  assert.deepEqual((await db.query('select id from trades')).rows,[{id:tb}]);
+  assert.equal((await db.query('select notes from trades')).rows[0].notes,null);
+  await db.exec('reset role;');
+  await assert.rejects(db.query(`update trades set report_status='FINAL' where id=$1`,[ta]),/check constraint/);
+  await assert.rejects(db.query(`update trades set net_pnl=3 where id=$1`,[ta]),/check constraint/);
+  await db.exec('set role anon;');
+  await assert.rejects(db.query('select * from trades'),/permission denied/);
+  await db.exec('reset role;');
+  const secured=await db.query("select count(*)::int as n from pg_tables where schemaname='public' and rowsecurity");
+  assert.equal(secured.rows[0].n,9);
+ } finally { await db.close(); }
+});
