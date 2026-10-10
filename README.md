@@ -80,7 +80,7 @@ Charges remain estimated while a report is `PROVISIONAL`. A report becomes `FINA
 | Landing | Product introduction, workflow, demo and signup entry points |
 | Dashboard | Shared scope filters; exact gross P&L, win rate, profit factor, expectancy, averages and closed-slice drawdown; calendar drill-down; five breakdown dimensions; charts and residual lots |
 | Journal | Instrument, side, result and exit-date filters; pagination; per-slice detail dialog with source identities; filtered CSV export; calendar-to-day navigation |
-| Trade detail | Account journal dialog: exact prices, quantities, timestamps, holding time and source identities. Persistent notes remain planned; older sample detail pages are demo-only |
+| Trade detail | Account journal dialog: exact prices, quantities, timestamps, holding time and source identities. Notes, tags and a three-item plan review editor implemented; production persistence enabled by the applied journal migration; older sample detail pages are demo-only |
 | Imports | Zerodha CSV validation/preview, account-owned atomic save, cross-file duplicate protection and import history; broker connection remains a preview |
 | Review | Computed observations from real imported history, with evidence and review prompts. AI generation remains planned |
 | Reports | Computed daily/weekly gross reviews, period selection, metrics and period execution export. Confirmed net results and persisted report revisions remain planned |
@@ -105,7 +105,7 @@ The roadmap is a proposed sequence, not a release-date commitment. Later version
 | 4 | Deterministic trade matching, partial fills, open positions, reconciliation | **FIFO matching active; broker reconciliation pending** |
 | 5 | P&L and cost analytics with explicit estimated / confirmed cost handling | **Advanced gross metrics active; broker costs/net pending** |
 | 6 | Connect the dashboard and filters to actual user data | **Gross dashboard and matched journal connected; net analytics pending** |
-| 7 | Persistent notes and trade detail metrics supported by available data | **Slice details active; persistent notes planned** |
+| 7 | Persistent notes and trade detail metrics supported by available data | **Notes, tags and plan review active; save/reopen acceptance pending** |
 | 8 | AI behaviour interpretation from computed, structured metrics | Planned |
 | 9 | Daily / weekly review generation and report history | **Computed gross reviews active; saved report revisions planned** |
 | 10 | End-to-end validation, security checks, deployment and onboarding | Planned |
@@ -384,3 +384,17 @@ Remaining scope: confirmed broker charges/net P&L, settlement reconciliation, pe
 Validation: existing 29 tests pass; lint, TypeScript and production build pass. Browser checks passed for the public walkthrough, its demo link, signed-out import login protection and the 390px responsive walkthrough without page overflow. Live authenticated acceptance passed for import-guide expansion/collapse, existing import history and the populated dashboard review checklist. The public walkthrough is live. No new test duplicates the static UI implementation.
 
 Next phase: persistent journal notes, tags and trading-plan checklists with stable source identities and account ownership. These remain planned, alongside confirmed charges/net P&L and broker sync.
+
+
+### Decision journal — 10 October 2026
+
+- Matching-slice dialogs now contain notes (10,000 characters), up to ten normalized tags (40 characters each) and a three-item plan review checklist. These are self-reported observations, not AI analysis or an adherence score.
+- Server actions authenticate the owner and rematch their full saved history before allowing an annotation read/write. SHA-256 keys cover source identities, instrument, side, quantity, prices and timestamps. Changed matching evidence does not inherit an old annotation. Old annotations are retained; there is not yet an orphan-reconciliation view.
+- The additive `202610100002_journal_annotations.sql` migration creates owner-only annotation storage with RLS and narrow insert/update grants. No financial table write grants change. Revision comparisons prevent silent overwrite by another editor; errors retain drafts and offer an explicit discard/reload action.
+- Closing a dirty dialog or pressing Escape asks the user to keep editing or discard. Public demo edits stay in the mounted dialog, never call account journal actions, and are explicitly marked as temporary.
+
+Validation: 32 tests pass, including journal normalization/limits, evidence identity changes, PostgreSQL ownership isolation, anonymous denial and stale revision protection. Lint, TypeScript and Webpack production build pass. Browser acceptance covers demo notes, tags, checkbox edits and unsaved-draft Escape protection.
+
+Activation: the owner explicitly approved the new owner-scoped journal write permissions; the migration ran successfully in the production Supabase SQL editor. Hosted save/reopen acceptance follows rollout. Storage errors remain visible and do not alter execution data.
+
+Next: verify hosted saved/reopened notes; then journal tag filters, configurable plan templates and annotation reconciliation for changed imported history. Charges/net P&L and broker sync remain planned.
