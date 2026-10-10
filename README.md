@@ -36,7 +36,7 @@ Sign up / log in → Import CSV → Local validation preview → Save executions
                            Filtered matched journal → Download matching slices
 ```
 
-The account dashboard reads saved executions. Charges and net P&L remain unavailable; the supplied real CSV has been validated locally but not uploaded by the agent. The public `/demo` workspace works with or without Supabase configuration and uses an independent synthetic 48-slice fixture. It includes analytics, journal, computed review and daily/weekly report pages without login. The older unconfigured sample screens follow this separate flow:
+The account dashboard reads saved executions and computes gross FIFO metrics. Broker statement costs and realized net have a separate XLSX import flow; execution/day net remains unavailable without a defensible allocation. Private statement upload acceptance is pending. The public `/demo` workspace works with or without Supabase configuration and uses an independent synthetic 48-slice fixture. It includes analytics, journal, computed review and daily/weekly report pages without login. The older unconfigured sample screens follow this separate flow:
 
 ```text
 Landing page → Explore demo → Dashboard
@@ -82,12 +82,207 @@ Charges remain estimated while a report is `PROVISIONAL`. A report becomes `FINA
 | Journal | Instrument, side, result and exit-date filters; pagination; per-slice detail dialog with source identities; filtered CSV export; calendar-to-day navigation |
 | Trade detail | Account journal dialog: exact prices, quantities, timestamps, holding time and source identities. Notes, tags and a three-item plan review editor implemented; production persistence enabled by the applied journal migration; older sample detail pages are demo-only |
 | Imports | Zerodha CSV validation/preview, account-owned atomic save, cross-file duplicate protection and import history; broker connection remains a preview |
-| Review | Computed observations from real imported history, with evidence and review prompts. AI generation remains planned |
-| Reports | Computed daily/weekly gross reviews, period selection, metrics and period execution export. Confirmed net results and persisted report revisions remain planned |
-| Settings | Account profile persistence and password recovery; demo profile and lifecycle explanation |
+| Review | Computed observations, date-scoped tagged strategy comparisons and evidence drilldowns; consent-based AI adapter awaits live server setup |
+| Reports | Daily/weekly gross reviews, JSON/CSV export, browser print and immutable snapshot storage; save/reload acceptance pending |
+| Settings | Profile persistence, recovery and portable journal/plan JSON export; restore unsupported |
 | Foundation | Responsive navigation, loading UI, invalid-trade 404, normalized types, broker adapter contract |
 
 In the unconfigured demo, the dashboard period selector changes summary cards between the sample day and week. Charts and breakdowns are explicitly labeled as the sample week. Fixtures cover 1–7 October 2026; they are not live market data.
+
+## Phase-by-phase diagrams
+
+This is the current implementation map as of **10 October 2026**. **Active** means implemented and available; **acceptance pending** means a remaining live check, not a completed V1 release. The progress log below records historical milestones.
+
+### User journey — demo to personal workspace
+
+```mermaid
+flowchart TD
+    Landing[Landing page] --> Demo[Explore public synthetic demo]
+    Landing --> Auth[Sign up / log in]
+    Demo --> Auth
+    Auth --> Import[Preview and save real tradebook]
+    Import --> Dashboard[Account gross dashboard]
+    Dashboard --> Journal[Inspect slices / notes / tags / plan]
+    Dashboard --> Costs[Preview broker statement / confirm / save]
+    Journal --> Review[Date-scoped strategy review]
+    Review --> Reports[Daily / weekly reports]
+    Reports --> Snapshot[Save frozen report snapshot]
+    Reports --> Consent{AI setup ready and consent given?}
+    Consent -->|Yes| AI[Aggregate evidence to AI / validated reflection]
+    Consent -->|No| Computed[Continue computed review]
+    Journal --> Export[Download journal JSON from Settings]
+    Reports --> ExportReports[Download report JSON / executions CSV]
+```
+
+The public demo never reads or writes personal history. AI shares only selected period aggregates after consent. Statement net and execution gross remain separate.
+
+### Phase 1 — frontend foundation · complete
+
+```mermaid
+flowchart LR
+    Design[Design and normalized types] --> Routes[Landing / workspace routes]
+    Routes --> Demo[Sample screens and interactions]
+    Demo --> Responsive[Responsive navigation and loading states]
+```
+
+**Delivered:** workspace foundation, then the midnight/violet theme, mobile navigation and scrollable journal. **Next:** retain physical-device acceptance as a release check.
+
+### Phase 2 — authentication and ownership · active
+
+```mermaid
+flowchart LR
+    Signup[Signup / email confirmation] --> Session[Validated Supabase session]
+    Login[Login / password recovery] --> Session
+    Session --> Protected[Protected account routes]
+    Protected --> RLS[Owner-scoped PostgreSQL policies]
+```
+
+**Delivered:** login, confirmation, recovery, profile settings and owner isolation. The owner confirmed login. **Boundary:** account credentials stay in the authentication flow; public demo records are separate.
+
+### Phase 3 — tradebook import · active
+
+```mermaid
+flowchart LR
+    CSV[Zerodha tradebook CSV] --> Preview[Local parse and validation]
+    Preview --> Confirm[Save executions]
+    Confirm --> Server[Server validation]
+    Server --> Duplicate[Cross-file duplicate checks]
+    Duplicate --> Atomic[Atomic owner import]
+    Atomic --> History[Import history and saved executions]
+```
+
+**Delivered:** exact value validation, repeated/overlapping import protection and visible save results/history. **Boundary:** preview alone does not persist data; conflicting source records fail rather than overwrite history.
+
+### Phase 4 — matching and reconciliation · FIFO active
+
+```mermaid
+flowchart LR
+    Executions[Owner saved executions] --> Scope[Select real-import scope]
+    Scope --> FIFO[Exact FIFO matching]
+    FIFO --> Slices[Matched partial-fill slices]
+    FIFO --> Residual[Unmatched quantities]
+    Slices --> Compare[Compare period gross by instrument to statement]
+    Compare --> Warning[Expose mismatches / missing history]
+```
+
+**Delivered:** exact matching, long/short slices, partial fills and residual lots; statement comparison is implemented. **Pending:** broker-certified settlement reconciliation. Slice counts are not whole-position counts.
+
+### Phase 5 — gross metrics and broker costs · implemented, acceptance pending
+
+```mermaid
+flowchart TD
+    Slices[Matched execution slices] --> Gross[Exact gross analytics]
+    XLSX[Zerodha F&O P&L XLSX] --> Parse[Bounded parse / exact totals and ledger checks]
+    Parse --> Preview[Statement preview]
+    Preview --> Confirm[Confirm ownership and save parsed statement]
+    Confirm --> Net[Statement net = gross - charges + other credits/debits]
+    Gross --> Compare[Compare with statement gross]
+    Net --> Compare
+    Compare --> Separate[Keep statement net separate from execution gross]
+```
+
+**Delivered:** statement charges, signed adjustments and realized net; independent local source validation. **Pending:** owner statement upload/save/reload acceptance. **Limit:** no day/slice cost allocation or unrealized P&L inference.
+
+### Phase 6 — personal dashboard · active
+
+```mermaid
+flowchart LR
+    Saved[Saved account history] --> Metrics[Gross metrics / charts / breakdowns]
+    Metrics --> Filters[Shared scope filters]
+    Filters --> Calendar[IST exit-date calendar]
+    Calendar --> Journal[Filtered matching-slice journal]
+```
+
+**Delivered:** real-history dashboard, gross ratios, closed-slice drawdown, breakdowns and calendar drilldowns. **Limit:** execution net remains unavailable until a defensible cost allocation exists; the 30-second product target is not measured.
+
+### Phase 7 — journal and strategy review · active
+
+```mermaid
+flowchart LR
+    Slice[Immutable matching evidence] --> Annotation[Owner notes / tags / checklist answers]
+    Plan[Custom plan template] --> Questions[Snapshot questions per journal entry]
+    Questions --> Annotation
+    Annotation --> Tags[Date-scoped tag groups and comparisons]
+    Tags --> Drilldown[Journal drilldown preserving tag and dates]
+    Annotation --> Connection[Linked / outside scope / unlinked evidence status]
+```
+
+**Delivered:** persistent journal, custom plan, tag filters, comparisons and read-only connection status. **Limit:** changed evidence does not inherit old notes; manual reassignment and multiple templates remain planned.
+
+### Phase 8 — AI reflection · adapter ready, live setup pending
+
+```mermaid
+flowchart LR
+    Consent[Explicit aggregate-sharing consent] --> Auth[Authenticate and verify server setup]
+    Auth --> Evidence[Recompute selected-period aggregate evidence]
+    Evidence --> Quota[Owner quota reservation]
+    Quota --> Provider[OpenAI Responses / structured output]
+    Provider --> Validate[Validate three evidence-linked reflections]
+    Validate --> Output[Display / optional JSON download]
+```
+
+**Delivered:** server adapter, consent, bounded output and quota tests. **Pending:** server `OPENAI_API_KEY` / `OPENAI_MODEL` and live provider acceptance. No raw CSV, symbols, account identity, notes or tags are sent. Output is page-local until downloaded; it is not saved automatically as a snapshot.
+
+### Phase 9 — reports and portable copies · implemented, acceptance pending
+
+```mermaid
+flowchart TD
+    Matches[Real-import matching slices] --> Period[Daily / Monday-start weekly review]
+    Period --> Computed[Computed gross review]
+    Computed --> Recompute[Server recomputes evidence]
+    Recompute --> Frozen[Immutable deduplicated owner snapshot]
+    Frozen --> History[Load / reopen saved report history]
+    Computed --> Download[Review JSON / execution CSV / browser print]
+    Notes[Journal annotations and plan] --> Backup[Settings journal JSON export]
+```
+
+**Delivered:** computed reviews, applied snapshot storage and export controls. **Verified live:** owner history loads; journal export returns prepared status. **Pending:** snapshot save/reload, actual downloaded-file receipt/content and print/PDF acceptance. Journal JSON is not a complete account backup; restore is unsupported.
+
+### Phase 10 — release acceptance and onboarding · in progress
+
+```mermaid
+flowchart LR
+    Build[Implement scoped phase] --> Checks[Tests / lint / TypeScript / production build]
+    Checks --> Browser[Relevant browser and ownership checks]
+    Browser --> Docs[README / limitations / acceptance record]
+    Docs --> Push[Commit and push verified phase]
+    Push --> Hosted[Observe configured hosted rollout]
+    Hosted --> Acceptance{Required live checks passed?}
+    Acceptance -->|No| Pending[Keep explicit acceptance tasks]
+    Acceptance -->|Yes| Release[Mark V1 fully accepted]
+```
+
+**Latest implementation validation:** 44 tests plus lint, TypeScript and Webpack production build passed. Six-step onboarding and hosted routes are verified. **Open checks:** private statement/snapshot writes, live AI, export receipt/print and remaining physical-mobile acceptance. See [V1 acceptance checklist](docs/V1_RELEASE.md). Documentation-only diagram updates use Markdown/link/diagram checks rather than rerunning the unchanged app build.
+
+### Planned next versions
+
+```mermaid
+flowchart LR
+    V1[V1 candidate / finish acceptance] --> Sync[V1.1 planned: broker sync and final report refresh]
+    Sync --> V2[V2 planned: richer plans / risk inputs / reminders / broker adapters]
+    V2 --> V3[V3 planned: multi-broker history / longitudinal coaching / SaaS operations]
+```
+
+Some originally proposed V2 basics—notes, tags, one custom plan, comparisons and snapshot history—have already shipped in V1. Richer capabilities still need their own inputs and acceptance. Sync, market replay/MFE/MAE, discipline scoring, billing and automated trading are not active; order execution is outside the current roadmap.
+
+### Data relationship map — simplified ER diagram
+
+```mermaid
+erDiagram
+    AUTH_USER ||--o{ IMPORT : owns
+    AUTH_USER ||--o{ EXECUTION : owns
+    IMPORT ||--o{ EXECUTION : records
+    AUTH_USER ||--o{ JOURNAL_ANNOTATION : owns
+    AUTH_USER ||--o| PLAN_TEMPLATE : owns
+    AUTH_USER ||--o{ REPORT_SNAPSHOT : owns
+    AUTH_USER ||--o{ BROKER_STATEMENT : owns
+    AUTH_USER ||--o| AI_USAGE : limits
+    EXECUTION }o--o{ COMPUTED_FIFO_SLICE : contributes_to
+    COMPUTED_FIFO_SLICE ||--o| JOURNAL_ANNOTATION : identified_by_evidence_hash
+```
+
+This is a conceptual map, not a literal database schema: FIFO slices are computed from executions, and annotation links use an evidence hash rather than a slice foreign key. Snapshots freeze summary payloads; broker statements store parsed totals and breakdowns. Raw source workbooks are not retained by the statement flow.
+
 
 ## Version roadmap
 
@@ -102,13 +297,13 @@ The roadmap is a proposed sequence, not a release-date commitment. Later version
 | 1 | Frontend foundation, design, routes, sample data, normalized types | **Complete** |
 | 2 | Supabase authentication, PostgreSQL schema, user isolation and access policies | **Connected; login accepted** |
 | 3 | Zerodha CSV parsing, validation, import history, duplicate protection | **Parsing, saving and history active; owner upload verified** |
-| 4 | Deterministic trade matching, partial fills, open positions, reconciliation | **FIFO matching active; broker reconciliation pending** |
-| 5 | P&L and cost analytics with explicit estimated / confirmed cost handling | **Advanced gross metrics active; broker costs/net pending** |
+| 4 | Deterministic trade matching, partial fills, open positions, reconciliation | **FIFO active; statement comparison implemented; certified settlement reconciliation pending** |
+| 5 | P&L and cost analytics with explicit estimated / confirmed cost handling | **Gross metrics active; statement costs/net implemented; owner upload acceptance pending** |
 | 6 | Connect the dashboard and filters to actual user data | **Gross dashboard and matched journal connected; net analytics pending** |
-| 7 | Persistent notes and trade detail metrics supported by available data | **Notes, tags and three-item plan review active** |
-| 8 | AI behaviour interpretation from computed, structured metrics | Planned |
-| 9 | Daily / weekly review generation and report history | **Computed gross reviews active; saved report revisions planned** |
-| 10 | End-to-end validation, security checks, deployment and onboarding | Planned |
+| 7 | Persistent notes and trade detail metrics supported by available data | **Notes, tags, custom plan and strategy comparisons active** |
+| 8 | AI behaviour interpretation from computed, structured metrics | **Consent-based adapter ready; server setup/live acceptance pending** |
+| 9 | Daily / weekly review generation and report history | **Computed reviews and snapshot storage implemented; save/reload acceptance pending** |
+| 10 | End-to-end validation, security checks, deployment and onboarding | **Onboarding active; V1 acceptance in progress** |
 
 ### V1.1 — Zerodha sync & final reports
 
@@ -475,3 +670,7 @@ The shared getting-started guide now explains six actions: demo/history, tradebo
 JSON downloads now attach a temporary anchor to the document and clean up the anchor/object URL; journal export reuses the report download helper. Hosted journal export returned its prepared status, but receipt/content validation is still pending: browser download events timed out, and Chrome's internal downloads page is blocked by the browser URL policy. No workaround was used. This does not claim the file was received.
 
 Validation: 44 tests, lint, explicit TypeScript and Webpack production build pass. Local browser acceptance verified six guide cards and navigation to the synthetic costs page. The viewport override did not change the reported desktop dimensions in this run; this guide's phone acceptance remains pending. Private statement/snapshot write acceptance and server AI configuration remain the next dependencies; V2/V3 stay planned.
+
+### Phase diagram documentation — 10 October 2026
+
+Added a demo-to-account user journey, individual diagrams for V1 phases 1–10, planned version flow and a conceptual ER map. Current roadmap rows reflect implemented statement costs, snapshot storage, custom plans and AI adapter readiness without claiming pending acceptance is complete. Mermaid blocks, Markdown fences and local documentation links were checked. No app code or database permissions changed in this phase. Next: the open V1 acceptance tasks listed above.
