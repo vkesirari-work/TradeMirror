@@ -1,8 +1,9 @@
+import { WorkspaceGuide } from './workspace-guide';
 import { AdvancedWorkspace } from './advanced-workspace';
 import { exactMoney } from '@/lib/analytics/format';
 export { exactMoney } from '@/lib/analytics/format';
 import Link from 'next/link';
-import { Card,SectionTitle,EmptyState } from '@/components/ui/primitives';
+import { Card,SectionTitle } from '@/components/ui/primitives';
 import type { Fill,MatchingResult } from '@/lib/analytics/matching';
 export function ist(value:string):string{return new Date(value).toLocaleString('en-IN',{timeZone:'Asia/Kolkata',dateStyle:'medium',timeStyle:'short'})+' IST';}
 export function AnalysisNotice({result,containsExample}:{result:MatchingResult;containsExample:boolean}){
@@ -14,6 +15,6 @@ export function ExampleScope({count,included,route}:{count:number;included:boole
 }
 export function Positions({result}:{result:MatchingResult}){return <Card><SectionTitle title="Unmatched positions" subtitle="Full imported history · residual quantities · market values unavailable"/>{result.positions.length?<div className="table-scroll"><table><thead><tr><th>Instrument</th><th>Side</th><th>Remaining quantity</th><th>Entry price</th><th>Entry time</th></tr></thead><tbody>{result.positions.slice(0,100).map((p,i)=><tr key={i}><td>{p.symbol}</td><td>{p.side}</td><td>{p.quantity}</td><td>{exactMoney(p.entryPrice)}</td><td>{ist(p.entryTime)}</td></tr>)}</tbody></table></div>:<p>All imported quantities are matched. This does not independently confirm broker positions.</p>}{result.positions.length>100&&<p>Showing the first 100 residual lots. All lots are included in the count.</p>}</Card>;}
 export function AccountOverview({name,fills,result,containsExample,exampleCount,includeExample}:{name:string;fills:Fill[];result:MatchingResult;containsExample:boolean;exampleCount:number;includeExample:boolean}){
- if(!fills.length)return <><ExampleScope count={exampleCount} included={includeExample} route="/dashboard"/><EmptyState title={`Welcome, ${name}`} body="Upload and save a tradebook to see your actual execution analysis."/><Link href="/import" className="button primary">Import tradebook</Link></>;
- return <><div className="page-heading"><div><span className="eyebrow">PERFORMANCE WORKSPACE</span><h1>Your trading, decoded.</h1><p>Calculated from {fills.length} saved executions across the full imported history.</p></div><Link href="/import" className="button primary">Import trades</Link></div><ExampleScope count={exampleCount} included={includeExample} route="/dashboard"/><AnalysisNotice result={result} containsExample={containsExample}/><AdvancedWorkspace result={result} includeExample={includeExample}/><Positions result={result}/></>;
+ if(!fills.length)return <><ExampleScope count={exampleCount} included={includeExample} route="/dashboard"/><WorkspaceGuide name={name}/></>;
+ return <><div className="page-heading"><div><span className="eyebrow">PERFORMANCE WORKSPACE</span><h1>Your trading, decoded.</h1><p>Calculated from {fills.length} saved executions across the full imported history.</p></div><Link href="/import" className="button primary">Import trades</Link></div><ExampleScope count={exampleCount} included={includeExample} route="/dashboard"/><AnalysisNotice result={result} containsExample={containsExample}/><AdvancedWorkspace result={result} includeExample={includeExample}/><Positions result={result}/><WorkspaceGuide ready/></>;
 }
