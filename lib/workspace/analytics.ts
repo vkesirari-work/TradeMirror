@@ -1,13 +1,15 @@
 import 'server-only';
 import { cache } from 'react';
+import { getSignedInUser } from '@/lib/auth/session';
+import { isExampleExecution } from '@/lib/analytics/examples';
 import { createClient } from '@/lib/supabase/server';
 import { matchExecutions,type Fill } from '@/lib/analytics/matching';
-export const getAccountAnalytics=cache(async()=>{
+export const getAccountAnalytics=cache(async(includeExample=false)=>{
  const client=await createClient();if(!client)throw new Error('Account data is not configured.');
- const {data:user,error:authError}=await client.auth.getUser();if(authError||!user.user)throw new Error('Your session expired. Log in again.');
+ const user=await getSignedInUser();if(!user)throw new Error('Your session expired. Log in again.');
  const fills:Fill[]=[];let expected:number|null=null;
  for(let offset=0;offset<50000;offset+=1000){
-  const {data,error,count}=await client.from('orders').select('id,broker,instrument,side,quantity::text,price::text,executed_at,execution_id',{count:'exact'}).eq('user_id',user.user.id).order('executed_at').order('id').range(offset,offset+999);
+  const {data,error,count}=await client.from('orders').select('id,broker,instrument,side,quantity::text,price::text,executed_at,execution_id',{count:'exact'}).eq('user_id',user.id).order('executed_at').order('id').range(offset,offset+999);
   if(error||count===null)throw new Error('Unable to load executions. Refresh to retry.');
   if(count>50000)throw new Error('This account exceeds the current 50,000 execution analysis limit. No partial totals are shown.');
   if(expected!==null&&count!==expected)throw new Error('Your imports changed during analysis. Refresh to load the complete history.');expected=count;
@@ -20,7 +22,9 @@ export const getAccountAnalytics=cache(async()=>{
   if(fills.length===expected)break;
   if(!data?.length)throw new Error('Execution history could not be loaded completely.');
  }
- const {count:finalCount,error:finalError}=await client.from('orders').select('id',{count:'exact',head:true}).eq('user_id',user.user.id);
+ const {count:finalCount,error:finalError}=await client.from('orders').select('id',{count:'exact',head:true}).eq('user_id',user.id);
  if(finalError||finalCount!==fills.length)throw new Error('Your imports changed during analysis. Refresh to retry.');
- return {fills,result:matchExecutions(fills),containsExample:fills.some(f=>f.id.includes('EXAMPLE-'))};
+ const exampleCount=fills.filter(isExampleExecution).length;
+ const included=includeExample?fills:fills.filter(fill=>!isExampleExecution(fill));
+ return {fills:included,result:matchExecutions(included),containsExample:includeExample&&exampleCount>0,exampleCount,includeExample};
 });

@@ -7,7 +7,7 @@
 TradeMirror is being built as a trading journal and performance analytics platform for Indian options traders. The goal is to bring trade history, charges-aware P&L, session comparisons, and AI-assisted behavioural reviews into one focused workspace.
 
 > **Current status: saved CSV imports, exact FIFO matching, gross dashboard and filtered journal active · version 0.2.0.**
-> Unconfigured demo dashboard numbers, reports, scores, and insights are sample data. Configured accounts show FIFO analysis of saved executions and real profile settings. Supabase account integration is connected and the database migration is applied. CSV validation, atomic saved imports, duplicate protection, daily gross summaries and filtered CSV export are active. Broker syncing, cost reconciliation and AI generation remain planned.
+> Unconfigured demo dashboard numbers, reports, scores, and insights are sample data. Configured accounts show FIFO analysis of saved executions and real profile settings. Supabase account integration is connected and the database migration is applied. CSV validation, atomic saved imports, duplicate protection, daily gross summaries and filtered CSV export are active. Synthetic example executions are excluded from account analytics by default; each view offers an explicit inclusion toggle. Broker syncing, cost reconciliation and AI generation remain planned.
 
 ![TradeMirror dashboard preview](public/dashboard-preview.jpg)
 
@@ -100,7 +100,7 @@ The roadmap is a proposed sequence, not a release-date commitment. Later version
 | --- | --- | --- |
 | 1 | Frontend foundation, design, routes, sample data, normalized types | **Complete** |
 | 2 | Supabase authentication, PostgreSQL schema, user isolation and access policies | **Connected; login accepted** |
-| 3 | Zerodha CSV parsing, validation, import history, duplicate protection | **Parsing, saving and history active; owner CSV acceptance pending** |
+| 3 | Zerodha CSV parsing, validation, import history, duplicate protection | **Parsing, saving and history active; owner upload verified** |
 | 4 | Deterministic trade matching, partial fills, open positions, reconciliation | **FIFO matching active; broker reconciliation pending** |
 | 5 | P&L and cost analytics with explicit estimated / confirmed cost handling | Planned |
 | 6 | Connect the dashboard and filters to actual user data | **Gross dashboard and matched journal connected; net analytics pending** |
@@ -346,3 +346,11 @@ Download compatibility follow-up: temporarily attaches the download link to the 
 Save feedback now appears beside the save controls below the preview, with a live saving status, explicit success/error heading, saved/duplicate counts from the server, and links to the updated dashboard/journal. Successful saves refresh import history. Network errors instruct users to check history before retrying because a response failure does not prove the transaction failed. File selection clears stale completion feedback. Updated the preview explanation to match active FIFO analytics.
 
 Validation: 23 tests, lint, TypeScript and Webpack production build passed. Read-only live checks verified the owner-uploaded larger tradebook is marked COMPLETED in import history and contributes saved executions to the dashboard. Existing synthetic example executions are still included and explicitly flagged. No additional owner file was uploaded by the agent. Next: exclude/remove synthetic imports through a deliberate account data management flow, then reconcile broker costs.
+
+### Real-data scope & navigation responsiveness — 10 October 2026
+
+Account dashboard and journal now exclude the two exact published synthetic fixture executions by default before FIFO matching. A reversible Include example link (`?examples=include`) restores them for inspection. No saved rows are removed. The daily chart, residual lots, journal outcomes and exported slices use the same selected scope; the dashboard review link carries explicit inclusion to the journal. Other real executions, including similar-looking IDs with different values, are retained.
+
+Removed a duplicate authentication server request from analytics by sharing the validated user and Supabase client within each React server render only. Profile and execution loading now start concurrently. Auth server validation, explicit owner filters, RLS, import consistency checks and financial decimal precision remain enforced. No financial data is cached globally or across accounts. Navigation links prefetch full destinations on hover/focus and show a pending Loading indicator; normal route loading fallbacks remain available. These changes remove a known request waterfall, but cold starts and database/network latency can still affect first loads; no fixed speed improvement is claimed.
+
+Validation: 24 tests including example exclusion/restoration and matching isolation, lint, TypeScript and Webpack production build passed. Next: verify deployed navigation and account scope, then broker cost/settlement reconciliation with source data. No costs are inferred from the tradebook.
