@@ -1,6 +1,6 @@
 {
   "name": "trademirror",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -33,5 +33,5 @@
   "engines": {
     "node": ">=20.19.0"
   },
-  "description": "A trading journal for Indian options traders \u2014 understand performance, costs, and behaviour. Account-owned CSV imports, exact FIFO gross analytics, and a filtered execution journal."
+  "description": "A trading journal for Indian options traders \u2014 understand performance, costs, and behaviour. Account-owned CSV imports, exact FIFO analytics, calendar drill-downs, performance breakdowns and computed reviews."
 }

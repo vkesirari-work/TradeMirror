@@ -4,12 +4,12 @@ export function tradingDate(timestamp:string):string {
  const millis=Date.parse(timestamp);if(!Number.isFinite(millis))throw new Error('Invalid execution timestamp.');
  return new Date(millis+330*60*1000).toISOString().slice(0,10);
 }
-function exactUnits(value:string):bigint {
+export function exactUnits(value:string):bigint {
  if(!/^-?\d+(?:\.\d{1,8})?$/.test(value))throw new Error('Invalid gross P&L.');
  const negative=value.startsWith('-');const [whole,fraction='']=value.replace(/^-/,'').split('.');
  return (BigInt(whole)*BigInt(100000000)+BigInt(fraction.padEnd(8,'0')))*(negative?BigInt(-1):BigInt(1));
 }
-function decimal(value:bigint):string {
+export function decimal(value:bigint):string {
  const negative=value<BigInt(0);const v=negative?-value:value;const fraction=(v%BigInt(100000000)).toString().padStart(8,'0').replace(/0+$/,'');
  return `${negative?'-':''}${v/BigInt(100000000)}${fraction?'.'+fraction:''}`;
 }

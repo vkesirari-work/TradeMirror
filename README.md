@@ -6,14 +6,15 @@
 
 TradeMirror is being built as a trading journal and performance analytics platform for Indian options traders. The goal is to bring trade history, charges-aware P&L, session comparisons, and AI-assisted behavioural reviews into one focused workspace.
 
-> **Current status: saved CSV imports, exact FIFO matching, gross dashboard and filtered journal active · version 0.2.0.**
-> Unconfigured demo dashboard numbers, reports, scores, and insights are sample data. Configured accounts show FIFO analysis of saved executions and real profile settings. Supabase account integration is connected and the database migration is applied. CSV validation, atomic saved imports, duplicate protection, daily gross summaries and filtered CSV export are active. Synthetic example executions are excluded from account analytics by default; each view offers an explicit inclusion toggle. Broker syncing, cost reconciliation and AI generation remain planned.
+> **Current status: advanced analytics workspace, public demo, computed reviews and reports active · version 0.3.0.**
+> Unconfigured demo dashboard numbers, reports, scores, and insights are sample data. Configured accounts show FIFO analysis of saved executions and real profile settings. Supabase account integration is connected and the database migration is applied. CSV validation, atomic saved imports, duplicate protection, daily gross summaries and filtered CSV export are active. Synthetic example executions are excluded from account analytics by default; the dashboard and journal offer an explicit inclusion toggle; computed reviews/reports use real imports only. Broker syncing, cost reconciliation and AI generation remain planned.
 
 ![TradeMirror dashboard preview](public/dashboard-preview.jpg)
 
 ## Live deployment
 
 - **Website:** [trademirror-ten.vercel.app](https://trademirror-ten.vercel.app)
+- **Interactive demo:** [Try without login](https://trademirror-ten.vercel.app/demo)
 - **Dashboard:** [Open account dashboard](https://trademirror-ten.vercel.app/dashboard)
 - **Vercel project:** `trademirror` in `vkesirariwork-2297s-projects`
 - **Git source:** this repository, `main` branch. Future pushes trigger Vercel deployments.
@@ -35,7 +36,7 @@ Sign up / log in → Import CSV → Local validation preview → Save executions
                            Filtered matched journal → Download matching slices
 ```
 
-The account dashboard reads saved executions. Charges and net P&L remain unavailable; the supplied real CSV has been validated locally but not uploaded by the agent. The unconfigured demo follows this separate sample flow:
+The account dashboard reads saved executions. Charges and net P&L remain unavailable; the supplied real CSV has been validated locally but not uploaded by the agent. The public `/demo` workspace works with or without Supabase configuration and uses an independent synthetic 48-slice fixture. It includes analytics, journal, computed review and daily/weekly report pages without login. The older unconfigured sample screens follow this separate flow:
 
 ```text
 Landing page → Explore demo → Dashboard
@@ -77,12 +78,12 @@ Charges remain estimated while a report is `PROVISIONAL`. A report becomes `FINA
 | Area | Current behaviour |
 | --- | --- |
 | Landing | Product introduction, workflow, demo and signup entry points |
-| Dashboard | Account: exact realized gross P&L, matched slice outcomes, residual lots, daily/cumulative gross charts and exact IST values. Unconfigured demo: sample metrics and breakdowns |
-| Journal | Account: instrument, long/short, gross result and exit-date filters, pagination, reset and filtered CSV export. Demo: sample journal |
-| Trade detail | Prices, quantities, timestamps, estimated costs, holding time, sample behaviour review, session-only notes |
+| Dashboard | Shared scope filters; exact gross P&L, win rate, profit factor, expectancy, averages and closed-slice drawdown; calendar drill-down; five breakdown dimensions; charts and residual lots |
+| Journal | Instrument, side, result and exit-date filters; pagination; per-slice detail dialog with source identities; filtered CSV export; calendar-to-day navigation |
+| Trade detail | Account journal dialog: exact prices, quantities, timestamps, holding time and source identities. Persistent notes remain planned; older sample detail pages are demo-only |
 | Imports | Zerodha CSV validation/preview, account-owned atomic save, cross-file duplicate protection and import history; broker connection remains a preview |
-| Insights | Sample observations about timing, instruments, holding periods, costs, and journal process |
-| Reports | Daily / weekly tabs; provisional status; summary and review prompts |
+| Review | Computed observations from real imported history, with evidence and review prompts. AI generation remains planned |
+| Reports | Computed daily/weekly gross reviews, period selection, metrics and period execution export. Confirmed net results and persisted report revisions remain planned |
 | Settings | Account profile persistence and password recovery; demo profile and lifecycle explanation |
 | Foundation | Responsive navigation, loading UI, invalid-trade 404, normalized types, broker adapter contract |
 
@@ -102,11 +103,11 @@ The roadmap is a proposed sequence, not a release-date commitment. Later version
 | 2 | Supabase authentication, PostgreSQL schema, user isolation and access policies | **Connected; login accepted** |
 | 3 | Zerodha CSV parsing, validation, import history, duplicate protection | **Parsing, saving and history active; owner upload verified** |
 | 4 | Deterministic trade matching, partial fills, open positions, reconciliation | **FIFO matching active; broker reconciliation pending** |
-| 5 | P&L and cost analytics with explicit estimated / confirmed cost handling | Planned |
+| 5 | P&L and cost analytics with explicit estimated / confirmed cost handling | **Advanced gross metrics active; broker costs/net pending** |
 | 6 | Connect the dashboard and filters to actual user data | **Gross dashboard and matched journal connected; net analytics pending** |
-| 7 | Persistent notes and trade detail metrics supported by available data | Planned |
+| 7 | Persistent notes and trade detail metrics supported by available data | **Slice details active; persistent notes planned** |
 | 8 | AI behaviour interpretation from computed, structured metrics | Planned |
-| 9 | Daily / weekly review generation and report history | Planned |
+| 9 | Daily / weekly review generation and report history | **Computed gross reviews active; saved report revisions planned** |
 | 10 | End-to-end validation, security checks, deployment and onboarding | Planned |
 
 ### V1.1 — Zerodha sync & final reports
@@ -356,3 +357,19 @@ Removed a duplicate authentication server request from analytics by sharing the 
 Validation: 24 tests including example exclusion/restoration and matching isolation, lint, TypeScript and Webpack production build passed. Next: verify deployed navigation and account scope, then broker cost/settlement reconciliation with source data. No costs are inferred from the tradebook.
 
 Deployment acceptance: verified real-only dashboard and journal, explicit example inclusion, restoration to real-only scope, and immediate route loading feedback on navigation. The journal and dashboard used the same excluded scope. Production signed-out dashboard (including the example query), journal, import and settings routes redirected to login; login returned HTTP 200. No synthetic rows were deleted. Cold-start/network latency is still a remaining performance limitation; no quantified timing benchmark was established.
+
+### Advanced analytics workspace — 10 October 2026 · v0.3.0
+
+Built an original TradeMirror interface informed by the calendar, scoped analytics and drill-down workflow in the owner-provided [TradesViz reference](https://www.tradesviz.com/). No competitor code, assets or branding were copied.
+
+- Account dashboard shares exit-date, instrument, CE/PE and long/short filters across eight advanced metrics, daily/cumulative charts, outcome distribution, day highlights, calendar and exports.
+- Exact decimal arithmetic powers gross profit/loss, profit factor, average winner/loser, expectancy and closed-slice cumulative drawdown. Averages round to eight decimal places; profit factor rounds to two. Counts and win rates refer to FIFO slices. Drawdown is not account equity or intratrade risk.
+- Calendar navigates months, opens an active day's matching slices and links to a journal pre-filtered to that IST exit date. Matching occurs before analysis filtering. Residual positions describe the full selected import history.
+- Breakdowns compare contract, option suffix, IST entry hour, IST entry weekday and position side. Contribution bars use numbers for visualization only; displayed money retains exact strings.
+- Journal opens a native detail dialog with entry/exit prices, timestamps, holding time and source identities; closes by button or Escape.
+- Account Review is a computed descriptive review, not AI-generated advice. Reports compute daily/weekly gross reviews (weeks start Monday), allow period selection and export underlying slices. Neither feature invents costs, risk rules, stops, targets or market excursions.
+- Public `/demo`, `/demo/trades`, `/demo/review` and `/demo/reports` use synthetic fixtures without authentication or account reads/writes. Landing links to the working demo and describes active features separately from planned sync/AI/charges functionality.
+
+Validation: 29 tests cover precision, drawdown ordering, ratio/average edge cases, IST filters/breakdowns and weekly boundaries in addition to existing auth/import isolation. Lint, TypeScript and Webpack production build pass. Browser acceptance passed for calendar day selection, CE filtering, weekly/daily report switching, day-prefilled journal and native detail dialog (including Escape). Dashboard and landing were checked at a 390px mobile viewport without page overflow. Public demo routes return successfully; signed-out account routes retain login protection.
+
+Remaining scope: confirmed broker charges/net P&L, settlement reconciliation, persistent notes, report snapshots, broker sync, market-data replay/MFE/MAE and AI review are planned. Nothing requires a new database migration or expanded grants in this phase. Next: owner charge-source sample and reconciliation design, then persistent notes using stable matched identities.
