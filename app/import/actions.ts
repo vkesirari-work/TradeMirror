@@ -11,6 +11,6 @@ export async function saveCsv(form:FormData):Promise<{message:string;success?:bo
  const records=preview.executions.map(({row,...execution})=>{void row;return execution;});
  const {data:result,error}=await client.rpc('import_zerodha_executions',{p_file_name:file.name.slice(0,255),p_records:records});
  if(error)return {message:error.code==='PGRST202'?'Saving is not activated yet. The CSV import database migration must be applied.':error.message.includes('Conflicting execution')?'An existing execution has different values for this trade ID. Nothing was saved.':'Import failed. Nothing was saved; try again or check the file.'};
- revalidatePath('/import');
- return {success:true,message:`Saved ${result.inserted} new executions. Skipped ${result.duplicates+preview.duplicates} repeated executions. Trade matching and dashboard analytics come next.`};
+ revalidatePath('/import');revalidatePath('/dashboard');revalidatePath('/trades');
+ return {success:true,message:`Saved ${result.inserted} new executions. Skipped ${result.duplicates+preview.duplicates} repeated executions. Your dashboard and journal now include these executions. Costs and net P&L remain unavailable.`};
 }

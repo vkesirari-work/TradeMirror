@@ -7,7 +7,7 @@
 TradeMirror is being built as a trading journal and performance analytics platform for Indian options traders. The goal is to bring trade history, charges-aware P&L, session comparisons, and AI-assisted behavioural reviews into one focused workspace.
 
 > **Current status: Phase 2 connected · login accepted · account settings ready · version 0.2.0.**
-> Unconfigured demo dashboard numbers, reports, scores, and insights are sample data. Configured accounts show an empty workspace and real profile settings. Supabase account integration is connected and the database migration is applied. CSV validation and local previews are available. Saved imports, broker syncing, and AI generation remain planned.
+> Unconfigured demo dashboard numbers, reports, scores, and insights are sample data. Configured accounts show FIFO analysis of saved executions and real profile settings. Supabase account integration is connected and the database migration is applied. CSV validation and local previews are available. Saved imports, broker syncing, and AI generation remain planned.
 
 ![TradeMirror dashboard preview](public/dashboard-preview.jpg)
 
@@ -89,9 +89,9 @@ The roadmap is a proposed sequence, not a release-date commitment. Later version
 | 1 | Frontend foundation, design, routes, sample data, normalized types | **Complete** |
 | 2 | Supabase authentication, PostgreSQL schema, user isolation and access policies | **Connected; login accepted** |
 | 3 | Zerodha CSV parsing, validation, import history, duplicate protection | **Parsing, saving and history active; owner CSV acceptance pending** |
-| 4 | Deterministic trade matching, partial fills, open positions, reconciliation | Planned |
+| 4 | Deterministic trade matching, partial fills, open positions, reconciliation | **FIFO matching active; broker reconciliation pending** |
 | 5 | P&L and cost analytics with explicit estimated / confirmed cost handling | Planned |
-| 6 | Connect the dashboard and filters to actual user data | Planned |
+| 6 | Connect the dashboard and filters to actual user data | **Gross dashboard and matched journal connected; net analytics pending** |
 | 7 | Persistent notes and trade detail metrics supported by available data | Planned |
 | 8 | AI behaviour interpretation from computed, structured metrics | Planned |
 | 9 | Daily / weekly review generation and report history | Planned |
@@ -300,3 +300,11 @@ Applied `202610100001_csv_import.sql` after explicit owner approval. Hosted save
 The owner-provided F&O CSV contained six-place decimal strings (for example, `65.000000` and `126.850000`). The parser originally rejected these as excess precision. It now removes insignificant trailing fractional zeros and leading integer zeros without converting money to floating point or rounding. Values with more than four meaningful fractional places still fail explicitly. Decimal normalization also makes equivalent representations deduplicate consistently; the database receives its supported precision.
 
 Local validation accepted all 177 execution rows with zero errors and zero repeated rows. An independent Python CSV/Decimal comparison verified every instrument, exchange, segment, side, trade/order ID, quantity, price, and IST timestamp against the parsed output. Fourteen tests, lint, TypeScript, and production build passed. The real CSV was not uploaded to Supabase, copied into the repository, or committed. Browser saving of the owner file remains for the owner to complete; trade matching and dashboard analytics remain planned.
+
+### FIFO analysis & account dashboard — 10 October 2026
+
+Saved executions now power the account dashboard and a searchable, side/result-filtered matched journal. The engine uses exact scaled BigInt decimal arithmetic, FIFO per broker/exchange/segment/instrument, partial fill slices, short covers, reversals, and residual open lots. Opposing executions at the same timestamp receive a deterministic ID tie break and an ambiguity warning. Monetary columns are requested as text from PostgREST to preserve decimal precision. Reads enforce the authenticated owner and paginate beyond 1,000 rows; incomplete/changing histories and histories over 50,000 rows show errors rather than partial totals. Import saves revalidate dashboard and journal routes. No new write permission or migration is needed.
+
+The supplied real F&O CSV produced 100 FIFO matched slices from 177 executions, zero unmatched lots, 54 winning and 46 losing slices, and ₹1,769 realized gross P&L. An independent Python Decimal FIFO implementation agreed on every slice quantity/P&L. This was local processing; the private CSV and report are not committed or uploaded. Charges, net P&L, market values, unrealized P&L, settlement reconciliation, persisted matched-trade notes, and AI analysis remain unavailable. Missing earlier/later executions can change the analysis; slice counts are not whole trading positions. Synthetic example imports are explicitly flagged when present in account totals.
+
+Validation: 21 tests passed covering matching, decimal precision, large-ID ordering, account pagination, changing histories, and existing auth/database isolation. Lint, TypeScript, and production build passed. A private local validation report is saved outside the repository. Next: verify the deployed account view, add daily gross summaries, and continue settlement/cost reconciliation without fabricating net returns.
