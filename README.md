@@ -88,7 +88,7 @@ The roadmap is a proposed sequence, not a release-date commitment. Later version
 | --- | --- | --- |
 | 1 | Frontend foundation, design, routes, sample data, normalized types | **Complete** |
 | 2 | Supabase authentication, PostgreSQL schema, user isolation and access policies | **Connected; login accepted** |
-| 3 | Zerodha CSV parsing, validation, import history, duplicate protection | **Parsing, saving and history implemented; hosted saving activation pending** |
+| 3 | Zerodha CSV parsing, validation, import history, duplicate protection | **Parsing, saving and history active; owner CSV acceptance pending** |
 | 4 | Deterministic trade matching, partial fills, open positions, reconciliation | Planned |
 | 5 | P&L and cost analytics with explicit estimated / confirmed cost handling | Planned |
 | 6 | Connect the dashboard and filters to actual user data | Planned |
@@ -289,4 +289,8 @@ Validation: twelve tests, lint, TypeScript, and Webpack production build passed.
 
 Implemented server-side CSV revalidation, Save executions, recent account-owned import history, and a transactional PostgreSQL RPC migration: `supabase/migrations/202610100001_csv_import.sql`. The function derives the owner from `auth.uid()`, validates each execution again, serializes imports per account, computes a canonical batch fingerprint, saves raw normalized records and orders atomically, skips repeated/overlapping executions, and rejects conflicting IDs with a complete rollback. Direct financial-table writes remain denied; only the narrow import RPC is granted to authenticated users. Anonymous execution is denied. Server action upload limit is 6 MB; files themselves remain limited to 5 MB.
 
-Validation: thirteen tests, including actual PostgreSQL function execution for repeated and overlapping imports, cross-account isolation, invalid input, conflict rollback, and anonymous denial; lint, TypeScript, and production build passed. **Hosted activation is pending application of the new migration.** Preview works before activation; saving reports the missing migration clearly. Owner-file end-to-end acceptance is still pending. Matching executions into positions/trades, charges, and dashboard analytics remain the next phases; saved executions alone do not fabricate P&L.
+Validation: thirteen tests, including actual PostgreSQL function execution for repeated and overlapping imports, cross-account isolation, invalid input, conflict rollback, and anonymous denial; lint, TypeScript, and production build passed. **Hosted activation completed on 10 October 2026 after owner approval.** The migration applied successfully; authenticated RPC access, anonymous denial, and denied direct order inserts were verified. A hosted transaction tested one saved execution and a repeated import, then rolled back all test data. Owner-file end-to-end acceptance is still pending. Matching executions into positions/trades, charges, and dashboard analytics remain the next phases; saved executions alone do not fabricate P&L.
+
+### Hosted CSV import activation — 10 October 2026
+
+Applied `202610100001_csv_import.sql` after explicit owner approval. Hosted save and repeated-upload checks passed inside a rollback-only transaction. A follow-up query verified zero remaining smoke-test orders. Account imports and recent import history are active; the owner can now preview a Console CSV and select Save executions. Actual owner-file browser acceptance remains pending. Saved executions are not yet matched trades; dashboard P&L, charges, and analytics remain planned.

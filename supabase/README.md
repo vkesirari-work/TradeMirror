@@ -49,3 +49,5 @@ Use **Forgot password?** on the login screen, enter the account email, and open 
 ## CSV import migration
 
 After the foundation migration, apply `migrations/202610100001_csv_import.sql`. It adds the authenticated transactional `import_zerodha_executions` RPC without opening direct table writes. It grants users permission to import executions only under their validated account ID. Verify function existence and anonymous denial before testing Save executions with your own tradebook. Preview parsing needs no migration; persistence does. Saved orders still require the planned trade matching engine for dashboard P&L.
+
+Hosted status: the CSV import migration was applied on 10 October 2026 with owner approval. Permission checks and rollback-only save/repeat smoke checks passed.
