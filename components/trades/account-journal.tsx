@@ -12,11 +12,11 @@ import { MatchedDetail } from './matched-detail';
 import { type Match,type MatchingResult } from '@/lib/analytics/matching';
 const money=(value:string)=>exactMoney(value.includes('.')?value.replace(/0+$/,'').replace(/\.$/,''):value);
 const time=(value:string)=><time dateTime={value}><span>{new Date(value).toLocaleDateString('en-IN',{timeZone:'Asia/Kolkata',day:'2-digit',month:'short',year:'numeric'})}</span><small>{new Date(value).toLocaleTimeString('en-IN',{timeZone:'Asia/Kolkata',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false})} IST</small></time>;
-export function AccountJournal({result,initialDay='',demo=false,initialTags={},tagsError=''}:{result:MatchingResult;initialDay?:string;demo?:boolean;initialTags?:Record<string,string[]>;tagsError?:string}){
+export function AccountJournal({result,initialDay='',initialTag='',demo=false,initialTags={},tagsError=''}:{result:MatchingResult;initialDay?:string;initialTag?:string;demo?:boolean;initialTags?:Record<string,string[]>;tagsError?:string}){
  const records=useRef<HTMLDivElement>(null);
  function changePage(next:number){setPage(next);records.current?.scrollTo({top:0,left:0});}
  const [plan,setPlan]=useState<PlanTemplate>({name:'My trading plan',items:[...DEFAULT_PLAN],revision:0});
- const [tag,setTag]=useState('');const [savedTags,setSavedTags]=useState(initialTags);const [demoNotes,setDemoNotes]=useState<Record<string,Annotation>>({});
+ const [tag,setTag]=useState(initialTag?'tag:'+initialTag:'');const [savedTags,setSavedTags]=useState(initialTags);const [demoNotes,setDemoNotes]=useState<Record<string,Annotation>>({});
  const availableTags=useMemo(()=>[...new Set([...Object.values(savedTags).flat(),...(tag.startsWith('tag:')?[tag.slice(4)]:[])])].sort(),[savedTags,tag]);
  function saved(match:Match,data:Annotation){const identity=sliceIdentity(match);setSavedTags(previous=>({...previous,[identity]:data.tags}));if(demo)setDemoNotes(previous=>({...previous,[identity]:data}));setPage(0);}
  const [selectedMatch,setSelectedMatch]=useState<Match|null>(null);const [search,setSearch]=useState('');const [side,setSide]=useState('ALL');const [outcome,setOutcome]=useState('ALL');const [page,setPage]=useState(0);const [start,setStart]=useState(initialDay);const [end,setEnd]=useState(initialDay);
