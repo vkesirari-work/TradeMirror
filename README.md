@@ -7,7 +7,7 @@
 TradeMirror is being built as a trading journal and performance analytics platform for Indian options traders. The goal is to bring trade history, charges-aware P&L, session comparisons, and AI-assisted behavioural reviews into one focused workspace.
 
 > **Current status: advanced analytics workspace, public demo, computed reviews and reports active · version 0.3.0.**
-> Unconfigured demo dashboard numbers, reports, scores, and insights are sample data. Configured accounts show FIFO analysis of saved executions and real profile settings. Supabase account integration is connected and the database migration is applied. CSV validation, atomic saved imports, duplicate protection, daily gross summaries and filtered CSV export are active. Synthetic example executions are excluded from account analytics by default; the dashboard and journal offer an explicit inclusion toggle; computed reviews/reports use real imports only. Broker syncing, cost reconciliation and AI generation remain planned.
+> Unconfigured demo dashboard numbers, reports, scores, and insights are sample data. Configured accounts show FIFO analysis of saved executions and real profile settings. Supabase account integration is connected and the database migration is applied. CSV validation, atomic saved imports, duplicate protection, daily gross summaries, filtered CSV export and persistent matching-slice notes/tags/plan review are active. Synthetic example executions are excluded from account analytics by default; the dashboard and journal offer an explicit inclusion toggle; computed reviews/reports use real imports only. Broker syncing, cost reconciliation and AI generation remain planned.
 
 ![TradeMirror dashboard preview](public/dashboard-preview.jpg)
 
@@ -105,7 +105,7 @@ The roadmap is a proposed sequence, not a release-date commitment. Later version
 | 4 | Deterministic trade matching, partial fills, open positions, reconciliation | **FIFO matching active; broker reconciliation pending** |
 | 5 | P&L and cost analytics with explicit estimated / confirmed cost handling | **Advanced gross metrics active; broker costs/net pending** |
 | 6 | Connect the dashboard and filters to actual user data | **Gross dashboard and matched journal connected; net analytics pending** |
-| 7 | Persistent notes and trade detail metrics supported by available data | **Notes, tags and plan review active; save/reopen acceptance pending** |
+| 7 | Persistent notes and trade detail metrics supported by available data | **Notes, tags and three-item plan review active** |
 | 8 | AI behaviour interpretation from computed, structured metrics | Planned |
 | 9 | Daily / weekly review generation and report history | **Computed gross reviews active; saved report revisions planned** |
 | 10 | End-to-end validation, security checks, deployment and onboarding | Planned |
@@ -393,8 +393,8 @@ Next phase: persistent journal notes, tags and trading-plan checklists with stab
 - The additive `202610100002_journal_annotations.sql` migration creates owner-only annotation storage with RLS and narrow insert/update grants. No financial table write grants change. Revision comparisons prevent silent overwrite by another editor; errors retain drafts and offer an explicit discard/reload action.
 - Closing a dirty dialog or pressing Escape asks the user to keep editing or discard. Public demo edits stay in the mounted dialog, never call account journal actions, and are explicitly marked as temporary.
 
-Validation: 32 tests pass, including journal normalization/limits, evidence identity changes, PostgreSQL ownership isolation, anonymous denial and stale revision protection. Lint, TypeScript and Webpack production build pass. Browser acceptance covers demo notes, tags, checkbox edits and unsaved-draft Escape protection.
+Validation: 32 tests pass, including journal normalization/limits, evidence identity changes, PostgreSQL ownership isolation, anonymous denial and stale revision protection. Lint, TypeScript and Webpack production build pass. Browser acceptance covers demo notes, tags, checkbox edits, unsaved-draft Escape protection, centered desktop dialog and a 390px mobile dialog (341px wide).
 
-Activation: the owner explicitly approved the new owner-scoped journal write permissions; the migration ran successfully in the production Supabase SQL editor. Hosted save/reopen acceptance follows rollout. Storage errors remain visible and do not alter execution data.
+Activation: the owner explicitly approved the new owner-scoped journal write permissions; the migration ran successfully in the production Supabase SQL editor. Hosted create, revision-aware update and reopen acceptance passed on the previously saved synthetic example: note text, two normalized tags and checkbox state persisted across dialog closure/reopening. A clearly labelled verification note remains on that example only. Storage errors remain visible and do not alter execution data.
 
-Next: verify hosted saved/reopened notes; then journal tag filters, configurable plan templates and annotation reconciliation for changed imported history. Charges/net P&L and broker sync remain planned.
+Next: journal tag filters, configurable plan templates and annotation reconciliation for changed imported history. Charges/net P&L and broker sync remain planned.
