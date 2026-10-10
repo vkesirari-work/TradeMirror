@@ -45,3 +45,7 @@ The supplied project is connected to local development and Vercel. The migration
 ## Password recovery
 
 Use **Forgot password?** on the login screen, enter the account email, and open the reset email in the same browser and site. Recovery reuses the already allowed `/auth/confirm` redirect, then opens `/reset-password`. Do not switch between localhost and production during that flow. An expired link requires a new request. Enter and confirm your new password yourself. Custom SMTP is needed to deliver emails beyond the default sender's permitted organization addresses.
+
+## CSV import migration
+
+After the foundation migration, apply `migrations/202610100001_csv_import.sql`. It adds the authenticated transactional `import_zerodha_executions` RPC without opening direct table writes. It grants users permission to import executions only under their validated account ID. Verify function existence and anonymous denial before testing Save executions with your own tradebook. Preview parsing needs no migration; persistence does. Saved orders still require the planned trade matching engine for dashboard P&L.
