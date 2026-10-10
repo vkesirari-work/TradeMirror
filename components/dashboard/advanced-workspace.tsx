@@ -22,6 +22,7 @@ export function AdvancedWorkspace({ result, includeExample = false, demo = false
   const [symbol, setSymbol] = useState(''), [side, setSide] = useState(''), [option, setOption] = useState('');
   const [tab, setTab] = useState('overview'), [dimension, setDimension] = useState<Dimension>('instrument');
   const [selectedDay, setSelectedDay] = useState('');
+  const [filtersOpen,setFiltersOpen]=useState(false);
   const symbols = useMemo(() => [...new Set(result.matches.map(match => match.symbol))].sort(), [result.matches]);
   const filtered = useMemo(() => filterMatches(result.matches, { start, end, symbol, side, option }), [result.matches, start, end, symbol, side, option]);
   const summary = useMemo(() => advancedSummary(filtered), [filtered]);
@@ -37,7 +38,7 @@ export function AdvancedWorkspace({ result, includeExample = false, demo = false
   const journalLink = `${demo ? '/demo/trades' : '/trades'}?${new URLSearchParams({ ...(includeExample ? { examples: 'include' } : {}), ...(selectedDay ? { day: selectedDay } : {}) })}`;
   return <div className="advanced-workspace">
     <Card className="analysis-filter-card"><div className="analysis-filter-title"><SlidersHorizontal size={16}/><b>Analysis scope</b><span>{filtered.length} of {result.matches.length} FIFO slices</span><button className="text-button" onClick={reset}>Reset all</button></div>
-      <div className="analysis-filters">
+      <button className="button secondary scope-toggle" aria-expanded={filtersOpen} aria-controls="analysis-scope-fields" onClick={()=>setFiltersOpen(!filtersOpen)}><SlidersHorizontal size={16}/>{filtersOpen?'Hide filters':'Filters & export'}{[start,end,symbol,side,option].filter(Boolean).length>0&&<span className="scope-count">{[start,end,symbol,side,option].filter(Boolean).length}</span>}</button><div id="analysis-scope-fields" className={filtersOpen?'analysis-filters mobile-expanded':'analysis-filters'}>
         <label>Exit date from<input type="date" value={start} onChange={event => { setStart(event.target.value); setSelectedDay(''); }}/></label>
         <label>Exit date to<input type="date" value={end} min={start || undefined} onChange={event => { setEnd(event.target.value); setSelectedDay(''); }}/></label>
         <label>Instrument<select value={symbol} onChange={event => { setSymbol(event.target.value); setSelectedDay(''); }}><option value="">All instruments</option>{symbols.map(value => <option key={value}>{value}</option>)}</select></label>
