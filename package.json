@@ -13,6 +13,7 @@
   "dependencies": {
     "@supabase/ssr": "0.12.7",
     "@supabase/supabase-js": "2.117.3",
+    "fast-xml-parser": "^5.11.2",
     "lucide-react": "1.52.0",
     "next": "16.4.0",
     "react": "19.3.0",
@@ -33,5 +34,5 @@
   "engines": {
     "node": ">=20.19.0"
   },
-  "description": "A trading journal for Indian options traders \u2014 understand performance, costs, and behaviour. Account-owned CSV imports, exact FIFO analytics, calendar drill-downs, performance breakdowns and computed reviews."
+  "description": "A trading journal for Indian options traders — understand performance, costs, and behaviour. Account-owned CSV imports, exact FIFO analytics, calendar drill-downs, performance breakdowns and computed reviews."
 }

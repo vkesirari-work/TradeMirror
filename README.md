@@ -6,8 +6,8 @@
 
 TradeMirror is being built as a trading journal and performance analytics platform for Indian options traders. The goal is to bring trade history, charges-aware P&L, session comparisons, and AI-assisted behavioural reviews into one focused workspace.
 
-> **Current status: midnight/violet mobile workspace, advanced analytics, public demo, tagged strategy reviews and reports active · version 0.3.0.**
-> Unconfigured demo dashboard numbers, reports, scores, and insights are sample data. Configured accounts show FIFO analysis of saved executions and real profile settings. Supabase account integration is connected and the database migration is applied. CSV validation, atomic saved imports, duplicate protection, daily gross summaries, filtered CSV export and persistent matching-slice notes/tags, tag filtering and custom plan templates are active. Synthetic example executions are excluded from account analytics by default; the dashboard and journal offer an explicit inclusion toggle; computed reviews/reports use real imports only. Broker syncing, cost reconciliation and AI generation remain planned.
+> **Current status: V1 release candidate — saved reviews, Zerodha statement costs, journal export and consent-based AI adapter implemented.**
+> Account analytics use saved executions; public demos use synthetic data. Migration `202610100004_report_snapshots.sql` is applied. Statement net is shown separately from FIFO execution gross: costs are not allocated to individual slices or days. Live AI requires server-only `OPENAI_API_KEY` and `OPENAI_MODEL`; provider acceptance remains pending. Earlier phase entries below are historical status records.
 
 ![TradeMirror dashboard preview](public/dashboard-preview.jpg)
 
@@ -450,3 +450,20 @@ Tagged Review now includes two distinct tag selectors, a Swap tags action and co
 Mobile cards stack vertically and the daily table scrolls within its panel. Overlap, sample limitations and the drawdown definition remain explicit. Comparisons use the current full review scope; there are no comparison-specific date filters, persistence, net costs, capital-based risk metrics or statistical significance claims. No database migration is needed.
 
 Validation: 37 tests, lint, TypeScript and Webpack production build pass. Local production browser checks verified both demo tag summaries, aligned daily values, swapping selected tags, and 390px stacked cards without document overflow. Hosted public demo acceptance also verified comparison rendering and the hydrated Swap tags action. Next: date-scoped strategy comparison, manual note reconciliation and charges import; broker sync and generated AI reviews remain planned.
+
+
+## V1 release candidate — 10 October 2026
+
+- Review date ranges use IST exit dates and persist through strategy drilldowns into the journal.
+- Reports export review JSON and underlying execution CSV, offer browser print/PDF, and save immutable daily/weekly snapshots. The server recomputes account evidence and deduplicates identical snapshots. History loads the latest 100 snapshots.
+- Settings exports journal notes, tags, checklist answers, plan and linked matching evidence as portable JSON. This is not a full account backup; restore is not implemented. Export limits are explicit (1,000 annotations / 5 MB), with no silent truncation.
+- `/costs` previews original Zerodha Console F&O P&L XLSX files up to 5 MB. Exact decimal arithmetic reconciles charge rows, instrument totals and other-debit/credit ledger. Confirmation saves only parsed statement data, not the original workbook or client identifier; identical files deduplicate. Latest 20 statements are available individually, without summing overlapping periods.
+- Statement realized net equals reported realized gross minus charges plus other credits/debits. Unrealized P&L is excluded. Imported FIFO gross is compared by instrument and period; mismatches remain visible. Execution/day net remains unavailable because a statement total does not establish a defensible allocation.
+- Reports offer an OpenAI Responses adapter with explicit consent, aggregate evidence only, strict response validation, server-only credentials, `store:false`, and no raw executions, symbols, identity or private notes sent. AI reflections are not persisted automatically. The owner quota is five attempts per UTC day with a 90-second cooldown; failed provider calls consume an attempt.
+- Public `/demo/costs` illustrates fictional costs and net without account storage. Demo AI and snapshot saving require an account.
+
+Migration `202610100004_report_snapshots.sql` was explicitly approved and applied successfully to the connected Supabase project. Owner-only select/insert permissions protect snapshots and parsed statements; neither permits authenticated update/delete. AI quota state is accessible only through the authenticated reservation function. Existing execution and annotation grants are unchanged.
+
+Validation: 44 tests cover exact statement reconciliation, XLSX bounds/CRC/XML/formula rejection, dates, frozen reports, aggregate AI privacy and mocked provider responses, owner isolation, immutable storage, deduplication and quotas. Lint, TypeScript and Webpack production build pass. The owner report was validated locally against independent Python Decimal calculations; it was not uploaded to Supabase. Browser acceptance includes date/tag drilldown. See [V1 release acceptance](docs/V1_RELEASE.md) for remaining activation checks.
+
+**Next:** configure the chosen server AI key/model, accept a live provider response, and complete signed-in snapshot save/reload and owner statement upload acceptance. Broker-certified settlement reconciliation, per-execution charge allocation and backup restore remain limitations. Broker sync, market replay/MFE/MAE and richer V2/V3 features stay planned. This candidate is not marked fully accepted V1 until these checks are complete.

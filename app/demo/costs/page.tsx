@@ -1,0 +1,6 @@
+import {StatementDetail} from '@/components/reports/cost-statements';
+import {advancedDemo} from '@/data/advanced-demo';
+import {breakdown} from '@/lib/analytics/advanced';
+import {decimal,exactUnits} from '@/lib/analytics/daily';
+import {Card} from '@/components/ui/primitives';
+export default function DemoCosts(){const charges='420',otherNet='-59';const statement={broker:'ZERODHA' as const,segment:'F&O' as const,start:'2026-09-01',end:'2026-10-31',gross:advancedDemo.grossPnl,charges,otherNet,unrealized:'0',net:decimal(exactUnits(advancedDemo.grossPnl)-exactUnits(charges)+exactUnits(otherNet)),chargeItems:[{label:'Illustrative brokerage',amount:'300'},{label:'Illustrative taxes and transaction costs',amount:'120'}],instruments:breakdown(advancedDemo.matches,'instrument').map(r=>({symbol:r.label,gross:r.grossPnl}))};return <><div className="page-heading"><div><span className="eyebrow">SYNTHETIC COST EXAMPLE</span><h1>See where costs change the result.</h1><p>Illustrative statement totals; these costs are fictional and never saved to an account.</p></div></div><Card><StatementDetail demo statement={statement} matches={advancedDemo.matches.map(row=>({...row,broker:'ZERODHA' as const}))}/></Card></>;}
