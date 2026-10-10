@@ -6,8 +6,8 @@
 
 TradeMirror is being built as a trading journal and performance analytics platform for Indian options traders. The goal is to bring trade history, charges-aware P&L, session comparisons, and AI-assisted behavioural reviews into one focused workspace.
 
-> **Current status: V1 release candidate — saved reviews, Zerodha statement costs, journal export and consent-based AI adapter implemented.**
-> Account analytics use saved executions; public demos use synthetic data. Migration `202610100004_report_snapshots.sql` is applied. Statement net is shown separately from FIFO execution gross: costs are not allocated to individual slices or days. Live AI requires server-only `OPENAI_API_KEY` and `OPENAI_MODEL`; provider acceptance remains pending. Earlier phase entries below are historical status records.
+> **Current status: Free-only V1 candidate — computed reviews, saved snapshots, Zerodha statement costs and journal export implemented; paid AI disabled.**
+> Account analytics use saved executions; public demos use synthetic data. Migration `202610100004_report_snapshots.sql` is applied. Statement net is shown separately from FIFO execution gross: costs are not allocated to individual slices or days. Paid AI is excluded from the current free-only scope and disabled server-side by default. No AI API key is required. Earlier phase entries below are historical status records.
 
 ![TradeMirror dashboard preview](public/dashboard-preview.jpg)
 
@@ -209,7 +209,7 @@ flowchart LR
 
 **Delivered:** persistent journal, custom plan, tag filters, comparisons and read-only connection status. **Limit:** changed evidence does not inherit old notes; manual reassignment and multiple templates remain planned.
 
-### Phase 8 — AI reflection · adapter ready, live setup pending
+### Phase 8 — optional AI reflection · excluded from free-only V1
 
 ```mermaid
 flowchart LR
@@ -221,7 +221,7 @@ flowchart LR
     Validate --> Output[Display / optional JSON download]
 ```
 
-**Delivered:** server adapter, consent, bounded output and quota tests. **Pending:** server `OPENAI_API_KEY` / `OPENAI_MODEL` and live provider acceptance. No raw CSV, symbols, account identity, notes or tags are sent. Output is page-local until downloaded; it is not saved automatically as a snapshot.
+**Delivered:** server adapter, consent, bounded output and quota tests. **Free-only scope:** disabled by default; no provider setup or live AI acceptance is required for this edition. A future explicitly authorized paid integration would need server setup and provider acceptance. No raw CSV, symbols, account identity, notes or tags are sent. Output is page-local until downloaded; it is not saved automatically as a snapshot.
 
 ### Phase 9 — reports and portable copies · implemented, acceptance pending
 
@@ -252,7 +252,7 @@ flowchart LR
     Acceptance -->|Yes| Release[Mark V1 fully accepted]
 ```
 
-**Latest implementation validation:** 44 tests plus lint, TypeScript and Webpack production build passed. Six-step onboarding and hosted routes are verified. **Open checks:** private statement upload, live AI, export receipt/print and remaining physical-mobile acceptance. Snapshot save/reopen/deduplication passed. See [V1 acceptance checklist](docs/V1_RELEASE.md). Documentation-only diagram updates use Markdown/link/diagram checks rather than rerunning the unchanged app build.
+**Latest implementation validation:** 44 tests plus lint, TypeScript and Webpack production build passed. Six-step onboarding and hosted routes are verified. **Open checks for free-only V1:** private statement upload, export receipt/print and remaining physical-mobile acceptance. Snapshot save/reopen/deduplication passed. Paid AI is optional and excluded. See [V1 acceptance checklist](docs/V1_RELEASE.md). Documentation-only diagram updates use Markdown/link/diagram checks rather than rerunning the unchanged app build.
 
 ### Planned next versions
 
@@ -301,7 +301,7 @@ The roadmap is a proposed sequence, not a release-date commitment. Later version
 | 5 | P&L and cost analytics with explicit estimated / confirmed cost handling | **Gross metrics active; statement costs/net implemented; owner upload acceptance pending** |
 | 6 | Connect the dashboard and filters to actual user data | **Gross dashboard and matched journal connected; net analytics pending** |
 | 7 | Persistent notes and trade detail metrics supported by available data | **Notes, tags, custom plan and strategy comparisons active** |
-| 8 | AI behaviour interpretation from computed, structured metrics | **Consent-based adapter ready; server setup/live acceptance pending** |
+| 8 | AI behaviour interpretation from computed, structured metrics | **Optional adapter retained; disabled and excluded from free-only V1** |
 | 9 | Daily / weekly review generation and report history | **Computed reviews and snapshot storage implemented; save/reload acceptance pending** |
 | 10 | End-to-end validation, security checks, deployment and onboarding | **Onboarding active; V1 acceptance in progress** |
 
@@ -680,3 +680,11 @@ Added a demo-to-account user journey, individual diagrams for V1 phases 1–10, 
 Current weekly snapshot save, unchanged-evidence deduplication, page reload, saved-history loading and reopening passed in the authenticated production workspace. The persisted snapshot retains its creation time and summary/daily values; one record remains after repeated saves. No raw executions or journal annotations were changed. This supersedes earlier snapshot save/reload pending entries above.
 
 Real Zerodha workbook upload is blocked by the Chrome extension's missing file URL access; no workbook was sent or saved. Live AI requires owner API setup; the acceptance document now includes key creation, supported model configuration and separate billing links. Export receipt/content, print/PDF and physical-mobile acceptance remain open. V1 is still a release candidate, not falsely marked fully accepted. No app code or database grants changed in this documentation phase.
+
+### Free-only V1 scope — 10 October 2026
+
+The owner chose free-only work. Reports now use deterministic computed review prompts without paid AI controls, API-key setup or provider requests. Onboarding explains this edition. The optional paid adapter remains for future work, but the server rejects generation unless `TRADEMIRROR_ENABLE_PAID_AI=true` is explicitly configured; its default is off, including when API credentials happen to exist. Enabling paid service is outside the current authorized scope. No subscriptions, credits or hosting upgrades were purchased; existing hosting/database free-plan limits still apply.
+
+Validation: 46 tests, lint, TypeScript and Webpack production build. The provider action test verifies that free mode neither calls the provider nor consumes an AI quota slot. Journal export tests verify authentication, owner filtering, pagination, exact matching evidence, retained unlinked notes and fail-without-partial-output row/byte/read limits. Tests use synthetic data only. Local production browser checks verified the free review label, calculated questions and Daily tab update; paid AI controls are absent. Download receipt capture still timed out, so file receipt is not claimed.
+
+Free feature implementation is ready for use; acceptance remains explicit: owner statement upload/save/reload is blocked by browser file access, downloaded-file receipt/content and print/PDF need confirmation, and physical-device checks remain pending. Paid AI is no longer a V1 completion dependency. Snapshot save/reopen/deduplication already passed. Per-day/per-slice net allocation and backup restore remain unsupported. Earlier AI activation instructions are historical, optional future setup—not required steps for this edition.

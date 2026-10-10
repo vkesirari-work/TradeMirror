@@ -1,14 +1,18 @@
-# V1 release acceptance
+# Free-only V1 release acceptance
 
 Implemented: authentication, deduplicated CSV imports, exact FIFO gross analytics, mobile journal, notes/tags/plans, date-scoped strategy reviews, daily/weekly reports, immutable snapshots, journal JSON export, Zerodha statement costs/net and consent-based aggregate AI adapter.
+
+## Current scope
+
+The owner selected free-only V1. Computed reviews are primary; paid AI controls are removed from Reports and the server adapter is disabled by default. No API key or billing setup is required. Future paid AI needs explicit authorization and `TRADEMIRROR_ENABLE_PAID_AI=true`; keep this unset/false now.
 
 ## Activation and acceptance
 
 - Migration `202610100004_report_snapshots.sql` is applied to the connected Supabase project.
-- Configure server-only `OPENAI_API_KEY` and `OPENAI_MODEL` in Vercel/server environment; never use NEXT_PUBLIC or paste the key into chat. Choose a Responses-compatible model supporting structured output. Live provider acceptance is pending.
+- Paid AI is excluded from this edition; do not configure paid credentials to finish free-only V1.
 - Reports: save a selected period, reload history, reopen it and verify unchanged evidence reuses the snapshot.
 - Import → broker statements: preview the owner's original Zerodha F&O P&L XLSX, inspect totals/mismatches, confirm ownership, save and reload. This sends private financial data to TradeMirror and the configured Supabase account. The agent has validated the source locally only.
-- Generate an AI review after explicit aggregate-sharing consent; verify three evidence-linked reflections/questions. Mock tests are not live provider acceptance.
+- Computed results-based prompts are available without an AI provider. Optional paid adapter acceptance is deferred.
 - Download journal/plan JSON and inspect linked/unlinked evidence. Restore is unsupported. Browser print/PDF output and physical mobile acceptance remain to be checked.
 
 ## Limits
@@ -19,7 +23,7 @@ Snapshot history shows the latest 100 entries; broker statement history the late
 
 AI uses structured OpenAI Responses output with store:false; provider data policies still apply. Five attempts per UTC day and 90 seconds between attempts, including failed calls. Only period aggregates are shared, without CSV, symbols, notes, tags or account identity.
 
-Validation: 44 tests, lint, TypeScript and Webpack build; local date/tag drilldown, hydrated daily report tabs, fictional cost reconciliation and phone layout without page overflow. Browser download receipt was not captured (the browser download event timed out); downloaded-file acceptance remains pending. Hosted save/reload, owner statement upload and live AI must be verified before claiming fully accepted V1.
+Validation: 44 tests, lint, TypeScript and Webpack build; local date/tag drilldown, hydrated daily report tabs, fictional cost reconciliation and phone layout without page overflow. Browser download receipt was not captured (the browser download event timed out); downloaded-file acceptance remains pending. Snapshot save/reload passed in the hosted update below. Owner statement upload and remaining export/device acceptance must be verified before claiming fully accepted free-only V1.
 
 Official references: [text generation](https://developers.openai.com/api/docs/guides/text) and [structured outputs](https://developers.openai.com/api/docs/guides/structured-outputs).
 
@@ -32,7 +36,7 @@ Hosted rollout verification: the new synthetic costs route renders and reconcile
 - **Pending owner setup:** OpenAI API key/model are not configured yet. Live generation is not accepted. API billing is separate from ChatGPT; no API purchase or new secret was created by the agent.
 - **Pending acceptance:** actual export receipt/content, print/PDF and physical mobile checks. A print-button automation attempt timed out; no successful print artifact is claimed.
 
-### AI activation steps
+### Optional future paid AI activation steps (not required for free V1)
 
 1. Sign in to [OpenAI API Keys](https://platform.openai.com/api-keys) and create a project secret key. Keep it private; never paste it into chat or commit it.
 2. Set `OPENAI_API_KEY` in TradeMirror's Vercel server environment. Add `OPENAI_MODEL=gpt-4.1-mini` as one supported initial test option; account access still depends on the API project.
@@ -40,3 +44,5 @@ Hosted rollout verification: the new synthetic costs route renders and reconcile
 4. Redeploy through the normal project workflow so new environment variables take effect, then generate a selected-period review after aggregate-sharing consent.
 
 [GPT-4.1 mini documentation](https://developers.openai.com/api/docs/models/gpt-4.1-mini) lists Responses and structured-output support. Provider output still needs live acceptance; a configured key alone is not proof of a passing review.
+
+Latest free-only validation: 46 tests and app checks pass. Default-off paid guard is verified even with dummy provider credentials configured. Journal export ownership, exact evidence, pagination and row/byte/read failure cases are now tested. No actual paid provider calls were made.
