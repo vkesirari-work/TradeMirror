@@ -6,24 +6,36 @@
 
 TradeMirror is being built as a trading journal and performance analytics platform for Indian options traders. The goal is to bring trade history, charges-aware P&L, session comparisons, and AI-assisted behavioural reviews into one focused workspace.
 
-> **Current status: Phase 2 connected · login accepted · account settings ready · version 0.2.0.**
-> Unconfigured demo dashboard numbers, reports, scores, and insights are sample data. Configured accounts show FIFO analysis of saved executions and real profile settings. Supabase account integration is connected and the database migration is applied. CSV validation and local previews are available. Saved imports, broker syncing, and AI generation remain planned.
+> **Current status: saved CSV imports, exact FIFO matching, gross dashboard and filtered journal active · version 0.2.0.**
+> Unconfigured demo dashboard numbers, reports, scores, and insights are sample data. Configured accounts show FIFO analysis of saved executions and real profile settings. Supabase account integration is connected and the database migration is applied. CSV validation, atomic saved imports, duplicate protection, daily gross summaries and filtered CSV export are active. Broker syncing, cost reconciliation and AI generation remain planned.
 
 ![TradeMirror dashboard preview](public/dashboard-preview.jpg)
 
 ## Live deployment
 
 - **Website:** [trademirror-ten.vercel.app](https://trademirror-ten.vercel.app)
-- **Dashboard:** [Open demo](https://trademirror-ten.vercel.app/dashboard)
+- **Dashboard:** [Open account dashboard](https://trademirror-ten.vercel.app/dashboard)
 - **Vercel project:** `trademirror` in `vkesirariwork-2297s-projects`
 - **Git source:** this repository, `main` branch. Future pushes trigger Vercel deployments.
-- **Mode:** authenticated workspace. Supabase is connected; signed-out workspace requests redirect to login. Account trade import remains planned.
+- **Mode:** authenticated workspace. Supabase is connected; signed-out workspace requests redirect to login. Account CSV imports and gross FIFO analytics are active.
 
 First deployment completed on 7 October 2026 from commit `bfec0f9`; landing page and dashboard verified in the browser. Before activating authentication, set the public Supabase variables and `NEXT_PUBLIC_SITE_URL=https://trademirror-ten.vercel.app`, apply the database migration, and configure that origin in Supabase Auth.
 
 ## Product flow
 
 ### What works today
+
+Configured account flow:
+
+```text
+Sign up / log in → Import CSV → Local validation preview → Save executions
+                                                        ↓
+                         Exact FIFO matching → Gross dashboard + IST daily chart
+                                                        ↓
+                           Filtered matched journal → Download matching slices
+```
+
+The account dashboard reads saved executions. Charges and net P&L remain unavailable; the supplied real CSV has been validated locally but not uploaded by the agent. The unconfigured demo follows this separate sample flow:
 
 ```text
 Landing page → Explore demo → Dashboard
@@ -65,16 +77,16 @@ Charges remain estimated while a report is `PROVISIONAL`. A report becomes `FINA
 | Area | Current behaviour |
 | --- | --- |
 | Landing | Product introduction, workflow, demo and signup entry points |
-| Dashboard | Eight summary cards; daily and cumulative P&L charts; session, instrument, CE/PE breakdowns; sample discipline score; best/worst and recent trades |
-| Journal | Instrument search; instrument, CE/PE, result, session, and date filters; reset and empty states |
+| Dashboard | Account: exact realized gross P&L, matched slice outcomes, residual lots, daily/cumulative gross charts and exact IST values. Unconfigured demo: sample metrics and breakdowns |
+| Journal | Account: instrument, long/short, gross result and exit-date filters, pagination, reset and filtered CSV export. Demo: sample journal |
 | Trade detail | Prices, quantities, timestamps, estimated costs, holding time, sample behaviour review, session-only notes |
-| Imports | Zerodha CSV parsing, validation, within-file duplicate detection, real file preview; broker connection remains a preview |
+| Imports | Zerodha CSV validation/preview, account-owned atomic save, cross-file duplicate protection and import history; broker connection remains a preview |
 | Insights | Sample observations about timing, instruments, holding periods, costs, and journal process |
 | Reports | Daily / weekly tabs; provisional status; summary and review prompts |
-| Settings | Demo profile, broker connection card, provisional/final lifecycle |
+| Settings | Account profile persistence and password recovery; demo profile and lifecycle explanation |
 | Foundation | Responsive navigation, loading UI, invalid-trade 404, normalized types, broker adapter contract |
 
-The dashboard period selector changes summary cards between the sample day and week. Charts and breakdowns are explicitly labeled as the sample week. Fixtures cover 1–7 October 2026; they are not live market data.
+In the unconfigured demo, the dashboard period selector changes summary cards between the sample day and week. Charts and breakdowns are explicitly labeled as the sample week. Fixtures cover 1–7 October 2026; they are not live market data.
 
 ## Version roadmap
 
@@ -314,3 +326,9 @@ Validation: 21 tests passed covering matching, decimal precision, large-ID order
 Added daily and cumulative gross charts, an exact-value table by IST exit date, and journal exit-date filters with reset/pagination. Matching always runs on the full imported history before date filtering, so earlier entry fills remain available. Chart coordinates use numbers for visualization; monetary summaries and tooltips retain the exact decimal strings. Daily aggregation uses exact signed decimal arithmetic and the IST day boundary.
 
 Validation: 22 tests, lint, TypeScript, and production build passed. The first deployed FIFO dashboard was verified against the account's two stored synthetic executions: one matched slice, no residual lots, ₹1,762.50 gross before charges, and an explicit synthetic-data warning. The supplied real CSV is still local and was not uploaded by the agent.
+
+### Filtered matched CSV export — 10 October 2026
+
+The account journal now downloads all filtered FIFO slices, including rows beyond the current page, with exact quantity/price/gross strings and entry/exit execution identities. CSV quoting handles commas/newlines and spreadsheet formula-like text is neutralized. The export explicitly states that charges and net P&L are unavailable.
+
+Validation: 23 tests, lint, TypeScript and Webpack production build passed. Export tests verify exact decimal preservation, CSV escaping and formula neutralization. Next: owner-file hosted import acceptance, then broker charges/settlement reconciliation and persistent matched-trade notes. Private tradebook contents and generated local reports remain outside Git. Earlier milestone sections record behaviour at that point in development; the current status above takes precedence.
