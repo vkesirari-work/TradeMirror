@@ -7,7 +7,7 @@
 TradeMirror is being built as a trading journal and performance analytics platform for Indian options traders. The goal is to bring trade history, charges-aware P&L, session comparisons, and AI-assisted behavioural reviews into one focused workspace.
 
 > **Current status: Phase 2 connected · login accepted · account settings ready · version 0.2.0.**
-> Unconfigured demo dashboard numbers, reports, scores, and insights are sample data. Configured accounts show an empty workspace and real profile settings. Supabase account integration is connected and the database migration is applied. Imports, broker syncing, and AI generation remain planned.
+> Unconfigured demo dashboard numbers, reports, scores, and insights are sample data. Configured accounts show an empty workspace and real profile settings. Supabase account integration is connected and the database migration is applied. CSV validation and local previews are available. Saved imports, broker syncing, and AI generation remain planned.
 
 ![TradeMirror dashboard preview](public/dashboard-preview.jpg)
 
@@ -34,7 +34,7 @@ Landing page → Explore demo → Dashboard
                               └─ Settings & report lifecycle explanation
 ```
 
-With Supabase configured, signup/login use server actions, email confirmation establishes a session, and workspace routes require a validated user. Without configuration, forms show a setup notice and no credentials are sent to a provider. CSV selection stays local; preview rows remain fixed fixtures.
+With Supabase configured, signup/login use server actions, email confirmation establishes a session, and workspace routes require a validated user. Without configuration, forms show a setup notice and no credentials are sent to a provider. CSV selection and parsing stay local; previews show the selected file’s actual executions.
 
 ### Planned end-to-end experience
 
@@ -68,7 +68,7 @@ Charges remain estimated while a report is `PROVISIONAL`. A report becomes `FINA
 | Dashboard | Eight summary cards; daily and cumulative P&L charts; session, instrument, CE/PE breakdowns; sample discipline score; best/worst and recent trades |
 | Journal | Instrument search; instrument, CE/PE, result, session, and date filters; reset and empty states |
 | Trade detail | Prices, quantities, timestamps, estimated costs, holding time, sample behaviour review, session-only notes |
-| Imports | Broker connection preview; local CSV selection and illustrative preview table |
+| Imports | Zerodha CSV parsing, validation, within-file duplicate detection, real file preview; broker connection remains a preview |
 | Insights | Sample observations about timing, instruments, holding periods, costs, and journal process |
 | Reports | Daily / weekly tabs; provisional status; summary and review prompts |
 | Settings | Demo profile, broker connection card, provisional/final lifecycle |
@@ -88,7 +88,7 @@ The roadmap is a proposed sequence, not a release-date commitment. Later version
 | --- | --- | --- |
 | 1 | Frontend foundation, design, routes, sample data, normalized types | **Complete** |
 | 2 | Supabase authentication, PostgreSQL schema, user isolation and access policies | **Connected; login accepted** |
-| 3 | Zerodha CSV parsing, validation, import history, duplicate protection | Planned |
+| 3 | Zerodha CSV parsing, validation, import history, duplicate protection | **Local parsing/preview complete; saved imports and history pending** |
 | 4 | Deterministic trade matching, partial fills, open positions, reconciliation | Planned |
 | 5 | P&L and cost analytics with explicit estimated / confirmed cost handling | Planned |
 | 6 | Connect the dashboard and filters to actual user data | Planned |
@@ -220,9 +220,9 @@ Future implementations belong in `lib/brokers/adapters/`. Normalized trades must
 
 ## Current limitations
 
-Supabase auth and profile persistence are configured locally and in production. No broker OAuth/API, CSV parsing, matching engine, production P&L or charges engine, AI generation, payments, notifications, cron jobs, or background workers.
+Supabase auth and profile persistence are configured locally and in production. No broker OAuth/API, persisted CSV imports, matching engine, production P&L or charges engine, AI generation, payments, notifications, cron jobs, or background workers.
 
-Auth forms validate on the client and server. With project configuration, credentials go only to the configured Supabase Auth service through server actions. Files are not uploaded or parsed. Trade notes only remain in the mounted page session. Connect buttons explain future availability; AI generation and PDF export are disabled. Without Supabase configuration, workspace routes are public demo pages. With configuration, they require a valid session and display an empty account workspace with editable profile settings; sample trades are never presented as account-owned records. Scores are illustrative rather than computed from rule adherence.
+Auth forms validate on the client and server. With project configuration, credentials go only to the configured Supabase Auth service through server actions. CSV files are parsed in the browser; files and executions are not uploaded or persisted. Trade notes only remain in the mounted page session. Connect buttons explain future availability; AI generation and PDF export are disabled. Without Supabase configuration, workspace routes are public demo pages. With configuration, they require a valid session and display an empty account workspace with editable profile settings; sample trades are never presented as account-owned records. Scores are illustrative rather than computed from rule adherence.
 
 ## Validation & dependency status
 
@@ -276,3 +276,11 @@ Validation: six tests passed, including mocked recovery requests, authenticated 
 The owner confirmed successful login. Authenticated Settings now loads the real profile and email, saves the display name to Supabase, and links to password recovery. The server derives ownership from the validated session and updates only `display_name`; RLS enforces account isolation. Save revalidates the workspace so sidebar and welcome names update. The remaining account routes keep their empty states; sample trades are available only in the unconfigured demo.
 
 Validation: seven tests, including profile character limits and PostgreSQL ownership/column restrictions, plus lint, TypeScript, and Webpack production build. No new database migration or privileged key is required. Broker imports and analytics remain planned. Tomorrow's starting point: Phase 3 Zerodha CSV parsing and validation preview, then trusted import persistence and duplicate protection.
+
+### Phase 3A — Zerodha CSV validation & preview, 10 October 2026
+
+The Import route is available in authenticated accounts. Select or drop a Console tradebook CSV to preview actual executions. Parsing handles UTF-8 BOM, CRLF, quoted commas, escaped quotes, and multiline fields. It accepts `symbol` or the older `tradingsymbol` column, requires execution identifiers, preserves IDs and money as strings, validates timestamps as IST, rejects auction records and conflicting trade IDs, and counts repeated rows within the file. Limits: 5 MB, 10,000 executions, 100 displayed preview rows, and 20 displayed errors. A clearly synthetic example CSV is included.
+
+Supported input contract: `symbol`/`tradingsymbol`, `trade_date`, `exchange`, `segment`, `trade_type`, `quantity`, `price`, `trade_id`, `order_id`, `order_execution_time`. Dates must be YYYY-MM-DD; execution times must be HH:mm:ss or YYYY-MM-DD HH:mm:ss. Other export formats fail explicitly instead of guessing. Download instructions: [official Zerodha tradebook guide](https://support.zerodha.com/category/console/reports/other-queries/articles/where-can-i-see-all-the-trades-i-ve-taken-for-a-particular-period).
+
+Validation: twelve tests, lint, TypeScript, and Webpack production build passed. Browser selection of the synthetic CSV displayed both expected BUY/SELL executions, prices, and IST timestamps with zero errors; the configured signed-out Import route redirected to login. Tests cover malformed CSV, oversized files, row limits, large IDs, IST conversion, invalid dates/numbers, duplicate conflicts, and legacy headers. This milestone does not save trades, change dashboard totals, calculate P&L, or detect duplicates against prior uploads. Phase 3 remains in progress. Next: server validation, atomic account-owned import persistence, cross-file duplicate protection, and import history; then deterministic trade matching and dashboard integration. A real owner-provided Console export is still needed to confirm its format against this documented input contract.
