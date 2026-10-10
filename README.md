@@ -441,3 +441,12 @@ A read-only saved-note connection summary distinguishes annotations linked to cu
 Validation: 37 tests, lint, TypeScript and Webpack production build pass. Tests cover exact decimal aggregation, overlapping/deduplicated tags, changed evidence and connection classification/reconnection. Local production browser acceptance verified tag drill-down to 16 illustrative slices and reset, plus a 390px phone layout without page overflow; the strategy table scrolls horizontally within its 307px panel. Public demo uses illustrative tags and does not read account data. Hosted public demo rollout passed. Signed-in account acceptance verified the empty-tag state and that an existing annotation on excluded synthetic evidence is classified outside the review scope, rather than falsely unlinked. No account annotations or executions were modified.
 
 Next: manual annotation reconciliation, richer strategy comparisons and charges import. Multiple plans, broker sync and AI-generated reviews remain planned.
+
+
+### Side-by-side setup comparison — 10 October 2026
+
+Tagged Review now includes two distinct tag selectors, a Swap tags action and comparison cards for realized gross, wins/losses/breakeven slices, active exit days, maximum realized gross drawdown and average holding time. A daily table aligns the union of IST exit dates; missing tagged exits show a dash rather than a fabricated zero. Each card opens the selected tag in the journal. Fewer than two tags produces a clear comparison prerequisite. All figures use the existing exact aggregation engine; rounded average/ratio metrics retain that engine's documented precision.
+
+Mobile cards stack vertically and the daily table scrolls within its panel. Overlap, sample limitations and the drawdown definition remain explicit. Comparisons use the current full review scope; there are no comparison-specific date filters, persistence, net costs, capital-based risk metrics or statistical significance claims. No database migration is needed.
+
+Validation: 37 tests, lint, TypeScript and Webpack production build pass. Local production browser checks verified both demo tag summaries, aligned daily values, swapping selected tags, and 390px stacked cards without document overflow. Next: date-scoped strategy comparison, manual note reconciliation and charges import; broker sync and generated AI reviews remain planned.

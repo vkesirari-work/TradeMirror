@@ -1,0 +1,16 @@
+'use client';
+
+import {useState} from 'react';
+import Link from 'next/link';
+import {exactMoney} from '@/lib/analytics/format';
+import type {strategyReview} from '@/lib/journal/strategy';
+
+type Group=ReturnType<typeof strategyReview>['groups'][number];
+export function StrategyComparison({groups,journalHref}:{groups:Group[];journalHref:string}){
+ const [left,setLeft]=useState(groups[0]?.tag||'');
+ const [right,setRight]=useState(groups[1]?.tag||'');
+ const a=groups.find(g=>g.tag===left),b=groups.find(g=>g.tag===right);
+ const selected=[a,b].filter((g):g is Group=>Boolean(g));
+ const dates=[...new Set(selected.flatMap(g=>g.summary.days.map(d=>d.date)))].sort();
+ return <section className="strategy-comparison" aria-label="Compare journal tags"><div className="section-title"><div><h3>Compare your setups</h3><p>Choose two labels and inspect their recorded gross results.</p></div></div>{groups.length<2?<p className="inline-notice">Save at least two different journal tags to compare setups.</p>:<><div className="comparison-selectors"><label>First tag<select value={left} onChange={e=>setLeft(e.target.value)}>{groups.map(g=><option key={g.tag} value={g.tag} disabled={g.tag===right}>{g.tag}</option>)}</select></label><label>Second tag<select value={right} onChange={e=>setRight(e.target.value)}>{groups.map(g=><option key={g.tag} value={g.tag} disabled={g.tag===left}>{g.tag}</option>)}</select></label></div><button className="button secondary" onClick={()=>{setLeft(right);setRight(left);}}>Swap tags</button><div className="comparison-cards">{selected.map(g=><article key={g.tag}><span className="tag-chip">{g.tag}</span><h3 className={g.summary.grossPnl.startsWith('-')?'negative':'positive'}>{exactMoney(g.summary.grossPnl)}</h3><p>Realized gross · {g.summary.slices} FIFO slices</p><dl><div><dt>Wins / losses / flat</dt><dd>{g.summary.wins} / {g.summary.losses} / {g.summary.breakeven}</dd></div><div><dt>Active exit days</dt><dd>{g.summary.activeDays}</dd></div><div><dt>Max gross drawdown</dt><dd>{exactMoney(g.summary.maxDrawdown)}</dd></div><div><dt>Average hold</dt><dd>{g.summary.averageHoldMinutes} min</dd></div></dl><Link className="text-link" href={`${journalHref}?${new URLSearchParams({tag:g.tag})}`}>Inspect these slices →</Link></article>)}</div><p className="fineprint">Drawdown follows cumulative realized gross by exit time, starting from zero. It excludes charges, account balance and unrealized losses. Holding times and counts refer to matching slices, not whole positions. A slice can appear in both tags; comparisons are descriptive, not independent strategy tests.</p><div className="table-scroll strategy-table" tabIndex={0} aria-label="Daily gross comparison"><table><thead><tr><th>Exit date · IST</th>{selected.map(g=><th key={g.tag}>{g.tag} · gross</th>)}</tr></thead><tbody>{dates.map(date=><tr key={date}><td>{date}</td>{selected.map(g=>{const day=g.summary.days.find(d=>d.date===date);return <td key={g.tag} className={day?.grossPnl.startsWith('-')?'negative':day?'positive':''}>{day?exactMoney(day.grossPnl):'—'}</td>;})}</tr>)}</tbody></table></div><p className="fineprint">— means no matching exits for that tag on the date; it is not a zero result.</p></>}</section>;
+}
