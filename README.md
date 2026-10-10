@@ -236,7 +236,7 @@ flowchart TD
     Notes[Journal annotations and plan] --> Backup[Settings journal JSON export]
 ```
 
-**Delivered:** computed reviews, applied snapshot storage and export controls. **Verified live:** owner history loads; journal export returns prepared status. **Pending:** snapshot save/reload, actual downloaded-file receipt/content and print/PDF acceptance. Journal JSON is not a complete account backup; restore is unsupported.
+**Delivered:** computed reviews, applied snapshot storage and export controls. **Verified live:** owner history loads; journal export returns prepared status. **Verified live:** snapshot save/reload/reopen and unchanged-evidence deduplication. **Pending:** actual downloaded-file receipt/content and print/PDF acceptance. Journal JSON is not a complete account backup; restore is unsupported.
 
 ### Phase 10 — release acceptance and onboarding · in progress
 
@@ -252,7 +252,7 @@ flowchart LR
     Acceptance -->|Yes| Release[Mark V1 fully accepted]
 ```
 
-**Latest implementation validation:** 44 tests plus lint, TypeScript and Webpack production build passed. Six-step onboarding and hosted routes are verified. **Open checks:** private statement/snapshot writes, live AI, export receipt/print and remaining physical-mobile acceptance. See [V1 acceptance checklist](docs/V1_RELEASE.md). Documentation-only diagram updates use Markdown/link/diagram checks rather than rerunning the unchanged app build.
+**Latest implementation validation:** 44 tests plus lint, TypeScript and Webpack production build passed. Six-step onboarding and hosted routes are verified. **Open checks:** private statement upload, live AI, export receipt/print and remaining physical-mobile acceptance. Snapshot save/reopen/deduplication passed. See [V1 acceptance checklist](docs/V1_RELEASE.md). Documentation-only diagram updates use Markdown/link/diagram checks rather than rerunning the unchanged app build.
 
 ### Planned next versions
 
@@ -674,3 +674,9 @@ Validation: 44 tests, lint, explicit TypeScript and Webpack production build pas
 ### Phase diagram documentation — 10 October 2026
 
 Added a demo-to-account user journey, individual diagrams for V1 phases 1–10, planned version flow and a conceptual ER map. Current roadmap rows reflect implemented statement costs, snapshot storage, custom plans and AI adapter readiness without claiming pending acceptance is complete. Mermaid blocks, Markdown fences and local documentation links were checked. No app code or database permissions changed in this phase. Next: the open V1 acceptance tasks listed above.
+
+### Hosted snapshot acceptance — 10 October 2026
+
+Current weekly snapshot save, unchanged-evidence deduplication, page reload, saved-history loading and reopening passed in the authenticated production workspace. The persisted snapshot retains its creation time and summary/daily values; one record remains after repeated saves. No raw executions or journal annotations were changed. This supersedes earlier snapshot save/reload pending entries above.
+
+Real Zerodha workbook upload is blocked by the Chrome extension's missing file URL access; no workbook was sent or saved. Live AI requires owner API setup; the acceptance document now includes key creation, supported model configuration and separate billing links. Export receipt/content, print/PDF and physical-mobile acceptance remain open. V1 is still a release candidate, not falsely marked fully accepted. No app code or database grants changed in this documentation phase.

@@ -24,3 +24,19 @@ Validation: 44 tests, lint, TypeScript and Webpack build; local date/tag drilldo
 Official references: [text generation](https://developers.openai.com/api/docs/guides/text) and [structured outputs](https://developers.openai.com/api/docs/guides/structured-outputs).
 
 Hosted rollout verification: the new synthetic costs route renders and reconciles 48 fictional slices. Authenticated Reports shows the new snapshot/AI controls, and loading saved history returns an empty owner history without a setup error. Snapshot writes and private statement upload are awaiting specific upload acceptance; they have not been performed by the agent.
+
+## Hosted acceptance update — 10 October 2026
+
+- **Passed:** save a current weekly owner snapshot, save unchanged evidence again, reload the Reports page, load history and reopen the same snapshot. One history row remains, with the original creation time and unchanged summary/daily values. The saved review remains in the owner's account; no executions or annotations were edited.
+- **Blocked by browser setup:** real workbook selection through the Chrome extension fails because file URL access is not enabled. The agent did not transmit or save the workbook. The owner can select the file manually on `/costs`, or enable the extension's file-upload permission according to the official guide.
+- **Pending owner setup:** OpenAI API key/model are not configured yet. Live generation is not accepted. API billing is separate from ChatGPT; no API purchase or new secret was created by the agent.
+- **Pending acceptance:** actual export receipt/content, print/PDF and physical mobile checks. A print-button automation attempt timed out; no successful print artifact is claimed.
+
+### AI activation steps
+
+1. Sign in to [OpenAI API Keys](https://platform.openai.com/api-keys) and create a project secret key. Keep it private; never paste it into chat or commit it.
+2. Set `OPENAI_API_KEY` in TradeMirror's Vercel server environment. Add `OPENAI_MODEL=gpt-4.1-mini` as one supported initial test option; account access still depends on the API project.
+3. Complete required API billing yourself. [API and ChatGPT billing are separate](https://help.openai.com/en/articles/9039756-billing-settings-in-chatgpt-vs-platform). The agent will not purchase credits or accept billing terms for you.
+4. Redeploy through the normal project workflow so new environment variables take effect, then generate a selected-period review after aggregate-sharing consent.
+
+[GPT-4.1 mini documentation](https://developers.openai.com/api/docs/models/gpt-4.1-mini) lists Responses and structured-output support. Provider output still needs live acceptance; a configured key alone is not proof of a passing review.
