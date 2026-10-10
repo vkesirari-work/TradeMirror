@@ -6,7 +6,7 @@ const row='NIFTY26OCT25000CE,2026-10-07,NFO,FO,buy,75,124.5000,90071992547409931
 test('Console executions preserve large IDs and decimal strings, resolve IST, and deduplicate',()=>{
  const result=parseZerodhaCsv('\uFEFF'+header+'\r\n'+row+'\r\n'+row);
  assert.equal(result.duplicates,1);assert.equal(result.total,2);assert.equal(result.issues.length,0);
- assert.equal(result.executions[0].tradeId,'90071992547409931234');assert.equal(result.executions[0].price,'124.5000');
+ assert.equal(result.executions[0].tradeId,'90071992547409931234');assert.equal(result.executions[0].price,'124.5');
  assert.equal(new Date(result.executions[0].executedAt).toISOString(),'2026-10-07T03:54:00.000Z');
 });
 test('quoted commas, escaped quotes and multiline cells parse without splitting records',()=>{
@@ -28,4 +28,12 @@ test('supports older tradingsymbol header and time-only values; rejects auction 
  assert.equal(result.executions.length,1);
  assert.equal(parseZerodhaCsv(header+',auction\n'+row+',true').issues.length,1);
  assert.throws(()=>parseZerodhaCsv(header+'\n'+Array(10001).fill(row).join('\n')),/10,000/);
+});
+
+test('real Console six-place exports normalize trailing zeros without rounding',()=>{
+ const result=parseZerodhaCsv(header+'\n'+row.replace(',75,124.5000,',',65.000000,126.850000,').replace('2026-10-07 09:24:00','2026-10-07T09:24:00'));
+ assert.equal(result.issues.length,0);assert.equal(result.executions[0].quantity,'65');assert.equal(result.executions[0].price,'126.85');
+ assert.equal(parseZerodhaCsv(header+'\n'+row.replace('124.5000','124.123456')).issues.length,1);
+ const repeated=parseZerodhaCsv(header+'\n'+row+'\n'+row.replace('124.5000','124.500000'));
+ assert.equal(repeated.duplicates,1);
 });

@@ -40,7 +40,8 @@ export function parseZerodhaCsv(text:string):Preview {
   const row=index+2;const fail=(message:string)=>result.issues.push({row,message});
   if(cells.length!==headers.length){fail('Column count does not match the header.');return;}
   const data=Object.fromEntries(headers.map((h,i)=>[h,cells[i].trim()]));
-  const side=data.trade_type.toUpperCase();const quantity=data.quantity;const price=data.price;
+  const side=data.trade_type.toUpperCase();const normalize=(value:string)=>/^\d+(?:\.\d+)?$/.test(value)?value.replace(/(\.\d*?)0+$/,'$1').replace(/\.$/,'').replace(/^0+(?=\d)/,''):value;
+  const quantity=normalize(data.quantity);const price=normalize(data.price);
   const decimal=(s:string)=>/^\d{1,14}(?:\.\d{1,4})?$/.test(s);
   const executedAt=timestamp(data.trade_date,data.order_execution_time);
   if(!data[symbol]||data[symbol].length>120||!data.exchange||!data.segment||!data.trade_id||!data.order_id){fail('Instrument, exchange, segment, trade ID and order ID are required.');return;}
