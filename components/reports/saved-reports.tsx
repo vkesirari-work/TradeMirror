@@ -3,7 +3,7 @@ import {useState} from 'react';
 import {listSnapshots,saveSnapshot} from '@/app/reports/actions';
 import {exactMoney} from '@/lib/analytics/format';
 import type {ReportMode,SavedSnapshot} from '@/lib/reports/snapshot';
-export function downloadJson(value:unknown,name:string){const url=URL.createObjectURL(new Blob([JSON.stringify(value,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+export function downloadJson(value:unknown,name:string){const url=URL.createObjectURL(new Blob([JSON.stringify(value,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);try{a.click();}finally{a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}}
 export function SavedReports({mode,date,demo=false}:{mode:ReportMode;date?:string;demo?:boolean}){
  const [rows,setRows]=useState<SavedSnapshot[]>([]),[busy,setBusy]=useState(false),[message,setMessage]=useState(''),[opened,setOpened]=useState<SavedSnapshot|null>(null);
  if(demo)return <p className="fineprint">Account report snapshots are available after login. This demo does not save reports to your account.</p>;
