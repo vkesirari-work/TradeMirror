@@ -22,3 +22,5 @@ AI uses structured OpenAI Responses output with store:false; provider data polic
 Validation: 44 tests, lint, TypeScript and Webpack build; local date/tag drilldown, hydrated daily report tabs, fictional cost reconciliation and phone layout without page overflow. Browser download receipt was not captured (the browser download event timed out); downloaded-file acceptance remains pending. Hosted save/reload, owner statement upload and live AI must be verified before claiming fully accepted V1.
 
 Official references: [text generation](https://developers.openai.com/api/docs/guides/text) and [structured outputs](https://developers.openai.com/api/docs/guides/structured-outputs).
+
+Hosted rollout verification: the new synthetic costs route renders and reconciles 48 fictional slices. Authenticated Reports shows the new snapshot/AI controls, and loading saved history returns an empty owner history without a setup error. Snapshot writes and private statement upload are awaiting specific upload acceptance; they have not been performed by the agent.
