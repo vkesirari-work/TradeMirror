@@ -17,6 +17,10 @@ See the [current acceptance matrix](docs/V1_RELEASE.md) and [deferred checks / n
 
 ![TradeMirror dashboard preview](public/dashboard-preview.jpg)
 
+## Metric info control — 15 October 2026
+
+The long metric definitions are now behind a compact info button. Hover or click/tap opens the explanation; Close, Escape or moving focus outside dismisses it. Keyboard users can open it with the button. The same calculation disclosure remains available in demo and account views. Validation: lint, TypeScript, production build and server-rendered info-control markup checks pass. Live hover/touch acceptance remains pending browser access recovery.
+
 ## Compact demo — 15 October 2026
 
 The demo opens with a short explanation and direct Log in / Create account actions. The first screen focuses on four core metrics; full account analytics retain all eight. The demo instrument list shows the top five contracts, with complete results available in Breakdowns. Sample data remains labelled and separate from account data. Validation: lint, TypeScript, production build and demo/login route response checks pass; live browser visual acceptance remains pending the connector issue. Next: mobile visual acceptance.

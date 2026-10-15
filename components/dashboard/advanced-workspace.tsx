@@ -1,7 +1,7 @@
 'use client';
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
-import { Activity, CalendarDays, ChartNoAxesCombined, Download, SlidersHorizontal } from 'lucide-react';
+import { Activity, CalendarDays, ChartNoAxesCombined, Download, Info, SlidersHorizontal } from 'lucide-react';
 import { Card, Metric, SectionTitle } from '@/components/ui/primitives';
 import { advancedSummary, brokerPerformance, breakdown, filterMatches, type Dimension } from '@/lib/analytics/advanced';
 import { tradingDate } from '@/lib/analytics/daily';
@@ -24,6 +24,7 @@ export function AdvancedWorkspace({ result, includeExample = false, demo = false
   const [tab, setTab] = useState('overview'), [dimension, setDimension] = useState<Dimension>('instrument');
   const [selectedDay, setSelectedDay] = useState('');
   const [filtersOpen,setFiltersOpen]=useState(false);
+  const [metricInfoOpen,setMetricInfoOpen]=useState(false);
   const symbols = useMemo(() => [...new Set(result.matches.map(match => match.symbol))].sort(), [result.matches]);
   const filtered = useMemo(() => filterMatches(result.matches, { start, end, symbol, side, option }), [result.matches, start, end, symbol, side, option]);
   const brokers = useMemo(() => brokerPerformance(filtered), [filtered]);
@@ -93,7 +94,7 @@ export function AdvancedWorkspace({ result, includeExample = false, demo = false
     </Card>}
     {tab === 'breakdowns' && <Card><SectionTitle title="Find your performance patterns" subtitle="Observed gross results; comparisons do not prove an edge"/><div className="tabs" role="tablist" aria-label="Breakdown dimension">{dimensions.map(item => <button role="tab" aria-selected={dimension === item.value} className={dimension === item.value ? 'selected' : ''} onClick={() => setDimension(item.value)} key={item.value}>{item.label}</button>)}</div><BreakdownTable rows={rows} onInstrument={dimension === 'instrument' ? setSymbol : undefined}/><p className="fineprint">Entry hour and weekday use IST entry timestamps. Option type comes from the contract suffix; unsupported names are Other. Win rates include breakeven slices in the denominator. Holding time measures elapsed entry-to-exit time per FIFO slice, including nights and weekends. Each interval includes its lower boundary and excludes its upper boundary; invalid or reversed timestamps are Unavailable. These are historical groups, not recommended exit times.</p></Card>}
     {tab === 'comparison' && <PeriodComparison includeExample={includeExample} matches={filtered} journalHref={demo ? '/demo/trades' : '/trades'}/>}
-    <details className="analysis-definitions"><summary>How these metrics are calculated</summary><p>FIFO matching runs on the complete selected import history before exit-date filters. Money uses exact decimal arithmetic; averages round to eight decimal places and profit factor to two. Win rate uses matching slices, not independent trades. Drawdown starts at zero and follows closed-slice gross P&L in exit order; simultaneous exits use a deterministic tie break. It excludes open mark-to-market P&L, account capital and charges. Historical patterns do not predict future performance.</p></details>
+    <div className="metric-info" onMouseEnter={()=>setMetricInfoOpen(true)} onMouseLeave={()=>setMetricInfoOpen(false)} onBlur={event=>{if(!event.currentTarget.contains(event.relatedTarget))setMetricInfoOpen(false);}} onKeyDown={event=>{if(event.key==='Escape')setMetricInfoOpen(false);}}><button type="button" className="metric-info-button" aria-label="How these metrics are calculated" aria-expanded={metricInfoOpen} aria-controls="metric-calculation-info" onFocus={()=>setMetricInfoOpen(true)} onClick={()=>setMetricInfoOpen(true)}><Info size={16}/><span>Metric info</span></button><div id="metric-calculation-info" className="metric-info-popover" hidden={!metricInfoOpen}><div className="metric-info-heading"><strong>How metrics work</strong><button type="button" className="text-button" aria-label="Close metric information" onClick={()=>setMetricInfoOpen(false)}>Close</button></div><p>FIFO matching runs on the complete selected import history before exit-date filters. Money uses exact decimal arithmetic; averages round to eight decimal places and profit factor to two. Win rate uses matching slices, not independent trades. Drawdown starts at zero and follows closed-slice gross P&L in exit order; simultaneous exits use a deterministic tie break. It excludes open mark-to-market P&L, account capital and charges. Historical patterns do not predict future performance.</p></div></div>
   </div>;
 }
 function BreakdownTable({ rows, onInstrument }: { rows: ReturnType<typeof breakdown>; onInstrument?: (value: string) => void }) {
