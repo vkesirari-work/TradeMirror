@@ -14,7 +14,7 @@ Computed review prompts need no AI API key. Paid AI is excluded from this editio
 | Report content | Independent Python Decimal/CSV comparison matched 12 synthetic slices and exact gross INR 890 to JSON; BOM/cost limits checked |
 | Account download protection | Signed-out request returns 401; owner-scoped selection and demo separation tested; no partial attachment on invalid/failing requests |
 | Reports integration | Server-rendered page includes correct download links and free computed prompts; interactive browser acceptance pending |
-| Hosted download | Pending rollout and HTTP verification; signed-in browser file receipt remains pending |
+| Hosted download | Public demo JSON/CSV attachments received after rollout; independent CSV/JSON comparison passed, and signed-out account access returned 401. Signed-in browser receipt remains pending |
 | Private journal/plan export | Owner filtering, pagination, exact evidence, retained unlinked annotations and row/byte/read errors tested; hosted prepared status passed on 10 October; actual file receipt pending |
 | Real Zerodha workbook | Independently validated locally on 10 October; upload/save/reload not accepted; no workbook uploaded by the agent |
 | Print/PDF | Control implemented; print artifact/layout acceptance pending |
