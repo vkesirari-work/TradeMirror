@@ -17,6 +17,14 @@ See the [current acceptance matrix](docs/V1_RELEASE.md) and [deferred checks / n
 
 ![TradeMirror dashboard preview](public/dashboard-preview.jpg)
 
+## Visual refresh — 15 October 2026
+
+The demo and account workspace now use a light, responsive theme with indigo navigation, consistent green profit/red loss states, clearer cards and sentence-case labels. Dashboard money displays round to two decimal places using decimal-safe rounding (₹58.33333333 → ₹58.33); calculations, exports and the chart’s explicitly labelled exact-values table retain their original precision.
+
+Daily bars use the sign of each day’s gross result; cumulative results use an indigo line. Chart mode changes reset the plotted chart, with a compact tooltip and no oversized hover overlay or entry animation. Best/worst dates use readable IST labels and trading-day counts distinguish green/red days.
+
+Validation: 79 tests, ESLint, TypeScript and production build pass. Browser interaction/visual acceptance is deferred: the browser connector could not load its request-header policy. Tab and hover changes still need a live browser check; physical-phone acceptance remains pending. Next step: verify the refreshed demo on desktop and phone, including both chart modes and calendar selection.
+
 ## Latest expansion — six ordered modules
 
 Period comparison, saved journal review, multi-template plans and recorded risk, transparent process tracking, an opt-in broker sync pilot, and PWA support are implemented in six separate commits. Plan/risk storage is live with verified owner RLS and hosted save/reload/export acceptance. Broker sync remains disabled pending supported owner API configuration; it is not automatic multi-user OAuth. PWA install prompts/manifest are live; physical-device install/offline acceptance remains deferred.

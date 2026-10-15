@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { advancedSummary, breakdown } from '@/lib/analytics/advanced';
-import { exactMoney } from '@/lib/analytics/format';
+import { displayMoney as exactMoney } from '@/lib/analytics/format';
 import type { MatchingResult } from '@/lib/analytics/matching';
 import { Card, SectionTitle } from '@/components/ui/primitives';
 

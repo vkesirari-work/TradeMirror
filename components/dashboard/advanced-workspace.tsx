@@ -5,7 +5,7 @@ import { Activity, CalendarDays, ChartNoAxesCombined, Download, SlidersHorizonta
 import { Card, Metric, SectionTitle } from '@/components/ui/primitives';
 import { advancedSummary, breakdown, filterMatches, type Dimension } from '@/lib/analytics/advanced';
 import { tradingDate } from '@/lib/analytics/daily';
-import { exactMoney } from '@/lib/analytics/format';
+import { displayMoney as exactMoney } from '@/lib/analytics/format';
 import { exportMatchedCsv } from '@/lib/analytics/export';
 import type { MatchingResult } from '@/lib/analytics/matching';
 import { AccountChart } from './account-chart';
@@ -69,10 +69,10 @@ export function AdvancedWorkspace({ result, includeExample = false, demo = false
       <div className="analysis-main-grid"><Card><SectionTitle title="Your gross performance curve" subtitle="Daily and cumulative results · IST exit dates"/><AccountChart days={summary.days}/></Card>
         <Card className="distribution-card"><SectionTitle title="Outcome distribution" subtitle="FIFO slices, not whole positions"/><div className="distribution-total"><strong>{summary.slices}</strong><span>matched slices</span></div><div className="outcome-track" aria-label={`${summary.wins} winning, ${summary.losses} losing, ${summary.breakeven} breakeven`}><span style={{ flex: summary.wins }} className="wins"/><span style={{ flex: summary.losses }} className="losses"/><span style={{ flex: summary.breakeven }} className="flats"/></div><dl className="analysis-key-values"><div><dt>Winning slices</dt><dd className="positive">{summary.wins}</dd></div><div><dt>Losing slices</dt><dd className="negative">{summary.losses}</dd></div><div><dt>Gross winning P&L</dt><dd>{exactMoney(summary.grossProfit)}</dd></div><div><dt>Gross losing P&L</dt><dd>{exactMoney(summary.grossLoss === '0' ? '0' : '-' + summary.grossLoss)}</dd></div><div><dt>Net P&L</dt><dd>{demo?'Unavailable in demo':<Link className="text-link" href="/costs">Review broker statements →</Link>}</dd></div></dl><Link className="text-link" href={journalLink}>Open execution journal →</Link></Card></div>
       <div className="analysis-highlight-grid">{[
-        { label: 'Best exit day', date: summary.bestDay?.date, value: summary.bestDay?.grossPnl },
-        { label: 'Worst exit day', date: summary.worstDay?.date, value: summary.worstDay?.grossPnl },
-      ].map(item => <Card key={item.label}><small>{item.label}</small><strong className="highlight-value">{item.value === undefined ? '—' : exactMoney(item.value)}</strong><p>{item.date || 'No matched exits'}</p></Card>)}
-      <Card><small>Active day balance</small><strong className="highlight-value">{summary.greenDays} green / {summary.redDays} red</strong><p>{summary.activeDays - summary.greenDays - summary.redDays} breakeven days · filtered exit dates</p></Card></div>
+        { label: 'Best day', date: summary.bestDay?.date, value: summary.bestDay?.grossPnl },
+        { label: 'Worst day', date: summary.worstDay?.date, value: summary.worstDay?.grossPnl },
+      ].map(item => <Card key={item.label}><small>{item.label}</small><strong className={`highlight-value ${item.value?.startsWith('-') ? 'negative' : 'positive'}`}>{item.value === undefined ? '—' : exactMoney(item.value)}</strong><p>{item.date ? new Intl.DateTimeFormat('en-GB',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'}).format(new Date(item.date+'T00:00:00Z')) : 'No matched exits'} · IST exit date</p></Card>)}
+      <Card><small>Trading days</small><strong className="highlight-value day-balance"><span className="positive">{summary.greenDays} profit</span><span className="day-divider">/</span><span className="negative">{summary.redDays} loss</span></strong><p>{summary.activeDays - summary.greenDays - summary.redDays} breakeven · {summary.activeDays} active days</p></Card></div>
       <Card><SectionTitle title="Instrument contribution" subtitle="Contracts ranked by realized gross P&L"/><BreakdownTable rows={breakdown(filtered, 'instrument').slice(0, 8)} onInstrument={value => { setSymbol(value); setTab('breakdowns'); }}/></Card>
     </>}
     {tab === 'calendar' && <Card><SectionTitle title="Trading calendar" subtitle="See the day, then inspect the executions behind it"/><PerformanceCalendar days={summary.days} selected={selectedDay} onSelect={setSelectedDay}/>

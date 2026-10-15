@@ -3,7 +3,7 @@ import {useMemo,useState} from 'react';
 import Link from 'next/link';
 import {reportPeriods} from '@/lib/analytics/advanced';
 import {decimal,exactUnits} from '@/lib/analytics/daily';
-import {exactMoney} from '@/lib/analytics/format';
+import {displayMoney as exactMoney} from '@/lib/analytics/format';
 import type {Match} from '@/lib/analytics/matching';
 import {Card,SectionTitle} from '@/components/ui/primitives';
 export function PeriodComparison({matches,journalHref,includeExample=false}:{matches:Match[];journalHref:string;includeExample?:boolean}){

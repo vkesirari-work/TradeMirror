@@ -2,7 +2,7 @@
 
 import {useState} from 'react';
 import Link from 'next/link';
-import {exactMoney} from '@/lib/analytics/format';
+import {displayMoney as exactMoney} from '@/lib/analytics/format';
 import type {strategyReview} from '@/lib/journal/strategy';
 
 type Group=ReturnType<typeof strategyReview>['groups'][number];

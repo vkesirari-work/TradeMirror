@@ -2,7 +2,7 @@ import Link from 'next/link';
 import {StrategyComparison} from './strategy-comparison';
 import {Card} from '@/components/ui/primitives';
 import {strategyReview} from '@/lib/journal/strategy';
-import {exactMoney} from '@/lib/analytics/format';
+import {displayMoney as exactMoney} from '@/lib/analytics/format';
 import type {Match} from '@/lib/analytics/matching';
 export function StrategyReview({matches,tags,status,error,demo=false,start='',end=''}:{matches:Match[];tags:Record<string,string[]>;status?:{linked:number;outsideScope:number;unlinked:number};error?:string;demo?:boolean;start?:string;end?:string}){
  const review=strategyReview(matches,tags);const href=demo?'/demo/trades':'/trades';
