@@ -734,3 +734,26 @@ Validation: 53 tests including five new private-download cases; lint, TypeScript
 Local production HTTP verification: journal, snapshot and statement endpoints returned 401 without credentials; malformed saved-record input returned 400. All errors had no attachment, no-store caching and MIME sniffing protection. The existing public demo report download still returned its expected synthetic summary. Successful signed-in private file receipt remains pending.
 
 Hosted follow-up: after rollout, journal, saved-snapshot and saved-statement export endpoints all returned 401 without credentials, with no attachment and no-store caching. This verifies hosted access denial only; successful owner download remains pending.
+
+### Statement ledger validation and persistence checks — 15 October 2026
+
+Fixed two import-validation gaps: a supplied other-debit/credit ledger is now checked even when its summary adjustment is zero, and posting dates must be real calendar dates inside the statement period. Offset debit/credit entries are accepted when they reconcile to zero; inconsistent zero summaries, negative debit/credit columns, incomplete amount-bearing rows and ambiguous ledger headings fail explicitly. A zero-adjustment report without an other-ledger sheet remains supported.
+
+Stored statement validation also rejects impossible periods, negative charges/fee rows, blank labels and duplicate charge/instrument breakdowns, including labels differing only by surrounding whitespace. Parsed and reloaded/exported statements share these checks. Net arithmetic and the separation between statement-level net and execution gross are unchanged.
+
+```mermaid
+flowchart LR
+    File[Original supported F&O XLSX] --> Summary[Exact summary and breakdown checks]
+    Summary --> Ledger[Validate supplied ledger even for zero adjustment]
+    Ledger --> Date[Real dates and nonnegative debit-credit columns]
+    Date --> Total[Exact adjustment reconciliation]
+    Total --> Preview[Preview without persistence]
+    Preview --> Confirm[Owner confirmation]
+    Confirm --> Save[Owner-scoped save]
+    Save --> Repeat[Same file reuses record]
+    Repeat --> Reload[Reload owner history]
+```
+
+Validation: 57 tests, lint, TypeScript and Webpack production build pass. The statement server actions now have a local PostgreSQL integration test using synthetic OOXML fixtures and the actual migration: preview does not save, ownership confirmation is required, repeated saves reuse ID/timestamp, saved values reload exactly, accounts remain isolated, and malformed/oversized/mismatched files do not add records. This test exercises the actual parser/actions with a small Supabase-shaped SQL adapter; it is not a hosted Supabase/browser acceptance test. The original owner workbook was rechecked read-only, with unchanged bytes and an independent source-cell Decimal comparison; it was not uploaded or committed.
+
+Local production HTTP checks verified the synthetic costs page, signed-out login redirect for Costs and denied private statement download. No production data, migration or grants were changed, and paid AI remains disabled. Remaining acceptance: real hosted statement upload/save/reload, signed-in file receipt, print/PDF and physical phones. Browser-control tools remain unavailable. Next: complete those checks when account/browser access is available.

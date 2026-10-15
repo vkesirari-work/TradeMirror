@@ -1,3 +1,4 @@
+import {zip} from './helpers/xlsx.mjs';
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
@@ -60,7 +61,7 @@ test('broker net uses exact charges and signed ledger adjustments, while reconci
  for(const edit of [m=>m.get('F&O')[1].C='3',m=>m.get('F&O')[8].G='9',m=>m.get('Other Debits and Credits')[2].D='2',m=>m.get('F&O')[0].B='P&L Statement for F&O from 2026-02-30 to 2026-10-31']){const input=sheet();edit(input);assert.throws(()=>parseZerodhaStatement(input));}
  assert.throws(()=>validateStatement({...s,net:'999'}));
 });
-function zip(files){const locals=[],centrals=[];let offset=0;for(const [name,text] of files){const n=Buffer.from(name),data=Buffer.from(text);let crc=0xffffffff;for(const b of data){crc^=b;for(let i=0;i<8;i++)crc=(crc>>>1)^((crc&1)?0xedb88320:0);}crc=(crc^0xffffffff)>>>0;const h=Buffer.alloc(30);h.writeUInt32LE(0x04034b50);h.writeUInt32LE(crc,14);h.writeUInt32LE(data.length,18);h.writeUInt32LE(data.length,22);h.writeUInt16LE(n.length,26);const local=Buffer.concat([h,n,data]);locals.push(local);const c=Buffer.alloc(46);c.writeUInt32LE(0x02014b50);c.writeUInt32LE(crc,16);c.writeUInt32LE(data.length,20);c.writeUInt32LE(data.length,24);c.writeUInt16LE(n.length,28);c.writeUInt32LE(offset,42);centrals.push(Buffer.concat([c,n]));offset+=local.length;}const central=Buffer.concat(centrals),end=Buffer.alloc(22);end.writeUInt32LE(0x06054b50);end.writeUInt16LE(files.length,8);end.writeUInt16LE(files.length,10);end.writeUInt32LE(central.length,12);end.writeUInt32LE(offset,16);return Buffer.concat([...locals,central,end]);}
+
 test('XLSX reader preserves numeric cell text and rejects corrupt archives, path traversal, entities and formulas',()=>{
  const files=[['xl/workbook.xml','<workbook><sheets><sheet name="F&amp;O" r:id="rId1"/></sheets></workbook>'],['xl/_rels/workbook.xml.rels','<Relationships><Relationship Id="rId1" Target="worksheets/sheet1.xml"/></Relationships>'],['xl/worksheets/sheet1.xml','<worksheet><sheetData><row r="1"><c r="B1" t="inlineStr"><is><t>Charges</t></is></c><c r="C1"><v>99999999999999.9999</v></c></row></sheetData></worksheet>']];
  assert.equal(workbookRows(zip(files)).get('F&O')[0].C,'99999999999999.9999');
@@ -79,4 +80,21 @@ test('AI action requires consent, authenticates, rebuilds evidence server-side a
  state.quota=true;const r=await generateAiReview('weekly','2026-10-05',true);assert.equal(r.data.observations.length,3);assert.equal(state.calls,1);assert.equal(state.body.store,false);assert.equal(state.body.text.format.strict,true);assert.ok(!state.body.input.includes('entryId'));assert.equal(JSON.parse(state.body.input).evidence[0].fact,reviewEvidence(rows)[0].fact);
  delete process.env.OPENAI_API_KEY;assert.match((await generateAiReview('weekly','2026-10-05',true)).error,/setup required/);assert.equal(state.calls,1);
  }finally{globalThis.fetch=originalFetch;delete globalThis[stateKey];if(oldKey===undefined)delete process.env.OPENAI_API_KEY;else process.env.OPENAI_API_KEY=oldKey;if(oldModel===undefined)delete process.env.OPENAI_MODEL;else process.env.OPENAI_MODEL=oldModel;if(oldPaid===undefined)delete process.env.TRADEMIRROR_ENABLE_PAID_AI;else process.env.TRADEMIRROR_ENABLE_PAID_AI=oldPaid;}
+});
+
+test('other-debit ledger validates zero totals, offsetting entries, posting dates and nonnegative debit/credit columns',()=>{
+ const zero=sheet();zero.get('F&O')[2].C='0';zero.get('Other Debits and Credits')[2].D='0';assert.equal(parseZerodhaStatement(zero).otherNet,'0');
+ zero.get('Other Debits and Credits')[2].D='1';assert.throws(()=>parseZerodhaStatement(zero),/do not equal/);
+ zero.get('Other Debits and Credits')[2].E='1';assert.equal(parseZerodhaStatement(zero).otherNet,'0');
+ zero.delete('Other Debits and Credits');assert.equal(parseZerodhaStatement(zero).otherNet,'0');
+ const negative=sheet();negative.get('Other Debits and Credits')[2].D='-1';negative.get('Other Debits and Credits')[2].E='-2';assert.throws(()=>parseZerodhaStatement(negative),/cannot be negative/);
+ const impossible=sheet();impossible.get('F&O')[0].B='P&L Statement for F&O from 2026-04-01 to 2026-05-31';impossible.get('Other Debits and Credits')[0].B='Other Debits and Credits for FO from 2026-04-01 to 2026-05-31';impossible.get('Other Debits and Credits')[2].C='2026-04-31';assert.throws(()=>parseZerodhaStatement(impossible),/posting date/);
+});
+test('other-debit ledger rejects ambiguous headers and incomplete amount-bearing rows rather than skipping them',()=>{
+ for(const edit of [m=>m.get('Other Debits and Credits').push({...m.get('Other Debits and Credits')[0]}),m=>m.get('Other Debits and Credits').push({...m.get('Other Debits and Credits')[1]}),m=>m.get('Other Debits and Credits').push({B:'Missing date',D:'0',E:'0'}),m=>m.get('Other Debits and Credits')[2].B=' ']){const input=sheet();edit(input);assert.throws(()=>parseZerodhaStatement(input));}
+});
+test('stored broker statement validation rejects impossible dates, negative fees and duplicate breakdowns even when totals reconcile',()=>{
+ const good=parseZerodhaStatement(sheet());
+ for(const invalid of [{...good,start:'2026-02-30'},{...good,charges:'-2',net:'11',chargeItems:[{label:'Fee',amount:'-2'}]},{...good,chargeItems:[{label:'Fee',amount:'-1'},{label:'Another fee',amount:'3.0001'}]},{...good,chargeItems:[{label:'Fee',amount:'1'},{label:'Fee ',amount:'1.0001'}]},{...good,instruments:[{symbol:'NIFTY',gross:'5'},{symbol:'NIFTY ',gross:'5'}]}])assert.throws(()=>validateStatement(invalid));
+ assert.deepEqual(validateStatement(JSON.parse(JSON.stringify(good))),good);
 });
