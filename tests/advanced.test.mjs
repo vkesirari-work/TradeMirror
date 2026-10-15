@@ -37,3 +37,9 @@ test('holding groups use exact elapsed boundaries, preserve unavailable data and
  const before=JSON.stringify(rows);assert.deepEqual(breakdown(rows,'holding'),[{label:'5–15 min',slices:2,wins:1,grossPnl:'1'},{label:'24 hours or more',slices:1,wins:1,grossPnl:'0.00000001'}]);assert.equal(JSON.stringify(rows),before);
  assert.deepEqual(breakdown([],'holding'),[]);
 });
+
+
+test('monthly comparisons group by IST exit month across year and leap boundaries',()=>{
+ const rows=[{...match(1,'1'),exitTime:'2025-12-31T18:29:59Z'},{...match(2,'2'),exitTime:'2025-12-31T18:30:00Z'},{...match(3,'0.00000001'),exitTime:'2024-02-29T10:00:00Z'}];
+ assert.deepEqual(reportPeriods(rows,'monthly').map(p=>[p.date,p.summary.grossPnl]),[['2026-01-01','2'],['2025-12-01','1'],['2024-02-01','0.00000001']]);assert.equal(rows[0].exitTime,'2025-12-31T18:29:59Z');assert.deepEqual(reportPeriods([],'monthly'),[]);
+});

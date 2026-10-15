@@ -832,3 +832,8 @@ Dashboard → Breakdowns → Holding time compares recorded gross contributions,
 Durations measure elapsed entry-to-exit time for each FIFO slice, including nights/weekends; intervals include their lower boundary and exclude their upper boundary. They are descriptive observations, not recommended holding periods. Costs/net and whole-position durations are not inferred. No migration, new permission or paid integration is needed. This ships one review-workflow expansion from the proposed V2 scope; broker sync and other V2/V3 work remain planned.
 
 Validation: 65 tests, ESLint, explicit TypeScript and Webpack production build pass. Tests cover exact bucket boundaries, equivalent timezone instants, invalid/reversed inputs, empty scope, precise sums, grouping order and unchanged source data. Production-build Chrome demo acceptance verified 48 slices grouped into two durations, CE filtering to 24 slices with matching totals, and a 390px page without horizontal overflow. Physical-device checks remain in the handoff note. Next: date-period/session comparison or a separately scoped broker-sync integration.
+
+
+### Module 1 — Period comparison
+
+Dashboard Compare periods supports Monday-start weeks and calendar months, selected after current analysis filters. Compare slice count, gross P&L, win rate, profit factor, independent drawdown, holding time and active exit days; swap periods or open their journal date ranges. Exact gross difference uses decimal arithmetic. Partial/missing periods and journal-link filter limits are explicit. No migration or paid integration. Validation: 66 tests, lint, TypeScript and production build; production UI verified weekly/monthly values, swap and date links. Next: saved journal review module.

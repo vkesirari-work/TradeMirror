@@ -88,10 +88,11 @@ export function breakdown(matches: Match[], dimension: Dimension): Breakdown[] {
   return rows.sort((a, b) => dimension === 'holding' ? holdingLabels.indexOf(a.label) - holdingLabels.indexOf(b.label) : dimension === 'hour' ? a.label.localeCompare(b.label) :
     exactUnits(a.grossPnl) > exactUnits(b.grossPnl) ? -1 : exactUnits(a.grossPnl) < exactUnits(b.grossPnl) ? 1 : a.label.localeCompare(b.label));
 }
-export function reportPeriods(matches: Match[], mode: 'daily' | 'weekly') {
+export function reportPeriods(matches: Match[], mode: 'daily' | 'weekly' | 'monthly') {
   const grouped = new Map<string, Match[]>();
   for (const match of matches) {
     const date = new Date(tradingDate(match.exitTime) + 'T00:00:00Z');
+    if (mode === 'monthly') date.setUTCDate(1);
     if (mode === 'weekly') date.setUTCDate(date.getUTCDate() - (date.getUTCDay() + 6) % 7);
     const key = date.toISOString().slice(0, 10);
     const rows = grouped.get(key) || []; rows.push(match); grouped.set(key, rows);
