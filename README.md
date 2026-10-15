@@ -842,3 +842,10 @@ Dashboard Compare periods supports Monday-start weeks and calendar months, selec
 ### Module 2 — Saved journal review
 
 Private `/journal-review`, linked from Settings and saved-note connection status, displays retained notes/tags/checklist questions and evidence status. Search notes/symbols, filter by tag or linked/unlinked evidence and page 20 entries at a time. Unlinked notes keep their content without inferred instruments or dates; no automatic reassignment. Uses the existing owner-validated complete export with 1,000-entry/5 MB limits; errors show no partial review. No migration or new writes. Validation: 68 tests, lint, TypeScript, production build and anonymous route redirect. Hosted signed-in UI acceptance follows rollout. Next: reusable plans and recorded risk inputs.
+
+
+### Module 3 — Plan library and recorded risk
+
+Multiple private checklist templates can be created/updated at `/plans` or selected from the journal plan editor. A template is applied to a slice only through the explicit reset-questions action; existing questions stay frozen. The separate risk editor records optional stop price, target price and INR risk budget for exact FIFO evidence. Blank differs from zero; no stop execution, sizing, compliance or pre-entry provenance is inferred. Unsaved risk drafts participate in the journal close guard. Settings offers a separate bounded library/risk JSON export; the original journal export format is unchanged.
+
+Migration `202610150001_review_modules.sql` is prepared and tested, not yet applied to production. Until applied, private library/risk loading fails visibly; demo functionality remains independent. New tables have owner-only RLS, column grants and revision checks. Validation: 70 tests, lint, TypeScript and production build; actual demo template create/select and risk save verified. Local anonymous `/journal-review` returned 307 to login, confirming the Module 2 route check after the initial sandbox-network attempt failed. Live migration and owner persistence await action-time approval. Next: process tracking from recorded questions.

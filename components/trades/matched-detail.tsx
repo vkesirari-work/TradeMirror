@@ -24,6 +24,6 @@ export function MatchedDetail({ match, onClose, demo=false,plan,initialAnnotatio
       ['Entry execution identity', match.entryId], ['Exit execution identity', match.exitId],
     ].map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
     <JournalEditor match={match} demo={demo} plan={plan} initialAnnotation={initialAnnotation} onSaved={onSaved} onDirtyChange={setDirty}/>
-    <p className="fineprint">One FIFO slice may be part of a larger position. Charges, net P&L, planned stops/targets and intratrade market prices are unavailable. Source identities are preserved for reconciliation.</p>
+    <p className="fineprint">One FIFO slice may be part of a larger position. Charges, net P&L and intratrade market prices are unavailable. Optional planned stop/target inputs are self-reported separately. Source identities are preserved for reconciliation.</p>
   </dialog>;
 }
