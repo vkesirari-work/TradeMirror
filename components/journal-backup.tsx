@@ -1,6 +1,7 @@
-'use client';
-import {useState} from 'react';
-import {exportJournal} from '@/app/journal/export';
 import {Card} from '@/components/ui/primitives';
-import {downloadJson} from '@/components/reports/saved-reports';
-export function JournalBackup(){const [busy,setBusy]=useState(false),[message,setMessage]=useState('');async function download(){setBusy(true);setMessage('');try{const result=await exportJournal();if(result.error)setMessage(result.error);else if(result.data){downloadJson(JSON.parse(result.data),`trademirror-journal-${new Date().toISOString().slice(0,10)}.json`);setMessage('Journal export prepared. Check your browser downloads.');}}catch{setMessage('Could not export your journal. Retry.');}finally{setBusy(false);}}return <Card><h2>Keep a copy of your journal</h2><p>Download private notes, tags, checklist answers, your saved plan and any matching evidence still available. Unlinked annotations are retained in the export.</p><p className="fineprint">Journal/plan JSON only, up to 1,000 annotations and 5 MB. Export executions separately from Trades; download report snapshots from Reports. Restore and original-file backups are not yet supported.</p><button className="button secondary" disabled={busy} onClick={download}>{busy?'Preparing export…':'Download journal JSON'}</button>{message&&<p role="status" className="inline-notice">{message}</p>}</Card>;}
+export function JournalBackup(){return <Card>
+ <h2>Keep a copy of your journal</h2>
+ <p>Download private notes, tags, checklist answers, your saved plan and any matching evidence still available. Unlinked annotations are retained in the export.</p>
+ <p className="fineprint">Journal/plan JSON only, up to 1,000 annotations and 5 MB. Export executions separately from Trades; download report snapshots from Reports. Restore and original-file backups are not yet supported.</p>
+ <a className="button secondary" href="/api/exports/journal">Download journal JSON</a>
+</Card>;}

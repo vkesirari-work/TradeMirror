@@ -710,3 +710,25 @@ Validation: 48 tests, lint, TypeScript and Webpack production build pass. Produc
 This verifies local HTTP file receipt/content, not a hosted signed-in browser download or OS print operation. Browser-control tools are unavailable in this session; real statement upload/save/reload, private journal/snapshot file receipt, print/PDF and physical-mobile acceptance remain pending. Existing snapshot persistence/deduplication acceptance from 10 October remains valid. No migration, paid service or private financial upload is required for this phase. Next: hosted report attachment verification, then the remaining owner/device acceptance checks when browser access is available.
 
 Hosted follow-up: public demo JSON/CSV attachments returned HTTP 200 after rollout. Downloaded hosted CSV matched the local CSV byte-for-byte, and an independent Decimal comparison matched its 12 slices and INR 890 gross to hosted JSON. Signed-out private report export returned 401 without an attachment. This closes public HTTP report-file receipt/content acceptance; signed-in browser receipt and the other device/private-data checks remain pending.
+
+### Private saved-record and journal downloads — 15 October 2026
+
+Journal/plan, frozen snapshot and parsed broker-statement JSON now use direct same-origin HTTP file attachments. Settings links to `/api/exports/journal`; saved report and statement links use `/api/exports/saved` with a validated record kind/UUID. Each saved-record query filters both the validated owner and record ID before returning a schema-checked payload. Another owner's record and an absent record return the same 404 response. Snapshot exports preserve the saved payload and creation time; they do not recompute current trading history. Statement exports contain only the saved parsed record, not the source workbook or client identifier.
+
+```mermaid
+flowchart LR
+    Click[Download journal or saved record] --> Session[Validate account session]
+    Session --> Kind{Export type}
+    Kind -->|Journal| Journal[Load complete owner notes and plan]
+    Kind -->|Snapshot or statement| Record[Query owner plus record ID]
+    Journal --> Validate[Validate complete bounded data]
+    Record --> Validate
+    Validate --> File[Private no-store JSON attachment]
+    Validate -->|Invalid or incomplete| Error[Error response without attachment]
+```
+
+Journal row/byte limits remain unchanged. Unauthenticated requests return 401; saved-record input errors return 400; unreadable or inconsistent data never yields a partial attachment. File responses use no-store caching, JSON content type and MIME sniffing protection. The optional paid adapter still uses its older page-local download helper, but is disabled in the free edition.
+
+Validation: 53 tests including five new private-download cases; lint, TypeScript and Webpack production build pass. Tests verify auth before saved-record reads, owner/ID filtering, indistinguishable missing/other-owner results, exact frozen data and timestamps, statement totals, safe failures and journal limit handling. No migration or grants changed, no paid service was enabled, and no owner data was uploaded. Signed-in browser file receipt, real statement upload/save/reload, phone and print/PDF acceptance remain pending because browser-control tools are unavailable. Next: those owner/device acceptance checks; do not count synthetic test responses as proof of a hosted owner download.
+
+Local production HTTP verification: journal, snapshot and statement endpoints returned 401 without credentials; malformed saved-record input returned 400. All errors had no attachment, no-store caching and MIME sniffing protection. The existing public demo report download still returned its expected synthetic summary. Successful signed-in private file receipt remains pending.
