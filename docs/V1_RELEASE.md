@@ -22,7 +22,7 @@ Computed review prompts need no AI API key. Paid AI is excluded from this editio
 | Print/PDF | Dedicated current-period and frozen-snapshot views implemented; demo HTML, data integrity and private login redirects verified locally; actual dialog/PDF visual acceptance pending |
 | Mobile | Earlier emulated workspace checks passed; current export interaction and physical-device acceptance pending |
 
-Browser-control tools are unavailable in this session. Earlier Chrome file upload was blocked by missing extension file URL access. Neither condition is a reason to mark unperformed UI checks as passed. No private account data, credentials or source workbook is included in the repository or synthetic receipt artifacts.
+Browser control became available for the owner follow-up below. Chrome file upload remains blocked by missing extension file URL access. Neither condition is a reason to mark unperformed UI checks as passed. No private account data, credentials or source workbook is included in the repository or synthetic receipt artifacts.
 
 ## Owner acceptance steps
 
@@ -70,3 +70,15 @@ Production-build HTTP smoke checks passed for the synthetic costs page, protecte
 - Responsive preview and paper styles are implemented. Actual print pagination, generated PDF inspection, live status-announcement behavior, physical phones and successful owner browser downloads remain pending.
 
 All 64 tests and lint/TypeScript/Webpack build checks pass. Local production HTTP checks cover current/demo print views, invalid-source rejection, account/snapshot login redirects, native attachment success and browser/API error formats. React static rendering and pure-model tests are not substitutes for physical/browser acceptance. No database permissions, paid-service settings or private owner data changed. V1 remains a free-only candidate until its remaining owner/device checks are complete.
+
+
+## Hosted owner receipt follow-up — 15 October 2026
+
+- Current report JSON: actual signed-in browser download received; exact daily totals, gross profit/loss and slice count arithmetic pass.
+- Frozen snapshot JSON: actual signed-in attachment received; period, scope and every summary field agree with the selected report. Original saved timestamp remains preserved.
+- Request feedback: the clicked report JSON link displayed its download-request status. Receipt is established separately by reading the returned local file.
+- Frozen snapshot print preview: authenticated page and visual layout verified with the saved evidence and scope. Actual print dialog/PDF remains unverified after an interaction timeout.
+- CSV and journal: receipt attempts timed out; neither is marked passed. Statement export cannot be accepted before a real statement is saved.
+- Real workbook: chooser selection is blocked by the Chrome extension file URL permission. No upload, save, security-setting change or permission grant occurred.
+
+Private files and account values are excluded from this documentation and Git. This documentation-only phase adds no app changes or migrations. The 64-test app baseline remains unchanged. Complete remaining owner/device steps before calling V1 fully accepted.
