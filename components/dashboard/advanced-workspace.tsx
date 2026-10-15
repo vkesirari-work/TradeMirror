@@ -60,11 +60,13 @@ export function AdvancedWorkspace({ result, includeExample = false, demo = false
       <Metric label="Realized gross P&L" value={exactMoney(summary.grossPnl)} positive={!summary.grossPnl.startsWith('-')} note="Filtered matched exits · before charges"/>
       <Metric label="Win rate" value={summary.winRate === null ? '—' : summary.winRate + '%'} note={`${summary.wins} wins / ${summary.losses} losses / ${summary.breakeven} flat`}/>
       <Metric label="Profit factor" value={summary.profitFactor || (summary.wins ? 'No losses' : '—')} note="Gross winning P&L ÷ absolute losing P&L"/>
-      <Metric label="Avg P&L per slice" value={summary.expectancy === null ? '—' : exactMoney(summary.expectancy)} note="Gross expectancy · rounded to 8 decimals"/>
+      <Metric label="Avg P&L per slice" value={summary.expectancy === null ? '—' : exactMoney(summary.expectancy)} note="Average gross result · before charges"/>
+      {!demo && <>
       <Metric label="Average winner" value={summary.averageWin === null ? '—' : exactMoney(summary.averageWin)} note="Winning FIFO slices · before charges"/>
       <Metric label="Average loser" value={summary.averageLoss === null ? '—' : exactMoney(summary.averageLoss)} note="Losing FIFO slices · before charges"/>
       <Metric label="Max gross drawdown" value={filtered.length ? exactMoney(summary.maxDrawdown) : '—'} note="Closed-slice cumulative decline · not account equity"/>
       <Metric label="Average holding time" value={summary.averageHoldMinutes === null ? '—' : summary.averageHoldMinutes + ' min'} note={`${summary.slices} slices across ${summary.activeDays} exit days`}/>
+      </>}
     </div>
     {tab === 'overview' && <>
       <div className="analysis-main-grid"><Card><SectionTitle title="Your gross performance curve" subtitle="Daily and cumulative results · IST exit dates"/><AccountChart days={summary.days}/></Card>
@@ -84,7 +86,7 @@ export function AdvancedWorkspace({ result, includeExample = false, demo = false
         </article>)}</div>{!brokers.length && <p className="fineprint">No broker results in this scope. Import executions to see their broker here.</p>}
         <p className="fineprint">Grouped by the broker recorded on imported executions. Charges and open positions are excluded; this is gross P&amp;L. {demo ? 'Demo results are synthetic.' : 'Only brokers with saved, matched executions appear; import support currently covers Zerodha F&O.'}</p>
       </Card>
-      <Card><SectionTitle title="Instrument contribution" subtitle="Contracts ranked by realized gross P&L"/><BreakdownTable rows={breakdown(filtered, 'instrument').slice(0, 8)} onInstrument={value => { setSymbol(value); setTab('breakdowns'); }}/></Card>
+      <Card><SectionTitle title="Instrument contribution" subtitle="Contracts ranked by realized gross P&L"/><BreakdownTable rows={breakdown(filtered, 'instrument').slice(0, demo ? 5 : 8)} onInstrument={value => { setSymbol(value); setTab('breakdowns'); }}/></Card>
     </>}
     {tab === 'calendar' && <Card><SectionTitle title="Trading calendar" subtitle="See the day, then inspect the executions behind it"/><PerformanceCalendar days={summary.days} selected={selectedDay} onSelect={setSelectedDay}/>
       {selectedDay && <div className="calendar-detail"><SectionTitle title={selectedDay + ' · execution review'} subtitle={`${dayMatches.length} matched slices in the current scope`} action={<button className="text-button" onClick={() => setSelectedDay('')}>Close day</button>}/><div className="table-scroll"><table><thead><tr><th>Instrument</th><th>Side</th><th>Quantity</th><th>Gross P&L</th></tr></thead><tbody>{dayMatches.slice(0, 25).map(match => <tr key={match.id}><td>{match.symbol}</td><td>{match.side}</td><td>{match.quantity}</td><td className={match.grossPnl.startsWith('-') ? 'negative' : 'positive'}>{exactMoney(match.grossPnl)}</td></tr>)}</tbody></table></div><p className="fineprint">Showing the first 25 slices for this day.</p><Link className="button secondary" href={journalLink}>Open this day in journal →</Link></div>}

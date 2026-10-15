@@ -1,5 +1,5 @@
 import Link from 'next/link';
 import { Shell } from '@/components/dashboard/shell';
 export default function DemoLayout({children}:{children:React.ReactNode}){
- return <Shell><div className="demo-workspace-banner"><div><b>Interactive demo · synthetic data</b><p>No login required. All views use 48 illustrative FIFO slices; no real account data is loaded or saved.</p></div><Link className="button primary" href="/signup">Analyse your own history →</Link></div>{children}</Shell>;
+ return <Shell><div className="demo-workspace-banner"><div><b>Demo · sample data</b><p>Explore freely. Your account data stays separate.</p></div><div className="demo-auth-actions"><Link className="button primary" href="/login">Log in →</Link><Link className="text-link" href="/signup">Create account</Link></div></div>{children}</Shell>;
 }

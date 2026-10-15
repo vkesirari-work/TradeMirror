@@ -17,6 +17,10 @@ See the [current acceptance matrix](docs/V1_RELEASE.md) and [deferred checks / n
 
 ![TradeMirror dashboard preview](public/dashboard-preview.jpg)
 
+## Compact demo — 15 October 2026
+
+The demo opens with a short explanation and direct Log in / Create account actions. The first screen focuses on four core metrics; full account analytics retain all eight. The demo instrument list shows the top five contracts, with complete results available in Breakdowns. Sample data remains labelled and separate from account data. Validation: lint, TypeScript, production build and demo/login route response checks pass; live browser visual acceptance remains pending the connector issue. Next: mobile visual acceptance.
+
 ## Broker performance — 15 October 2026
 
 The overview now shows one card per recorded broker with gross winning P&L, gross losing P&L, total realized gross P&L and slice outcome counts. These cards follow the existing analysis filters and reconcile using exact decimal arithmetic; displayed money uses two decimals. Same-symbol executions from different brokers remain separate. The demo shows a clearly labelled synthetic broker.
