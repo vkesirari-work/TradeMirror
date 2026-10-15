@@ -10,19 +10,18 @@ Computed review prompts need no AI API key. Paid AI is excluded from this editio
 | --- | --- |
 | App checks | 64 tests, lint, TypeScript and Webpack production build pass |
 | Owner snapshot save/reopen/deduplication | Passed in hosted account on 10 October; unchanged evidence reused one snapshot after refresh |
-| Direct report JSON/CSV | Implemented HTTP attachments; local production HTTP requests received real files on disk |
-| Report content | Independent Python Decimal/CSV comparison matched 12 synthetic slices and exact gross INR 890 to JSON; BOM/cost limits checked |
-| Account download protection | Signed-out request returns 401; owner-scoped selection and demo separation tested; no partial attachment on invalid/failing requests |
-| Reports integration | Server-rendered page includes native download links, request feedback and dedicated print navigation; browser error screens provide login/retry/back; interactive acceptance pending |
-| Hosted download | Public demo JSON/CSV attachments received after rollout; independent CSV/JSON comparison passed, and signed-out account access returned 401. Signed-in browser receipt remains pending |
-| Private journal/plan export | Direct authenticated HTTP attachment implemented; complete owner export, pagination, exact evidence, unlinked notes, row/byte/read errors and response mapping tested; actual signed-in file receipt pending |
-| Saved snapshot/statement JSON | Direct owner-and-ID-scoped HTTP attachment implemented; frozen snapshot metadata/payload and parsed statement values tested; signed-in file receipt pending |
-| Real Zerodha workbook | Stricter parser compatibility and independent source-cell Decimal comparison passed locally on 15 October; original bytes unchanged; hosted upload/save/reload pending |
-| Statement action persistence | Synthetic XLSX → actual server actions → local PostgreSQL migration passes preview/no-write, confirmation, deduplicated save/reload, owner isolation and failed-import/no-write checks; hosted acceptance pending |
-| Print/PDF | Dedicated current-period and frozen-snapshot views implemented; demo HTML, data integrity and private login redirects verified locally; actual dialog/PDF visual acceptance pending |
-| Mobile | Earlier emulated workspace checks passed; current export interaction and physical-device acceptance pending |
+| Direct report JSON/CSV | Actual signed-in owner attachments received; CSV count and exact gross reconcile with JSON. Public demo receipt also passed |
+| Report content | Independent Decimal checks reconcile daily totals, profit/loss and slice counts; synthetic and owner evidence checked |
+| Account download protection | Signed-out denial, owner-scoped selection, demo separation and safe failures tested |
+| Reports integration | Live download-request feedback observed; current and frozen print navigation verified |
+| Private journal/plan export | Actual owner JSON received and parsed; annotations, evidence and plan fields present; bounded complete-export behavior tested |
+| Saved snapshot/statement JSON | Actual owner attachments received; frozen summary/time preserved; statement totals match validated source |
+| Real Zerodha workbook | Hosted preview, ownership-confirmed save, repeat-save deduplication and reload passed on 15 October |
+| Statement action persistence | Actual hosted owner persistence passed; synthetic PostgreSQL tests also cover denied and invalid writes |
+| Print/PDF | Native Chrome print dialog opened; actual two-page PDF saved, rendered and visually inspected |
+| Mobile | Effective 390px Chrome Reports/print layout and drawer navigation pass; physical iOS/Android checks deferred |
 
-Browser control became available for the owner follow-up below. Chrome file upload remains blocked by missing extension file URL access. Neither condition is a reason to mark unperformed UI checks as passed. No private account data, credentials or source workbook is included in the repository or synthetic receipt artifacts.
+All feasible desktop acceptance steps are complete for the implemented free scope. See [V1 handoff](V1_HANDOFF.md) for physical-device checks and explicit product limits. No private account data, source workbook or acceptance downloads are committed. Dated sections below are historical evidence; this matrix is the current status.
 
 ## Owner acceptance steps
 

@@ -9,6 +9,12 @@ TradeMirror is being built as a trading journal and performance analytics platfo
 > **Current status: Free-only V1 candidate — computed reviews, saved snapshots, Zerodha statement costs and journal export implemented; paid AI disabled.**
 > Account analytics use saved executions; public demos use synthetic data. Migration `202610100004_report_snapshots.sql` is applied. Statement net is shown separately from FIFO execution gross: costs are not allocated to individual slices or days. Paid AI is excluded from the current free-only scope and disabled server-side by default. No AI API key is required. Earlier phase entries below are historical status records.
 
+## Current release checkpoint — 15 October 2026
+
+Desktop V1 acceptance is complete for the implemented free scope: owner imports, snapshots, real Zerodha statement persistence, all export families and actual browser-generated PDF. Chrome phone-size layout/navigation checks also pass. Physical iOS/Android file selection, download and print/share checks are deferred because no devices are connected. This is not a claim of native-app or physical-device certification.
+
+See the [current acceptance matrix](docs/V1_RELEASE.md) and [deferred checks / next-session note](docs/V1_HANDOFF.md). The dated entries below preserve development history; their older blockers are superseded by this checkpoint and the current matrix.
+
 ![TradeMirror dashboard preview](public/dashboard-preview.jpg)
 
 ## Live deployment
@@ -36,7 +42,7 @@ Sign up / log in → Import CSV → Local validation preview → Save executions
                            Filtered matched journal → Download matching slices
 ```
 
-The account dashboard reads saved executions and computes gross FIFO metrics. Broker statement costs and realized net have a separate XLSX import flow; execution/day net remains unavailable without a defensible allocation. Private statement upload acceptance is pending. The public `/demo` workspace works with or without Supabase configuration and uses an independent synthetic 48-slice fixture. It includes analytics, journal, computed review and daily/weekly report pages without login. The older unconfigured sample screens follow this separate flow:
+The account dashboard reads saved executions and computes gross FIFO metrics. Broker statement costs and realized net have a separate XLSX import flow; execution/day net remains unavailable without a defensible allocation. Hosted owner statement preview/save/repeat-save/reload acceptance passed on 15 October 2026. The public `/demo` workspace works with or without Supabase configuration and uses an independent synthetic 48-slice fixture. It includes analytics, journal, computed review and daily/weekly report pages without login. The older unconfigured sample screens follow this separate flow:
 
 ```text
 Landing page → Explore demo → Dashboard
