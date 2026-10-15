@@ -5,8 +5,15 @@ export interface AnalysisFilters {
   start: string; end: string; symbol: string; side: string; option: string;
 }
 export interface Breakdown { label: string; slices: number; wins: number; grossPnl: string }
-export type Dimension = 'instrument' | 'option' | 'weekday' | 'hour' | 'side';
+export type Dimension = 'instrument' | 'option' | 'weekday' | 'hour' | 'side' | 'holding';
 
+const holdingLabels = ['Under 5 min', '5–15 min', '15–60 min', '1–4 hours', '4–24 hours', '24 hours or more', 'Unavailable'];
+export function holdingGroup(entryTime: string, exitTime: string): string {
+  const elapsed = Date.parse(exitTime) - Date.parse(entryTime);
+  if (!Number.isFinite(elapsed) || elapsed < 0) return 'Unavailable';
+  const minutes = elapsed / 60000;
+  return holdingLabels[minutes < 5 ? 0 : minutes < 15 ? 1 : minutes < 60 ? 2 : minutes < 240 ? 3 : minutes < 1440 ? 4 : 5];
+}
 export function optionType(symbol: string): string {
   return /CE$/i.test(symbol) ? 'CE' : /PE$/i.test(symbol) ? 'PE' : 'Other';
 }
@@ -69,7 +76,7 @@ export function breakdown(matches: Match[], dimension: Dimension): Breakdown[] {
   const grouped = new Map<string, { gross: bigint; slices: number; wins: number }>();
   for (const match of matches) {
     const ist = new Date(Date.parse(match.entryTime) + 330 * 60000);
-    const label = dimension === 'instrument' ? match.symbol : dimension === 'option' ? optionType(match.symbol) :
+    const label = dimension === 'holding' ? holdingGroup(match.entryTime, match.exitTime) : dimension === 'instrument' ? match.symbol : dimension === 'option' ? optionType(match.symbol) :
       dimension === 'side' ? match.side : dimension === 'hour' ? `${String(ist.getUTCHours()).padStart(2, '0')}:00–${String(ist.getUTCHours() + 1).padStart(2, '0')}:00` :
       ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][ist.getUTCDay()];
     const item = grouped.get(label) || { gross: BigInt(0), slices: 0, wins: 0 };
@@ -78,7 +85,7 @@ export function breakdown(matches: Match[], dimension: Dimension): Breakdown[] {
     grouped.set(label, item);
   }
   const rows = [...grouped].map(([label, item]) => ({ label, slices: item.slices, wins: item.wins, grossPnl: decimal(item.gross) }));
-  return rows.sort((a, b) => dimension === 'hour' ? a.label.localeCompare(b.label) :
+  return rows.sort((a, b) => dimension === 'holding' ? holdingLabels.indexOf(a.label) - holdingLabels.indexOf(b.label) : dimension === 'hour' ? a.label.localeCompare(b.label) :
     exactUnits(a.grossPnl) > exactUnits(b.grossPnl) ? -1 : exactUnits(a.grossPnl) < exactUnits(b.grossPnl) ? 1 : a.label.localeCompare(b.label));
 }
 export function reportPeriods(matches: Match[], mode: 'daily' | 'weekly') {

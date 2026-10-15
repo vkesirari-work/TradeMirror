@@ -2,7 +2,7 @@ import{test}from'node:test';import assert from'node:assert/strict';import{readFi
 const uri=source=>'data:text/javascript;base64,'+Buffer.from(stripTypeScriptTypes(source)).toString('base64');
 const daily=uri((await readFile(new URL('../lib/analytics/daily.ts',import.meta.url),'utf8')).replace(/^import type .*;$/gm,''));
 const source=(await readFile(new URL('../lib/analytics/advanced.ts',import.meta.url),'utf8')).replace(/^import type .*;$/gm,'').replace("'./daily'",JSON.stringify(daily));
-const{advancedSummary,filterMatches,breakdown,reportPeriods}=await import(uri(source));
+const{advancedSummary,filterMatches,breakdown,reportPeriods,holdingGroup}=await import(uri(source));
 const match=(id,pnl,day='2026-10-07')=>({id:String(id),symbol:'NIFTY26OCT25000CE',broker:'ZERODHA',side:'LONG',quantity:'75',entryPrice:'100',exitPrice:'101',entryId:'entry-'+id,exitId:'exit-'+id,entryTime:day+'T09:00:00+05:30',exitTime:day+'T09:'+String(id+10).padStart(2,'0')+':00+05:30',grossPnl:pnl});
 test('advanced metrics retain exact gross values and define closed-slice drawdown, averages and profit factor',()=>{
  const summary=advancedSummary([match(1,'100','2026-10-05'),match(2,'-150','2026-10-06'),match(3,'50','2026-10-07')]);
@@ -24,4 +24,16 @@ test('filters use IST exit dates without rematching and breakdowns use IST entry
 test('weekly reports respect Monday boundaries and IST exit dates without changing source slices',()=>{
  const rows=[match(1,'1','2026-10-04'),match(2,'2','2026-10-05'),{...match(3,'3'),exitTime:'2026-10-11T18:45:00Z'}];
  const weeks=reportPeriods(rows,'weekly');assert.deepEqual(weeks.map(w=>[w.date,w.summary.grossPnl]),[['2026-10-12','3'],['2026-10-05','2'],['2026-09-28','1']]);assert.equal(weeks[0].rows[0],rows[2]);assert.equal(reportPeriods(rows,'daily')[0].date,'2026-10-12');
+});
+
+
+test('holding groups use exact elapsed boundaries, preserve unavailable data and reconcile precise gross',()=>{
+ const entry='2026-10-07T03:30:00Z';
+ const exit=minutes=>new Date(Date.parse(entry)+minutes*60000).toISOString();
+ for(const [minutes,label] of [[0,'Under 5 min'],[4.999,'Under 5 min'],[5,'5–15 min'],[15,'15–60 min'],[60,'1–4 hours'],[240,'4–24 hours'],[1440,'24 hours or more']]) assert.equal(holdingGroup(entry,exit(minutes)),label);
+ assert.equal(holdingGroup(entry,'bad'),'Unavailable');assert.equal(holdingGroup(entry,exit(-1)),'Unavailable');
+ assert.equal(holdingGroup('2026-10-07T09:00:00+05:30',entry),'Under 5 min');
+ const rows=[{...match(1,'0.00000001'),entryTime:entry,exitTime:exit(1440)},{...match(2,'-2'),entryTime:entry,exitTime:exit(5)},{...match(3,'3'),entryTime:entry,exitTime:exit(5)}];
+ const before=JSON.stringify(rows);assert.deepEqual(breakdown(rows,'holding'),[{label:'5–15 min',slices:2,wins:1,grossPnl:'1'},{label:'24 hours or more',slices:1,wins:1,grossPnl:'0.00000001'}]);assert.equal(JSON.stringify(rows),before);
+ assert.deepEqual(breakdown([],'holding'),[]);
 });

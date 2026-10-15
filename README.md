@@ -823,3 +823,12 @@ The actual Chrome Print / Save PDF action opened the native print preview and sa
 At an effective 390 × 844 browser viewport, Reports and print preview fit without horizontal page overflow. Mobile bottom navigation and opening/closing the navigation drawer work. The override was reset after checking. These are emulated Chrome checks, not physical iOS Safari/Android acceptance. Actual phone file selection, downloads and print/share behavior remain the final device checks; connected physical devices were not available.
 
 Documentation-only acceptance phase: private downloaded files, PDF, account values and screenshots remain outside Git. The existing 64-test/lint/TypeScript/production-build baseline is unchanged. No paid service, new permissions, migration or account data edits were introduced. Next: owner physical-device smoke checks; V2/V3 remain planned.
+
+
+### Review expansion: holding-time breakdown — 15 October 2026
+
+Dashboard → Breakdowns → Holding time compares recorded gross contributions, slice counts and win rates in chronological duration groups: under 5 minutes, 5–15, 15–60, 1–4 hours, 4–24 hours and 24 hours or longer. Existing date, instrument, side and option filters apply before grouping. Account and independent public-demo dashboards share the implementation. Empty groups are omitted; invalid/reversed timestamps are labelled Unavailable rather than treated as zero duration.
+
+Durations measure elapsed entry-to-exit time for each FIFO slice, including nights/weekends; intervals include their lower boundary and exclude their upper boundary. They are descriptive observations, not recommended holding periods. Costs/net and whole-position durations are not inferred. No migration, new permission or paid integration is needed. This ships one review-workflow expansion from the proposed V2 scope; broker sync and other V2/V3 work remain planned.
+
+Validation: 65 tests, ESLint, explicit TypeScript and Webpack production build pass. Tests cover exact bucket boundaries, equivalent timezone instants, invalid/reversed inputs, empty scope, precise sums, grouping order and unchanged source data. Production-build Chrome demo acceptance verified 48 slices grouped into two durations, CE filtering to 24 slices with matching totals, and a 390px page without horizontal overflow. Physical-device checks remain in the handoff note. Next: date-period/session comparison or a separately scoped broker-sync integration.
