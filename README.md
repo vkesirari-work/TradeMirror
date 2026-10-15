@@ -17,6 +17,10 @@ See the [current acceptance matrix](docs/V1_RELEASE.md) and [deferred checks / n
 
 ![TradeMirror dashboard preview](public/dashboard-preview.jpg)
 
+## Scope toolbar alignment — 15 October 2026
+
+Scope counts stay next to the label on desktop and on a dedicated left-aligned line on phones. Unfiltered scopes read “48 matched slices” rather than repeating “48 of 48”. Reset filters appears only when a filter/day selection is active, alongside the right-aligned Metrics control. Validation: lint, TypeScript, production build and initial demo toolbar markup checks pass. Live visual/interaction acceptance remains pending browser recovery.
+
 ## Final demo redesign — 15 October 2026
 
 The demo now has a restrained header with sample-data scope, four core metric cards, underline navigation and a chart-led overview. Scope filters are collapsed until requested on desktop and mobile. Win/loss results omit duplicate monetary totals already shown by broker; broker and instrument summaries share a supporting row on wide screens. Compact day highlights stack on phones. Existing chart modes, calendar, breakdowns, comparison, export and top Metrics info remain available. Styles are scoped to the demo; account analytics retain their full metrics.
