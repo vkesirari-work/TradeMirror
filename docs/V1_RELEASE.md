@@ -82,3 +82,10 @@ All 64 tests and lint/TypeScript/Webpack build checks pass. Local production HTT
 - Real workbook: chooser selection is blocked by the Chrome extension file URL permission. No upload, save, security-setting change or permission grant occurred.
 
 Private files and account values are excluded from this documentation and Git. This documentation-only phase adds no app changes or migrations. The 64-test app baseline remains unchanged. Complete remaining owner/device steps before calling V1 fully accepted.
+
+
+### Real hosted statement acceptance — 15 October 2026
+
+After the owner enabled Chrome file access, the original Zerodha F&O workbook was selected and previewed successfully on the authenticated hosted app. Preview totals matched the previously verified local source values. Ownership-confirmed save succeeded; repeating Save retained a single report version, the same record link and original saved timestamp. A full page reload followed by Load statements restored the same period, exact totals and mismatch warning. Parsed statement data is now saved in the owner account; the app does not retain the original workbook or client identifier.
+
+The execution-versus-statement mismatch remains visible and costs are not allocated to executions or days. Statement JSON download receipt timed out and remains unverified. Private workbook, amounts, account identifiers and screenshot evidence are excluded from Git. This documentation-only phase records live UI acceptance; the preceding 64-test app validation baseline is unchanged. Next: remaining CSV/journal/statement receipt, actual PDF and physical-phone acceptance.

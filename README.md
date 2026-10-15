@@ -799,3 +799,10 @@ Browser access became available for this follow-up. Signed-in current report JSO
 The authenticated frozen-snapshot print preview rendered the saved period, timestamp, scope, metrics and daily evidence correctly; this is preview acceptance only. The print action timed out without a verified dialog/PDF. Report CSV and journal receipt attempts also timed out, so their receipt remains unverified. No source workbook was uploaded: Chrome still requires the ChatGPT extension's “Allow access to file URLs” permission. No permission was changed.
 
 Validation: actual owner JSON receipts and exact content comparison; hosted preview inspected visually and through accessibility text. Documentation-only follow-up; the preceding 64-test/lint/TypeScript/build results remain the app baseline. Next: enable file upload access with owner approval, complete real statement preview/save/repeat/reload, verify remaining exports and actual PDF/physical-phone behavior. V1 remains a candidate; V2/V3 remain planned.
+
+
+### Real hosted statement acceptance — 15 October 2026
+
+After the owner enabled Chrome file access, the original Zerodha F&O workbook was selected and previewed successfully on the authenticated hosted app. Preview totals matched the previously verified local source values. Ownership-confirmed save succeeded; repeating Save retained a single report version, the same record link and original saved timestamp. A full page reload followed by Load statements restored the same period, exact totals and mismatch warning. Parsed statement data is now saved in the owner account; the app does not retain the original workbook or client identifier.
+
+The execution-versus-statement mismatch remains visible and costs are not allocated to executions or days. Statement JSON download receipt timed out and remains unverified. Private workbook, amounts, account identifiers and screenshot evidence are excluded from Git. This documentation-only phase records live UI acceptance; the preceding 64-test app validation baseline is unchanged. Next: remaining CSV/journal/statement receipt, actual PDF and physical-phone acceptance.
