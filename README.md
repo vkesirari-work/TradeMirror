@@ -17,6 +17,12 @@ See the [current acceptance matrix](docs/V1_RELEASE.md) and [deferred checks / n
 
 ![TradeMirror dashboard preview](public/dashboard-preview.jpg)
 
+## Supplied reference palette — 15 October 2026
+
+Applied the neutral roles from the user-provided CSS: black page/header, #0f0f0f secondary surfaces, #1f1f1f panels, #2e2e2e inputs/hover, #3d3d3d borders/tooltips and #dbdbdb primary text. Secondary labels use lighter grey for readability. The supplied system/Trebuchet font stack and tabular numbers are applied. Existing blue/teal accents remain because their primitive hex definitions were absent from the paste; red bars use the supplied #f23645 with a lighter red for small loss text.
+
+Validation: lint, TypeScript and production build pass; landing/demo route and generated stylesheet checks pass. Browser visual acceptance remains pending the previously reported connector failure. Next: inspect the neutral palette on desktop and phone when browser access is restored.
+
 ## Charcoal theme refinement — 15 October 2026
 
 Inspired by the requested [TradingView reference](https://in.tradingview.com/), the workspace now uses neutral charcoal surfaces, clear grey borders, restrained blue controls and teal/red result states. Smaller corner radii, flat cards, readable secondary labels and visible keyboard focus replace the previous blue-tinted slate styling. Money rounding, charts and responsive layouts remain in place.
