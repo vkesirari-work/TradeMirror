@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { Activity, CalendarDays, ChartNoAxesCombined, Download, SlidersHorizontal } from 'lucide-react';
 import { Card, Metric, SectionTitle } from '@/components/ui/primitives';
-import { advancedSummary, breakdown, filterMatches, type Dimension } from '@/lib/analytics/advanced';
+import { advancedSummary, brokerPerformance, breakdown, filterMatches, type Dimension } from '@/lib/analytics/advanced';
 import { tradingDate } from '@/lib/analytics/daily';
 import { displayMoney as exactMoney } from '@/lib/analytics/format';
 import { exportMatchedCsv } from '@/lib/analytics/export';
@@ -26,6 +26,7 @@ export function AdvancedWorkspace({ result, includeExample = false, demo = false
   const [filtersOpen,setFiltersOpen]=useState(false);
   const symbols = useMemo(() => [...new Set(result.matches.map(match => match.symbol))].sort(), [result.matches]);
   const filtered = useMemo(() => filterMatches(result.matches, { start, end, symbol, side, option }), [result.matches, start, end, symbol, side, option]);
+  const brokers = useMemo(() => brokerPerformance(filtered), [filtered]);
   const summary = useMemo(() => advancedSummary(filtered), [filtered]);
   const rows = useMemo(() => breakdown(filtered, dimension), [filtered, dimension]);
   const dayMatches = selectedDay ? filtered.filter(match => tradingDate(match.exitTime) === selectedDay) : [];
@@ -73,6 +74,16 @@ export function AdvancedWorkspace({ result, includeExample = false, demo = false
         { label: 'Worst day', date: summary.worstDay?.date, value: summary.worstDay?.grossPnl },
       ].map(item => <Card key={item.label}><small>{item.label}</small><strong className={`highlight-value ${item.value?.startsWith('-') ? 'negative' : 'positive'}`}>{item.value === undefined ? '—' : exactMoney(item.value)}</strong><p>{item.date ? new Intl.DateTimeFormat('en-GB',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'}).format(new Date(item.date+'T00:00:00Z')) : 'No matched exits'} · IST exit date</p></Card>)}
       <Card><small>Trading days</small><strong className="highlight-value day-balance"><span className="positive">{summary.greenDays} profit</span><span className="day-divider">/</span><span className="negative">{summary.redDays} loss</span></strong><p>{summary.activeDays - summary.greenDays - summary.redDays} breakeven · {summary.activeDays} active days</p></Card></div>
+      <Card><SectionTitle title="Broker performance" subtitle="Current analysis scope · realized FIFO results before charges"/>
+        <div className="broker-performance-grid">{brokers.map(row => <article className="broker-performance-item" key={row.broker}>
+          <div className="broker-performance-heading"><h3>{row.broker === 'DEMO' ? 'Demo broker · synthetic' : row.broker}</h3><span>{row.slices} FIFO slices</span></div>
+          <dl><div><dt>Gross profit · winning slices</dt><dd className="positive">{exactMoney(row.grossProfit)}</dd></div>
+          <div><dt>Gross loss · losing slices</dt><dd className={row.grossLoss === '0' ? '' : 'negative'}>{exactMoney(row.grossLoss === '0' ? '0' : '-' + row.grossLoss)}</dd></div>
+          <div className="broker-performance-total"><dt>Total gross P&amp;L</dt><dd className={row.grossPnl.startsWith('-') ? 'negative' : row.grossPnl === '0' ? '' : 'positive'}>{exactMoney(row.grossPnl)}</dd></div></dl>
+          <p>{row.wins} wins · {row.losses} losses · {row.breakeven} breakeven</p>
+        </article>)}</div>{!brokers.length && <p className="fineprint">No broker results in this scope. Import executions to see their broker here.</p>}
+        <p className="fineprint">Grouped by the broker recorded on imported executions. Charges and open positions are excluded; this is gross P&amp;L. {demo ? 'Demo results are synthetic.' : 'Only brokers with saved, matched executions appear; import support currently covers Zerodha F&O.'}</p>
+      </Card>
       <Card><SectionTitle title="Instrument contribution" subtitle="Contracts ranked by realized gross P&L"/><BreakdownTable rows={breakdown(filtered, 'instrument').slice(0, 8)} onInstrument={value => { setSymbol(value); setTab('breakdowns'); }}/></Card>
     </>}
     {tab === 'calendar' && <Card><SectionTitle title="Trading calendar" subtitle="See the day, then inspect the executions behind it"/><PerformanceCalendar days={summary.days} selected={selectedDay} onSelect={setSelectedDay}/>

@@ -99,3 +99,17 @@ export function reportPeriods(matches: Match[], mode: 'daily' | 'weekly' | 'mont
   }
   return [...grouped].sort(([a], [b]) => b.localeCompare(a)).map(([date, rows]) => ({ date, rows, summary: advancedSummary(rows) }));
 }
+
+export function brokerPerformance(matches: Match[]) {
+  const groups = new Map<string, Match[]>();
+  for (const match of matches) {
+    const rows = groups.get(match.broker) || [];
+    rows.push(match); groups.set(match.broker, rows);
+  }
+  return [...groups].sort(([a], [b]) => a.localeCompare(b)).map(([broker, rows]) => {
+    const summary = advancedSummary(rows);
+    return { broker, slices: summary.slices, wins: summary.wins, losses: summary.losses,
+      breakeven: summary.breakeven, grossProfit: summary.grossProfit,
+      grossLoss: summary.grossLoss, grossPnl: summary.grossPnl };
+  });
+}

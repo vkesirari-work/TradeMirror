@@ -17,6 +17,12 @@ See the [current acceptance matrix](docs/V1_RELEASE.md) and [deferred checks / n
 
 ![TradeMirror dashboard preview](public/dashboard-preview.jpg)
 
+## Broker performance — 15 October 2026
+
+The overview now shows one card per recorded broker with gross winning P&L, gross losing P&L, total realized gross P&L and slice outcome counts. These cards follow the existing analysis filters and reconcile using exact decimal arithmetic; displayed money uses two decimals. Same-symbol executions from different brokers remain separate. The demo shows a clearly labelled synthetic broker.
+
+This does not add new broker import adapters: current production imports support Zerodha F&O. Only saved matched executions appear; open positions and charges are excluded, so broker net P&L is not inferred. Validation: 80 tests, lint, TypeScript and production build pass; public demo response checked. Live browser interaction/mobile visual acceptance remains blocked by the browser connection issue. Next: verify cards with owner-imported data and add additional broker adapters when actual export samples are available.
+
 ## Supplied reference palette — 15 October 2026
 
 Applied the neutral roles from the user-provided CSS: black page/header, #0f0f0f secondary surfaces, #1f1f1f panels, #2e2e2e inputs/hover, #3d3d3d borders/tooltips and #dbdbdb primary text. Secondary labels use lighter grey for readability. The supplied system/Trebuchet font stack and tabular numbers are applied. Existing blue/teal accents remain because their primitive hex definitions were absent from the paste; red bars use the supplied #f23645 with a lighter red for small loss text.

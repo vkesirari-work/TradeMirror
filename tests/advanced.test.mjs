@@ -2,7 +2,7 @@ import{test}from'node:test';import assert from'node:assert/strict';import{readFi
 const uri=source=>'data:text/javascript;base64,'+Buffer.from(stripTypeScriptTypes(source)).toString('base64');
 const daily=uri((await readFile(new URL('../lib/analytics/daily.ts',import.meta.url),'utf8')).replace(/^import type .*;$/gm,''));
 const source=(await readFile(new URL('../lib/analytics/advanced.ts',import.meta.url),'utf8')).replace(/^import type .*;$/gm,'').replace("'./daily'",JSON.stringify(daily));
-const{advancedSummary,filterMatches,breakdown,reportPeriods,holdingGroup}=await import(uri(source));
+const{advancedSummary,brokerPerformance,filterMatches,breakdown,reportPeriods,holdingGroup}=await import(uri(source));
 const match=(id,pnl,day='2026-10-07')=>({id:String(id),symbol:'NIFTY26OCT25000CE',broker:'ZERODHA',side:'LONG',quantity:'75',entryPrice:'100',exitPrice:'101',entryId:'entry-'+id,exitId:'exit-'+id,entryTime:day+'T09:00:00+05:30',exitTime:day+'T09:'+String(id+10).padStart(2,'0')+':00+05:30',grossPnl:pnl});
 test('advanced metrics retain exact gross values and define closed-slice drawdown, averages and profit factor',()=>{
  const summary=advancedSummary([match(1,'100','2026-10-05'),match(2,'-150','2026-10-06'),match(3,'50','2026-10-07')]);
@@ -42,4 +42,14 @@ test('holding groups use exact elapsed boundaries, preserve unavailable data and
 test('monthly comparisons group by IST exit month across year and leap boundaries',()=>{
  const rows=[{...match(1,'1'),exitTime:'2025-12-31T18:29:59Z'},{...match(2,'2'),exitTime:'2025-12-31T18:30:00Z'},{...match(3,'0.00000001'),exitTime:'2024-02-29T10:00:00Z'}];
  assert.deepEqual(reportPeriods(rows,'monthly').map(p=>[p.date,p.summary.grossPnl]),[['2026-01-01','2'],['2025-12-01','1'],['2024-02-01','0.00000001']]);assert.equal(rows[0].exitTime,'2025-12-31T18:29:59Z');assert.deepEqual(reportPeriods([],'monthly'),[]);
+});
+
+test('broker performance separates identical symbols across brokers and reconciles exact profit and loss',()=>{
+ const rows=[match(1,'100.00000001'),match(2,'-25'),{...match(3,'-40'),broker:'OTHER'},{...match(4,'10'),broker:'OTHER'},match(5,'0')];
+ const grouped=brokerPerformance(rows);
+ assert.deepEqual(grouped.map(r=>[r.broker,r.grossProfit,r.grossLoss,r.grossPnl,r.slices,r.breakeven]),[['OTHER','10','40','-30',2,0],['ZERODHA','100.00000001','25','75.00000001',3,1]]);
+ assert.equal(advancedSummary(rows).grossPnl,'45.00000001');
+ assert.deepEqual(brokerPerformance([]),[]);
+ assert.equal(brokerPerformance(filterMatches(rows,{start:'2026-10-08',end:'',symbol:'',side:'',option:''})).length,0);
+ assert.equal(rows[0].broker,'ZERODHA');
 });
