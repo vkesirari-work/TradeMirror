@@ -8,18 +8,18 @@ Computed review prompts need no AI API key. Paid AI is excluded from this editio
 
 | Check | Evidence / status |
 | --- | --- |
-| App checks | 57 tests, lint, TypeScript and Webpack production build pass |
+| App checks | 64 tests, lint, TypeScript and Webpack production build pass |
 | Owner snapshot save/reopen/deduplication | Passed in hosted account on 10 October; unchanged evidence reused one snapshot after refresh |
 | Direct report JSON/CSV | Implemented HTTP attachments; local production HTTP requests received real files on disk |
 | Report content | Independent Python Decimal/CSV comparison matched 12 synthetic slices and exact gross INR 890 to JSON; BOM/cost limits checked |
 | Account download protection | Signed-out request returns 401; owner-scoped selection and demo separation tested; no partial attachment on invalid/failing requests |
-| Reports integration | Server-rendered page includes correct download links and free computed prompts; interactive browser acceptance pending |
+| Reports integration | Server-rendered page includes native download links, request feedback and dedicated print navigation; browser error screens provide login/retry/back; interactive acceptance pending |
 | Hosted download | Public demo JSON/CSV attachments received after rollout; independent CSV/JSON comparison passed, and signed-out account access returned 401. Signed-in browser receipt remains pending |
 | Private journal/plan export | Direct authenticated HTTP attachment implemented; complete owner export, pagination, exact evidence, unlinked notes, row/byte/read errors and response mapping tested; actual signed-in file receipt pending |
 | Saved snapshot/statement JSON | Direct owner-and-ID-scoped HTTP attachment implemented; frozen snapshot metadata/payload and parsed statement values tested; signed-in file receipt pending |
 | Real Zerodha workbook | Stricter parser compatibility and independent source-cell Decimal comparison passed locally on 15 October; original bytes unchanged; hosted upload/save/reload pending |
 | Statement action persistence | Synthetic XLSX → actual server actions → local PostgreSQL migration passes preview/no-write, confirmation, deduplicated save/reload, owner isolation and failed-import/no-write checks; hosted acceptance pending |
-| Print/PDF | Control implemented; print artifact/layout acceptance pending |
+| Print/PDF | Dedicated current-period and frozen-snapshot views implemented; demo HTML, data integrity and private login redirects verified locally; actual dialog/PDF visual acceptance pending |
 | Mobile | Earlier emulated workspace checks passed; current export interaction and physical-device acceptance pending |
 
 Browser-control tools are unavailable in this session. Earlier Chrome file upload was blocked by missing extension file URL access. Neither condition is a reason to mark unperformed UI checks as passed. No private account data, credentials or source workbook is included in the repository or synthetic receipt artifacts.
@@ -60,3 +60,13 @@ A supplied other-debit/credit ledger is verified even when the summary adjustmen
 A new integration test feeds synthetic XLSX bytes through the actual preview/save/load actions into PostgreSQL running the actual migration. Its Supabase-shaped adapter is local; it does not prove a successful Supabase network call or browser upload. Preview leaves storage empty, confirmation is required, repeated bytes reuse the saved record and timestamp, reloading preserves exact amounts, owners stay separate, and invalid files do not change saved history. All 57 tests plus required app checks pass.
 
 Production-build HTTP smoke checks passed for the synthetic costs page, protected Costs redirect and unauthenticated statement-download denial. No production data, schema grants or paid-service settings changed. Real owner hosted upload, signed-in download receipt and physical device/print acceptance remain pending.
+
+## Eight-step print/download batch — 15 October 2026
+
+- Native export links have live request feedback. The message never claims the file was received. Browser failures use escaped HTML with login/retry/back controls, no-store caching and a restrictive content security policy. API errors remain JSON with their original status.
+- `/print/report` renders only the selected daily/weekly review. `demo=1` selects the independent fixture; account requests require login. A `snapshot` query loads frozen owner-scoped evidence through the same reader used by saved downloads. Demo and snapshot/current parameters cannot be mixed.
+- Print output includes scope, gross metrics, daily/cumulative evidence, review questions and missing-cost limits. It excludes workspace navigation, full report history, identity and journal content. The user initiates the print dialog; no external PDF service runs.
+- Snapshots must reconcile amounts, day/slice totals, cumulative totals, win rate/profit factor, valid dates and weekly boundaries before printing/exporting. Existing snapshots are not rewritten. Inconsistent evidence fails visibly.
+- Responsive preview and paper styles are implemented. Actual print pagination, generated PDF inspection, live status-announcement behavior, physical phones and successful owner browser downloads remain pending.
+
+All 64 tests and lint/TypeScript/Webpack build checks pass. Local production HTTP checks cover current/demo print views, invalid-source rejection, account/snapshot login redirects, native attachment success and browser/API error formats. React static rendering and pure-model tests are not substitutes for physical/browser acceptance. No database permissions, paid-service settings or private owner data changed. V1 remains a free-only candidate until its remaining owner/device checks are complete.

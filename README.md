@@ -757,3 +757,36 @@ flowchart LR
 Validation: 57 tests, lint, TypeScript and Webpack production build pass. The statement server actions now have a local PostgreSQL integration test using synthetic OOXML fixtures and the actual migration: preview does not save, ownership confirmation is required, repeated saves reuse ID/timestamp, saved values reload exactly, accounts remain isolated, and malformed/oversized/mismatched files do not add records. This test exercises the actual parser/actions with a small Supabase-shaped SQL adapter; it is not a hosted Supabase/browser acceptance test. The original owner workbook was rechecked read-only, with unchanged bytes and an independent source-cell Decimal comparison; it was not uploaded or committed.
 
 Local production HTTP checks verified the synthetic costs page, signed-out login redirect for Costs and denied private statement download. No production data, migration or grants were changed, and paid AI remains disabled. Remaining acceptance: real hosted statement upload/save/reload, signed-in file receipt, print/PDF and physical phones. Browser-control tools remain unavailable. Next: complete those checks when account/browser access is available.
+
+### Eight-step report and download batch — 15 October 2026
+
+| Step | Result |
+| --- | --- |
+| 1. Download feedback | Free report/journal/snapshot/statement links announce a download request without claiming receipt; ordinary attachment links still work without JavaScript. |
+| 2. Export error recovery | Browser requests receive a responsive login/retry/back screen; API callers retain JSON errors and original status codes. Errors never become attachments. |
+| 3. Current report print view | Reports opens a dedicated selected daily/weekly review, with metrics, daily/cumulative evidence, prompts and scope limits. Full report history and workspace navigation are excluded. |
+| 4. Frozen snapshot printing | Saved report history links to a printable frozen snapshot using the same owner-and-record reader as saved exports. Later imports do not change its printed evidence. |
+| 5. Public demo support | Explicit demo print requests read only synthetic fixtures. Account print views require a validated session; mixed demo/snapshot selections are rejected. |
+| 6. Mobile and paper styles | Responsive preview, touch-sized controls, white paper styles, hidden toolbars, repeated table headings and row-break rules implemented. Physical-device and actual PDF visual checks remain pending. |
+| 7. Integrity and verification | Snapshot validation reconciles gross profit/loss, win rate, profit factor, day/slice totals, cumulative values, real dates and Monday-start weekly bounds. 64 tests plus required app checks pass. |
+| 8. Documentation and delivery | README diagrams and acceptance checklist updated; verified batch committed/pushed through the normal phase workflow. |
+
+```mermaid
+flowchart TD
+    Reports[Choose a daily or weekly period] --> Current[Printable current-history review]
+    Saved[Open a saved report snapshot] --> Owner[Validate owner and record ID]
+    Owner --> Frozen[Printable frozen snapshot]
+    Current --> Integrity[Reconcile selected evidence and summary]
+    Frozen --> Integrity
+    Integrity --> Preview[Dedicated print preview]
+    Preview --> Browser[User opens Print / Save PDF]
+    Download[Request an export] --> Result{Export available?}
+    Result -->|Yes| Attachment[Native private file attachment]
+    Result -->|No| Recovery[Browser login or retry/back screen]
+```
+
+[Open the synthetic weekly print example](https://trademirror-ten.vercel.app/print/report?mode=weekly&date=2026-10-05&demo=1). Private print URLs use the validated account session; snapshot identity alone grants no access. `/print` participates in session refresh and no-store response handling. Printable output is aggregate execution evidence, not journal notes, raw CSV or a broker-certified net statement. Printing is user initiated; no PDF provider is called and paid AI stays disabled.
+
+Validation: 64 tests, lint, TypeScript and Webpack production build pass. Local production HTTP checks verified daily/weekly demo print HTML, matching selected values, login redirects for private current/snapshot print, rejection of malformed/mixed-source requests, browser HTML versus API JSON error negotiation, and unchanged successful attachment responses. Static React rendering checks scope labels, frozen values, escaped error content and print controls. Shared saved-record reader tests retain cross-owner isolation. No production uploads, schema grants, paid service, or database migrations were added.
+
+Limits: browser control is unavailable in this session. Actual print-dialog/PDF pagination, live click-feedback announcements, signed-in private file receipt, real statement upload/save/reload and physical-phone acceptance are still pending; server HTML and unit tests do not prove those checks. Existing snapshots are validated more strictly on read, without rewriting them. Inconsistent records fail visibly rather than printing misleading totals. V2/V3 remain planned. Next: owner/browser/device acceptance of the now-reviewable print/download flow.

@@ -9,8 +9,8 @@ const read=async p=>(await readFile(new URL(p,import.meta.url),'utf8')).replace(
 const daily=uri(await read('../lib/analytics/daily.ts'));
 const advanced=uri((await read('../lib/analytics/advanced.ts')).replace("'./daily'",JSON.stringify(daily)));
 const {reviewRange}=await import(uri((await read('../lib/journal/range.ts')).replace("'../analytics/daily'",JSON.stringify(daily))));
-const {reportSelection,reportSnapshot,validateSnapshot}=await import(uri((await read('../lib/reports/snapshot.ts')).replace("'../analytics/advanced'",JSON.stringify(advanced))));
-const {reviewEvidence,responseReview,validateAiReview}=await import(uri((await read('../lib/reports/ai.ts')).replace("'../analytics/advanced'",JSON.stringify(advanced))));
+const {reportSelection,reportSnapshot,validateSnapshot}=await import(uri((await read('../lib/reports/snapshot.ts')).replace("'../analytics/advanced'",JSON.stringify(advanced)).replace("'../analytics/daily'",JSON.stringify(daily))));
+const {reviewEvidence,responseReview,validateAiReview}=await import(uri((await read('../lib/reports/ai.ts')).replace("'../analytics/advanced'",JSON.stringify(advanced)).replace("'../analytics/daily'",JSON.stringify(daily))));
 const match=(id,time,pnl)=>({id,broker:'ZERODHA',symbol:'NIFTY',side:'LONG',quantity:'1',entryPrice:'100',exitPrice:'101',entryTime:'2026-10-05T09:00:00+05:30',exitTime:time,entryId:'entry',exitId:'exit',grossPnl:pnl});
 const rows=[match('a','2026-10-05T18:45:00Z','99999999999999.99'),match('b','2026-10-07T10:00:00+05:30','-99999999999999.98')];
 test('review ranges use IST boundaries and reject impossible or reversed dates without showing partial results',()=>{
@@ -70,8 +70,8 @@ test('XLSX reader preserves numeric cell text and rejects corrupt archives, path
 test('AI action requires consent, authenticates, rebuilds evidence server-side and enforces quota before provider calls',async()=>{
  const state={user:{id:'owner'},quota:true,calls:0,quotaCalls:0,body:null};const stateKey='__tradeMirrorAiTest';globalThis[stateKey]=state;
  const stub=uri(`export async function createClient(){return {rpc:async()=>{globalThis.${stateKey}.quotaCalls++;return {data:globalThis.${stateKey}.quota,error:null}}}};export async function getSignedInUser(){return globalThis.${stateKey}.user};export async function getAccountAnalytics(){return {result:{matches:${JSON.stringify(rows)}}}}`);
- const snapshot=uri((await read('../lib/reports/snapshot.ts')).replace("'../analytics/advanced'",JSON.stringify(advanced)));
- const ai=uri((await read('../lib/reports/ai.ts')).replace("'../analytics/advanced'",JSON.stringify(advanced)));
+ const snapshot=uri((await read('../lib/reports/snapshot.ts')).replace("'../analytics/advanced'",JSON.stringify(advanced)).replace("'../analytics/daily'",JSON.stringify(daily)));
+ const ai=uri((await read('../lib/reports/ai.ts')).replace("'../analytics/advanced'",JSON.stringify(advanced)).replace("'../analytics/daily'",JSON.stringify(daily)));
  let source=await read('../app/reports/ai-actions.ts');for(const path of ['@/lib/supabase/server','@/lib/auth/session','@/lib/workspace/analytics'])source=source.replace(JSON.stringify(path),JSON.stringify(stub)).replace(`'${path}'`,JSON.stringify(stub));source=source.replace("'@/lib/reports/snapshot'",JSON.stringify(snapshot)).replace("'@/lib/reports/ai'",JSON.stringify(ai));
  const {generateAiReview}=await import(uri(source));const originalFetch=globalThis.fetch,oldKey=process.env.OPENAI_API_KEY,oldModel=process.env.OPENAI_MODEL,oldPaid=process.env.TRADEMIRROR_ENABLE_PAID_AI;
  globalThis.fetch=async(url,options)=>{assert.equal(url,'https://api.openai.com/v1/responses');state.calls++;state.body=JSON.parse(options.body);return {ok:true,json:async()=>({status:'completed',output:[{type:'message',content:[{type:'output_text',text:JSON.stringify({observations:Array.from({length:3},()=>({evidence_id:'limits',reflection:'Source scope is limited.',question:'Is the imported history complete?'}))})}]}]})};};

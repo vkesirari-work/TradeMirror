@@ -6,7 +6,7 @@ const uri=source=>'data:text/javascript;base64,'+Buffer.from(stripTypeScriptType
 const read=async path=>(await readFile(new URL(path,import.meta.url),'utf8')).replace(/^import type .*;$/gm,'');
 const daily=uri(await read('../lib/analytics/daily.ts'));
 const advanced=uri((await read('../lib/analytics/advanced.ts')).replace("'./daily'",JSON.stringify(daily)));
-const snapshot=uri((await read('../lib/reports/snapshot.ts')).replace("'../analytics/advanced'",JSON.stringify(advanced)));
+const snapshot=uri((await read('../lib/reports/snapshot.ts')).replace("'../analytics/advanced'",JSON.stringify(advanced)).replace("'../analytics/daily'",JSON.stringify(daily)));
 const statement=uri((await read('../lib/costs/zerodha.ts')).replace("'../analytics/daily'",JSON.stringify(daily)));
 const http=uri(await read('../lib/exports/http.ts'));
 const {reportSnapshot}=await import(snapshot);
@@ -36,12 +36,15 @@ export async function createClient(){
  }};
 }
 export async function exportJournal(){return globalThis.__tmPrivateDownloads.journal;}`);
-let source=await read('../app/api/exports/saved/route.ts');
-for(const path of ['@/lib/auth/session','@/lib/supabase/server'])source=source.replace(`'${path}'`,JSON.stringify(stub));
-source=source.replace("'@/lib/reports/snapshot'",JSON.stringify(snapshot)).replace("'@/lib/costs/zerodha'",JSON.stringify(statement)).replace("'@/lib/exports/http'",JSON.stringify(http));
+let readerSource=await read('../lib/exports/saved-record.ts');
+for(const path of ['@/lib/auth/session','@/lib/supabase/server'])readerSource=readerSource.replace(`'${path}'`,JSON.stringify(stub));
+readerSource=readerSource.replace("'@/lib/reports/snapshot'",JSON.stringify(snapshot)).replace("'@/lib/costs/zerodha'",JSON.stringify(statement));
+const reader=uri(readerSource);const {readSavedExport}=await import(reader);
+const source=(await read('../app/api/exports/saved/route.ts')).replace("'@/lib/exports/saved-record'",JSON.stringify(reader)).replace("'@/lib/exports/http'",JSON.stringify(http));
 const {GET:saved}=await import(uri(source));
 let journalSource=await read('../app/api/exports/journal/route.ts');journalSource=journalSource.replace("'@/app/journal/export'",JSON.stringify(stub)).replace("'@/lib/exports/http'",JSON.stringify(http));
-const {GET:journal}=await import(uri(journalSource));
+const {GET:journalGet}=await import(uri(journalSource));
+const journal=()=>journalGet(new Request('https://example.test/api/exports/journal'));
 const request=(kind='snapshot',value=id)=>new Request('https://example.test/api/exports/saved?'+new URLSearchParams({kind,id:value}));
 const noFile=async(response,status)=>{assert.equal(response.status,status);assert.equal(response.headers.get('content-disposition'),null);assert.match(response.headers.get('cache-control'),/no-store/);assert.ok(!(await response.text()).includes('private backend diagnostic'));};
 test('saved private downloads validate selection and authenticate before database reads',async()=>{
@@ -67,4 +70,13 @@ test('journal route returns bounded complete JSON attachments and maps auth, siz
  let response=await journal();assert.equal(response.status,200);assert.match(response.headers.get('content-disposition'),/attachment; filename="trademirror-journal-\d{4}-\d{2}-\d{2}\.json"/);assert.equal((await response.json()).format,'trademirror-journal');
  for(const [error,status] of [['Log in again to export your journal.',401],['Journal export supports up to 1,000 annotations.',413],['Journal export exceeds the 5 MB limit.',413],['private backend diagnostic',503]]){state.journal={error};await noFile(await journal(),status);}
  state.journal={data:'malformed JSON'};await noFile(await journal(),503);state.journal={};await noFile(await journal(),503);
+});
+
+test('shared frozen-record reader preserves owner checks for printable reports and rejects synthetic scope in account snapshots',async()=>{
+ state.user={id:'owner-b'};let result=await readSavedExport('snapshot',id);assert.equal(result.ok,false);assert.equal(result.status,404);
+ state.user={id:'owner-a'};result=await readSavedExport('snapshot',id);assert.equal(result.ok,true);assert.deepEqual(result.record.payload,payload);
+ state.tables.report_snapshots[0].payload={...payload,scope:'synthetic demo'};await noFile(await saved(request()),422);state.tables.report_snapshots[0].payload=payload;
+});
+test('browser export errors offer a return path and login without turning failures into attachments',async()=>{
+ state.user=null;const response=await saved(new Request(request(),{headers:{accept:'text/html'}}));assert.equal(response.status,401);assert.match(response.headers.get('content-type'),/text\/html/);assert.equal(response.headers.get('content-disposition'),null);const html=await response.text();assert.ok(html.includes('Log in to download'));assert.ok(html.includes('href="/login"'));assert.ok(html.includes('Back to Reports'));assert.ok(!html.includes('private backend diagnostic'));state.user={id:'owner-a'};
 });

@@ -6,14 +6,15 @@ const uri=source=>'data:text/javascript;base64,'+Buffer.from(stripTypeScriptType
 const read=async path=>(await readFile(new URL(path,import.meta.url),'utf8')).replace(/^import type .*;$/gm,'');
 const daily=uri(await read('../lib/analytics/daily.ts'));
 const advanced=uri((await read('../lib/analytics/advanced.ts')).replace("'./daily'",JSON.stringify(daily)));
-const snapshot=uri((await read('../lib/reports/snapshot.ts')).replace("'../analytics/advanced'",JSON.stringify(advanced)));
+const snapshot=uri((await read('../lib/reports/snapshot.ts')).replace("'../analytics/advanced'",JSON.stringify(advanced)).replace("'../analytics/daily'",JSON.stringify(daily)));
 const csv=uri(await read('../lib/analytics/export.ts'));
+const http=uri(await read('../lib/exports/http.ts'));
 const fill={id:'sample',broker:'ZERODHA',symbol:'=SYNTHETIC',side:'LONG',quantity:'65',entryPrice:'126.8500',exitPrice:'127.7000',entryTime:'2026-10-05T09:30:00+05:30',exitTime:'2026-10-05T09:31:00+05:30',entryId:'entry',exitId:'exit',grossPnl:'55.25'};
 const state={user:null,reads:0,fail:false};globalThis.__tmDownloadTest=state;
 const stub=uri(`export async function getSignedInUser(){return globalThis.__tmDownloadTest.user;}export async function getAccountAnalytics(){globalThis.__tmDownloadTest.reads++;if(globalThis.__tmDownloadTest.fail)throw new Error('private backend diagnostic');return {result:{matches:[${JSON.stringify({...fill,grossPnl:'-10'})}]}};}export const advancedDemo={matches:[${JSON.stringify(fill)}]};`);
 let source=await read('../app/api/exports/report/route.ts');
 for(const path of ['@/lib/auth/session','@/lib/workspace/analytics','@/data/advanced-demo'])source=source.replace(`'${path}'`,JSON.stringify(stub));
-source=source.replace("'@/lib/reports/snapshot'",JSON.stringify(snapshot)).replace("'@/lib/analytics/export'",JSON.stringify(csv));
+source=source.replace("'@/lib/reports/snapshot'",JSON.stringify(snapshot)).replace("'@/lib/analytics/export'",JSON.stringify(csv)).replace("'@/lib/exports/http'",JSON.stringify(http));
 const {GET}=await import(uri(source));
 const request=(query='')=>new Request('https://example.test/api/exports/report?mode=weekly&date=2026-10-05&format=json'+query);
 test('direct report downloads require account auth; public demo never loads owner evidence',async()=>{
