@@ -17,6 +17,12 @@ See the [current acceptance matrix](docs/V1_RELEASE.md) and [deferred checks / n
 
 ![TradeMirror dashboard preview](public/dashboard-preview.jpg)
 
+## Charcoal theme refinement — 15 October 2026
+
+Inspired by the requested [TradingView reference](https://in.tradingview.com/), the workspace now uses neutral charcoal surfaces, clear grey borders, restrained blue controls and teal/red result states. Smaller corner radii, flat cards, readable secondary labels and visible keyboard focus replace the previous blue-tinted slate styling. Money rounding, charts and responsive layouts remain in place.
+
+Validation: ESLint, TypeScript and production build pass. Live browser visual/interaction acceptance remains blocked by the browser connector’s request-header policy error; physical-device checks are still pending. Next: desktop/phone visual acceptance and any spacing adjustments based on that review.
+
 ## Visual refresh — 15 October 2026
 
 Brightness adjustment: bright white surfaces have been replaced with muted slate panels, softer text and restrained indigo controls. The chart and two-decimal fixes remain in place. Lint, TypeScript and production build pass; live visual acceptance remains pending the browser connector recovery.
