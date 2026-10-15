@@ -49,3 +49,5 @@ Journal exports retain the existing complete-export limits. HTTP status 401 deno
 Five new route tests use synthetic records. Real saved-record/statement persistence and signed-in file receipt are not claimed by these tests. The current browser-tool limitation remains; finish owner/device acceptance before fully accepting V1.
 
 Local production HTTP verification: journal, snapshot and statement endpoints returned 401 without credentials; malformed saved-record input returned 400. All errors had no attachment, no-store caching and MIME sniffing protection. The existing public demo report download still returned its expected synthetic summary. Successful signed-in private file receipt remains pending.
+
+Hosted follow-up: after rollout, journal, saved-snapshot and saved-statement export endpoints all returned 401 without credentials, with no attachment and no-store caching. This verifies hosted access denial only; successful owner download remains pending.
