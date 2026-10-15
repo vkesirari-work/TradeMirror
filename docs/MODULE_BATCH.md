@@ -6,10 +6,10 @@ Each module has its own ordered commit. These expand the accepted free desktop V
 | --- | --- | --- |
 | 1. Period comparison | Weekly/monthly gross comparison, independent metrics, swap and date links | Browser production demo passed; no capital return or net inference |
 | 2. Saved journal review | Private search, tags, linked/unlinked retention, pagination | Owner-only loader and anonymous redirect; bounded 1,000-note export source |
-| 3. Plan library / risk | Multiple templates, explicit per-slice stop/target/budget, independent export and draft guards | Migration applied after explicit confirmation; RLS enabled and 3 policies per table verified. Live owner save acceptance is tracked below |
+| 3. Plan library / risk | Multiple templates, explicit per-slice stop/target/budget, independent export and draft guards | Migration applied after explicit confirmation; RLS enabled and 3 policies per table verified. Owner template save/reload, synthetic risk exact-decimal save/reload and real export receipt passed |
 | 4. Recorded process | Question-wise checkbox completion, linked weekly trend, filter integration | Self-reported, no compliance/discipline score; unlinked evidence excluded from dated trends |
 | 5. Broker sync pilot | Guarded current-day Kite preview/refetch/save with existing deduplication pipeline | Disabled by default. Owner developer access and server configuration missing; no live API acceptance, OAuth or background sync claimed |
-| 6. PWA | Manifest/icons, install instructions/prompt, explicit update controls, generic offline fallback | Local Chrome install prompt offered and worker update action verified; physical installation/offline tests remain deferred |
+| 6. PWA | Manifest/icons, install instructions/prompt, explicit update controls, generic offline fallback | Local and hosted Chrome install prompts offered; worker update action verified locally. Physical installation/offline tests remain deferred |
 
 ```mermaid
 flowchart LR
@@ -36,3 +36,21 @@ Implementation follows the [Next.js PWA guide](https://nextjs.org/docs/app/guide
 - Local worker offline behavior is exercised through isolated lifecycle/network tests. Real-device offline transition and update installation remain manual acceptance items.
 - Broker sync remains disabled until owner-supplied supported API access is configured through an approved secure process. Never paste keys/tokens into chat or commit them. CSV remains available without it; see [broker setup](BROKER_SYNC.md).
 - Manual note reassignment, full backup restore, verified rule compliance, multi-user OAuth, unattended broker jobs and broker-certified cost allocation remain outside this batch.
+
+
+## Ordered delivery commits
+
+1. `1d49cac` — weekly/monthly period comparison.
+2. `7d020a2` — retained journal review.
+3. `d17ae12` — plan library and risk inputs.
+4. `393f803` — recorded process tracking.
+5. `f67173d` — disabled-by-default broker sync pilot.
+6. `2f78e92` — installable PWA.
+
+## Hosted owner acceptance and final validation
+
+After rollout, the owner journal review loaded its retained annotation and recorded checklist trend correctly. The live plan library saved a starter Breakout checklist and recovered its exact questions after full reload. Risk inputs were saved and reloaded with eight decimal places using only the existing explicitly synthetic EXAMPLE executions; test values were then cleared to blank and saved. No real execution, financial statement or existing journal note was edited. One starter library template and one blank synthetic risk record remain. The actual plan/risk export was received locally and verified against that final state, without an owner identifier. Private receipts/screenshots remain outside Git.
+
+The live Connections page shows Not connected and disables preview without the required owner API setup. No broker credentials, authorization, subscription or live sync request occurred. Hosted PWA manifest returned 200 and Chrome exposed the install prompt. No app was installed onto a physical device in this session.
+
+A final navigation correction preserves explicitly included example scope in period drilldowns and full-history note links, so synthetic evidence does not disappear on opening Trades. Static-render regression tests verify scope and IST date boundaries. Final validation: 78 tests, lint, explicit TypeScript and Webpack production build pass. Physical-device and live-broker prerequisites above remain open, with no claims of completed acceptance.

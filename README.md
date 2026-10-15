@@ -17,6 +17,12 @@ See the [current acceptance matrix](docs/V1_RELEASE.md) and [deferred checks / n
 
 ![TradeMirror dashboard preview](public/dashboard-preview.jpg)
 
+## Latest expansion — six ordered modules
+
+Period comparison, saved journal review, multi-template plans and recorded risk, transparent process tracking, an opt-in broker sync pilot, and PWA support are implemented in six separate commits. Plan/risk storage is live with verified owner RLS and hosted save/reload/export acceptance. Broker sync remains disabled pending supported owner API configuration; it is not automatic multi-user OAuth. PWA install prompts/manifest are live; physical-device install/offline acceptance remains deferred.
+
+See [module status, commit order and remaining prerequisites](docs/MODULE_BATCH.md). No paid API or broker subscription has been enabled.
+
 ## Live deployment
 
 - **Website:** [trademirror-ten.vercel.app](https://trademirror-ten.vercel.app)
@@ -304,12 +310,12 @@ The roadmap is a proposed sequence, not a release-date commitment. Later version
 | 2 | Supabase authentication, PostgreSQL schema, user isolation and access policies | **Connected; login accepted** |
 | 3 | Zerodha CSV parsing, validation, import history, duplicate protection | **Parsing, saving and history active; owner upload verified** |
 | 4 | Deterministic trade matching, partial fills, open positions, reconciliation | **FIFO active; statement comparison implemented; certified settlement reconciliation pending** |
-| 5 | P&L and cost analytics with explicit estimated / confirmed cost handling | **Gross metrics active; statement costs/net implemented; owner upload acceptance pending** |
+| 5 | P&L and cost analytics with explicit estimated / confirmed cost handling | **Gross metrics and statement costs/net active; hosted owner persistence accepted** |
 | 6 | Connect the dashboard and filters to actual user data | **Gross dashboard and matched journal connected; net analytics pending** |
 | 7 | Persistent notes and trade detail metrics supported by available data | **Notes, tags, custom plan and strategy comparisons active** |
 | 8 | AI behaviour interpretation from computed, structured metrics | **Optional adapter retained; disabled and excluded from free-only V1** |
-| 9 | Daily / weekly review generation and report history | **Computed reviews and snapshot storage implemented; save/reload acceptance pending** |
-| 10 | End-to-end validation, security checks, deployment and onboarding | **Onboarding active; V1 acceptance in progress** |
+| 9 | Daily / weekly review generation and report history | **Computed reviews and snapshot history active; hosted save/reload accepted** |
+| 10 | End-to-end validation, security checks, deployment and onboarding | **Desktop free V1 accepted; physical-device checks deferred** |
 
 ### V1.1 — Zerodha sync & final reports
 
@@ -872,3 +878,8 @@ Settings → Broker connections implements an opt-in, operator-configured, singl
 Validation: 76 tests, lint, TypeScript and production build; VM worker lifecycle tests verify private-data exclusion, offline fallback and unrelated-cache preservation. Local production HTTP verified manifest/icons/offline MIME types and no-cache worker headers. Chrome offered the actual install prompt and its update action reported readiness; physical installation and real-device offline/update checks remain deferred. The viewport override did not take effect for this install-page run, so no new phone-layout acceptance is claimed for this module. No paid service or notification permission.
 
 [Six-module status, diagram and activation notes](docs/MODULE_BATCH.md). Module 3 migration is now applied with explicit approval; live RLS/policy verification passed, superseding the earlier prepared-only entry. Module 5 remains disabled pending broker access. Next: hosted owner library/risk/review acceptance and physical-device checks when available.
+
+
+### Six-module final acceptance follow-up
+
+78 tests, lint, TypeScript and production build pass. Hosted owner journal review, starter template save/reload, exact risk persistence on existing synthetic example evidence, and actual library/risk export receipt are accepted. Synthetic risk test values were cleared back to blank; existing real trades and journal notes were not changed. Full-history journal links now include examples where needed, and period links preserve explicit example scope. The new regression tests cover those links and IST exit dates. Hosted PWA manifest/install prompt are available. Live broker authorization and physical device/offline/update installation remain open; see the module handoff.

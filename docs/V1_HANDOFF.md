@@ -31,7 +31,7 @@ Record device, OS/browser version, pass/fail, visible error and reproduction ste
 - Statement-level net is separate from FIFO gross; no per-slice/day charge allocation or invented reconciliation.
 - Only the supported Zerodha F&O workbook layout is accepted.
 - Journal export is not a full account backup; restore is unsupported.
-- Broker sync, replay/MFE/MAE, richer plans, optional paid AI, PWA and native apps are planned future work, not completion requirements for this free scope.
+- Broker sync, replay/MFE/MAE, richer plans, optional paid AI and native apps are planned future work, not completion requirements for this free scope.
 
 ## Next session
 
@@ -40,3 +40,8 @@ Run the physical-device table when devices are available. Otherwise the current 
 ## Final checkpoint validation
 
 15 October 2026: all 64 automated tests, ESLint, explicit TypeScript check and Webpack production build pass. Documentation links and whitespace checks pass. This checkpoint changes documentation only; hosted acceptance evidence is recorded in the release matrix.
+
+
+## Expansion checkpoint
+
+The six-module expansion is documented in [MODULE_BATCH.md](MODULE_BATCH.md): PWA, period comparison, saved journal review, multiple templates, optional recorded risk and process tracking are now implemented. The broker sync pilot exists but remains disabled pending owner API configuration. Plan/risk migration and hosted owner save/reload/export passed. Final checks: 78 tests, lint, TypeScript and production build. Physical devices and live broker authorization remain required for their respective acceptance; the earlier native-app guidance remains future scope.
