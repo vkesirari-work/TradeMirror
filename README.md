@@ -856,3 +856,10 @@ Migration `202610150001_review_modules.sql` is prepared and tested, not yet appl
 Saved journal review now summarizes checked/recorded answers by exact question text and linked IST exit week. Existing search/tag/connection filters apply to both entries and summary. Unlinked evidence is excluded only from dated trends; its saved answers remain inspectable. Unchecked may mean unassessed, retrospective entries do not prove pre-entry compliance, and no discipline/rule-violation score is invented. The existing performance review now respects its selected date range. An independent `/demo/journal-review` uses three synthetic entries without account reads/writes.
 
 Validation: 71 tests, lint, TypeScript and production build; actual UI verified linked/unlinked counts, empty search, weekly exclusions and 390px layout without overflow. No migration or new permissions. Next: broker sync pilot with explicit configuration/access limits.
+
+
+### Module 5 — Broker sync pilot
+
+Settings → Broker connections implements an opt-in, operator-configured, single-owner current-day Kite execution preview/save flow. It verifies broker profile ownership first, bounds responses/timeouts, retains numeric lexemes, validates supported NFO/BFO rows through Console normalization and counts excluded markets. Saving re-fetches a fingerprint and uses the existing atomic duplicate-safe import RPC. Broker reads use fixed GET endpoints only; no order actions. Default is disabled and CSV remains free.
+
+[Setup and limits](docs/BROKER_SYNC.md): current-day trade access and daily session expiry follow official Kite docs. This is not multi-user OAuth, historical backfill or unattended sync. Live developer access/credential configuration and acceptance remain blocked; no credentials, subscription or broker requests were created for the owner. Validation covers exact normalization, account mismatch before trades, expiry/rate/size failures and the action enable/owner/confirmation/fingerprint guards with mocked transport. Required app checks and route denial are recorded at this checkpoint. Next: PWA installation and private-data-safe offline fallback.
