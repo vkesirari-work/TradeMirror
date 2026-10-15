@@ -17,6 +17,10 @@ See the [current acceptance matrix](docs/V1_RELEASE.md) and [deferred checks / n
 
 ![TradeMirror dashboard preview](public/dashboard-preview.jpg)
 
+## Compact broker summary and top info — 15 October 2026
+
+Moved the Metrics info control into the top Analysis scope bar; its popover opens below the control. Broker cards now show a compact Profit / Loss / Total gross row, slice count and win/loss counts, with a sample label in demo. The section subtitle retains the before-charges disclosure; calculation details remain in the info control. Validation: lint, TypeScript, build and rendered demo checks pass. Live hover/mobile visual acceptance remains pending the browser connector recovery.
+
 ## Demo intro polish — 15 October 2026
 
 Replaced the oversized promotional intro with a compact heading, one-line sample-data explanation, a three-step onboarding row and a subtle Home link. The header wraps for narrow screens and keeps the existing login/signup actions in the demo banner. Validation: lint, TypeScript, production build and rendered demo heading/link checks pass. Browser visual acceptance remains deferred until the connector recovers.
