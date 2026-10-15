@@ -19,7 +19,9 @@ See the [current acceptance matrix](docs/V1_RELEASE.md) and [deferred checks / n
 
 ## Visual refresh — 15 October 2026
 
-The demo and account workspace now use a light, responsive theme with indigo navigation, consistent green profit/red loss states, clearer cards and sentence-case labels. Dashboard money displays round to two decimal places using decimal-safe rounding (₹58.33333333 → ₹58.33); calculations, exports and the chart’s explicitly labelled exact-values table retain their original precision.
+Brightness adjustment: bright white surfaces have been replaced with muted slate panels, softer text and restrained indigo controls. The chart and two-decimal fixes remain in place. Lint, TypeScript and production build pass; live visual acceptance remains pending the browser connector recovery.
+
+The demo and account workspace now use a low-glare slate, responsive theme with indigo navigation, consistent green profit/red loss states, clearer cards and sentence-case labels. Dashboard money displays round to two decimal places using decimal-safe rounding (₹58.33333333 → ₹58.33); calculations, exports and the chart’s explicitly labelled exact-values table retain their original precision.
 
 Daily bars use the sign of each day’s gross result; cumulative results use an indigo line. Chart mode changes reset the plotted chart, with a compact tooltip and no oversized hover overlay or entry animation. Best/worst dates use readable IST labels and trading-day counts distinguish green/red days.
 
