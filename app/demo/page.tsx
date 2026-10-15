@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { ArrowLeft, CalendarDays, Layers, ShieldCheck } from 'lucide-react';
 import { AdvancedWorkspace } from '@/components/dashboard/advanced-workspace';
 import { advancedDemo } from '@/data/advanced-demo';
 
@@ -7,9 +7,9 @@ export const metadata = { title: 'Interactive demo', description: 'Explore Trade
 export default function DemoPage() {
   return <>
     <header className="demo-intro">
-      <div className="demo-intro-top"><h1>Explore your trading edge.</h1><Link href="/" className="demo-home-link"><ArrowLeft size={14}/>Home</Link></div>
-      <p>See profit, losses and broker results with sample trades.</p>
-      <div className="demo-intro-flow" aria-label="Get started with your own data"><span>For your own results</span><ol><li>Log in</li><li><ArrowRight size={12} aria-hidden="true"/>Import CSV</li><li><ArrowRight size={12} aria-hidden="true"/>Review results</li></ol></div>
+      <div className="demo-intro-top"><h1>Performance overview.</h1><Link href="/" className="demo-home-link"><ArrowLeft size={14}/>Home</Link></div>
+      <p>Understand your results. Find what’s working.</p>
+      <ul className="demo-context" aria-label="Demo data scope"><li><ShieldCheck size={13}/>Synthetic data</li><li><Layers size={13}/>{advancedDemo.matches.length} matched slices</li><li><CalendarDays size={13}/>September 2026 · IST</li></ul>
     </header>
     <AdvancedWorkspace result={advancedDemo} demo/>
   </>;

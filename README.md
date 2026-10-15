@@ -17,6 +17,12 @@ See the [current acceptance matrix](docs/V1_RELEASE.md) and [deferred checks / n
 
 ![TradeMirror dashboard preview](public/dashboard-preview.jpg)
 
+## Final demo redesign — 15 October 2026
+
+The demo now has a restrained header with sample-data scope, four core metric cards, underline navigation and a chart-led overview. Scope filters are collapsed until requested on desktop and mobile. Win/loss results omit duplicate monetary totals already shown by broker; broker and instrument summaries share a supporting row on wide screens. Compact day highlights stack on phones. Existing chart modes, calendar, breakdowns, comparison, export and top Metrics info remain available. Styles are scoped to the demo; account analytics retain their full metrics.
+
+Validation: 80 tests, lint, TypeScript and production build pass; rendered demo checks confirm scope labels, four metrics, retained chart/broker controls and login links. Browser hover/mobile visual acceptance remains pending the connector recovery. Next session: live desktop/phone visual review; no further modules are required for this visual phase.
+
 ## Compact broker summary and top info — 15 October 2026
 
 Moved the Metrics info control into the top Analysis scope bar; its popover opens below the control. Broker cards now show a compact Profit / Loss / Total gross row, slice count and win/loss counts, with a sample label in demo. The section subtitle retains the before-charges disclosure; calculation details remain in the info control. Validation: lint, TypeScript, build and rendered demo checks pass. Live hover/mobile visual acceptance remains pending the browser connector recovery.
