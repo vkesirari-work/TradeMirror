@@ -688,3 +688,23 @@ The owner chose free-only work. Reports now use deterministic computed review pr
 Validation: 46 tests, lint, TypeScript and Webpack production build. The provider action test verifies that free mode neither calls the provider nor consumes an AI quota slot. Journal export tests verify authentication, owner filtering, pagination, exact matching evidence, retained unlinked notes and fail-without-partial-output row/byte/read limits. Tests use synthetic data only. Local production browser checks verified the free review label, calculated questions and Daily tab update; paid AI controls are absent. Download receipt capture still timed out, so file receipt is not claimed.
 
 Free feature implementation is ready for use; acceptance remains explicit: owner statement upload/save/reload is blocked by browser file access, downloaded-file receipt/content and print/PDF need confirmation, and physical-device checks remain pending. Paid AI is no longer a V1 completion dependency. Snapshot save/reopen/deduplication already passed. Per-day/per-slice net allocation and backup restore remain unsupported. Earlier AI activation instructions are historical, optional future setup—not required steps for this edition.
+
+### Direct report file downloads — 15 October 2026
+
+Reports now use same-origin HTTP attachments for selected-period JSON and execution CSV instead of temporary client-side blob links. `/api/exports/report` validates the period/format, requires a validated session for account history and rebuilds real-import evidence server-side. Explicit demo requests use only the independent synthetic fixture, without account reads. Responses use attachment filenames, no-store caching and MIME sniffing protection. Invalid selections and failed reads return an error without a partial attachment. Downloads reflect current server history; refresh the displayed report after a new import, or use a saved snapshot for frozen evidence.
+
+```mermaid
+flowchart LR
+    Report[Selected daily or weekly report] --> Download[Direct JSON or CSV download]
+    Download --> Source{Explicit demo request?}
+    Source -->|Yes| Fixture[Independent synthetic fixture]
+    Source -->|No| Auth[Validated account session]
+    Auth --> Evidence[Owner-scoped real-import evidence]
+    Fixture --> Period[Validate selected period]
+    Evidence --> Period
+    Period --> File[No-store HTTP file attachment]
+```
+
+Validation: 48 tests, lint, TypeScript and Webpack production build pass. Production-build HTTP checks received both demo files on disk; an independent Python Decimal/CSV comparison verified 12 synthetic slices and exact gross INR 890 against the JSON report. The CSV UTF-8 BOM and unavailable-costs label are retained. Signed-out account requests return 401, invalid periods return 400, and neither returns an attachment. Server-rendered Reports contains the new file links and free computed reviews. Tests cover owner/demo separation, exact prices, spreadsheet-formula protection and safe error responses.
+
+This verifies local HTTP file receipt/content, not a hosted signed-in browser download or OS print operation. Browser-control tools are unavailable in this session; real statement upload/save/reload, private journal/snapshot file receipt, print/PDF and physical-mobile acceptance remain pending. Existing snapshot persistence/deduplication acceptance from 10 October remains valid. No migration, paid service or private financial upload is required for this phase. Next: hosted report attachment verification, then the remaining owner/device acceptance checks when browser access is available.
