@@ -1,0 +1,8 @@
+import {test} from 'node:test';import assert from 'node:assert/strict';import {readFile} from 'node:fs/promises';import {stripTypeScriptTypes} from 'node:module';
+const uri=s=>'data:text/javascript;base64,'+Buffer.from(stripTypeScriptTypes(s)).toString('base64');
+const annotation=uri((await readFile(new URL('../lib/journal/annotation.ts',import.meta.url),'utf8')).replace(/^import type .*;$/gm,''));
+const source=(await readFile(new URL('../lib/journal/review.ts',import.meta.url),'utf8')).replace(/^import type .*;$/gm,'').replace("'./annotation'",JSON.stringify(annotation));
+const {filterReview,readReviewExport}=await import(uri(source));
+const row={slice_key:'a'.repeat(64),connection:'unlinked',evidence:null,notes:'Retained decision',tags:['breakout'],plan_items:['Was risk defined?'],checklist:[false],revision:1};
+test('saved review retains unlinked notes and filters without mutating original evidence',()=>{const raw=JSON.stringify({format:'trademirror-journal',version:1,annotations:[row,{...row,slice_key:'b'.repeat(64),connection:'linked',evidence:{symbol:'NIFTY'},tags:[],notes:'Exit'}]});const rows=readReviewExport(raw);assert.equal(filterReview(rows,'retained','unlinked','breakout').length,1);assert.equal(filterReview(rows,'nifty','','').length,1);assert.equal(filterReview(rows,'','unlinked','missing').length,0);assert.equal(rows[0].evidence,null);assert.deepEqual(rows[0],row);});
+test('saved review rejects malformed exports, keys and invalid checklist data without partial output',()=>{for(const value of [{},{format:'trademirror-journal',version:1,annotations:[{...row,slice_key:'bad'}]},{format:'trademirror-journal',version:1,annotations:[{...row,checklist:[]}]}])assert.throws(()=>readReviewExport(JSON.stringify(value)));});

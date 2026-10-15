@@ -837,3 +837,8 @@ Validation: 65 tests, ESLint, explicit TypeScript and Webpack production build p
 ### Module 1 — Period comparison
 
 Dashboard Compare periods supports Monday-start weeks and calendar months, selected after current analysis filters. Compare slice count, gross P&L, win rate, profit factor, independent drawdown, holding time and active exit days; swap periods or open their journal date ranges. Exact gross difference uses decimal arithmetic. Partial/missing periods and journal-link filter limits are explicit. No migration or paid integration. Validation: 66 tests, lint, TypeScript and production build; production UI verified weekly/monthly values, swap and date links. Next: saved journal review module.
+
+
+### Module 2 — Saved journal review
+
+Private `/journal-review`, linked from Settings and saved-note connection status, displays retained notes/tags/checklist questions and evidence status. Search notes/symbols, filter by tag or linked/unlinked evidence and page 20 entries at a time. Unlinked notes keep their content without inferred instruments or dates; no automatic reassignment. Uses the existing owner-validated complete export with 1,000-entry/5 MB limits; errors show no partial review. No migration or new writes. Validation: 68 tests, lint, TypeScript, production build and anonymous route redirect. Hosted signed-in UI acceptance follows rollout. Next: reusable plans and recorded risk inputs.
