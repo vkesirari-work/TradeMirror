@@ -9,6 +9,10 @@ TradeMirror is being built as a trading journal and performance analytics platfo
 > **Current status: Free-only V1 candidate — computed reviews, saved snapshots, Zerodha statement costs and journal export implemented; paid AI disabled.**
 > Account analytics use saved executions; public demos use synthetic data. Migration `202610100004_report_snapshots.sql` is applied. Statement net is shown separately from FIFO execution gross: costs are not allocated to individual slices or days. Paid AI is excluded from the current free-only scope and disabled server-side by default. No AI API key is required. Earlier phase entries below are historical status records.
 
+## Modern colour pass — 22 October 2026
+
+Dashboard and demo share a dusk palette: deep ink backgrounds, blue-violet controls, mint profit, soft coral loss and restrained lavender/cyan metric accents. Removed the extra framed demo container to reduce nested boxes. Print styles are unchanged. Validation: lint, TypeScript and production build pass; actual production-build demo screenshot reviewed. This visual pass adds no calculation or persistence changes. Private dashboard and physical-device acceptance remain separate checks. Next: confirm the deployed palette with the owner.
+
 ## Interactive demo refresh — 22 October 2026
 
 The demo uses a soft charcoal workspace, compact single-row desktop scope toolbar, segmented navigation and responsive range controls. All history / Last 7 days / Last 14 days update the existing chart, metrics, broker summary and journal scope together. Ranges are inclusive calendar days anchored to the latest recorded exit, not today's date; the control explains this for historical/demo data. Small card hover feedback respects the existing reduced-motion override. Account calculations and exports retain exact precision.
