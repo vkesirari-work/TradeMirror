@@ -9,6 +9,10 @@ TradeMirror is being built as a trading journal and performance analytics platfo
 > **Current status: Free-only V1 candidate — computed reviews, saved snapshots, Zerodha statement costs and journal export implemented; paid AI disabled.**
 > Account analytics use saved executions; public demos use synthetic data. Migration `202610100004_report_snapshots.sql` is applied. Statement net is shown separately from FIFO execution gross: costs are not allocated to individual slices or days. Paid AI is excluded from the current free-only scope and disabled server-side by default. No AI API key is required. Earlier phase entries below are historical status records.
 
+## Hybrid brightness adjustment — 22 October 2026
+
+Balanced the redesign with dark navigation, a muted slate-grey canvas and softer mid-tone cards/forms instead of near-white surfaces. Desktop/sidebar and mobile dock retain dark contrast; content stays readable in the lighter workspace. Browser/PWA chrome follows the muted canvas. Validation: lint, TypeScript and production build pass; production demo visual review completed. This palette-only follow-up does not change calculations or storage. Next: owner review on the deployed dashboard and physical-device checks.
+
 ## Full visual system redesign — 22 October 2026
 
 Replaced the dark base with a muted mist-grey/blue canvas, ink typography, cobalt actions and teal/coral financial states. A dedicated `app/styles/atelier.css` now owns the shared appearance across landing, authentication, workspace shell, empty-state onboarding, analytics, journal filters/tables, reports, plans/dialogs, imports and PWA offline content. Typography uses the local Avenir Next / Segoe UI stack; buttons, focus states, transitions and reduced-motion behaviour are consistent. Functional calculation/persistence files are intentionally unchanged.
