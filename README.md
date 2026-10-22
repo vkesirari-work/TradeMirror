@@ -9,6 +9,10 @@ TradeMirror is being built as a trading journal and performance analytics platfo
 > **Current status: Free-only V1 candidate — computed reviews, saved snapshots, Zerodha statement costs and journal export implemented; paid AI disabled.**
 > Account analytics use saved executions; public demos use synthetic data. Migration `202610100004_report_snapshots.sql` is applied. Statement net is shown separately from FIFO execution gross: costs are not allocated to individual slices or days. Paid AI is excluded from the current free-only scope and disabled server-side by default. No AI API key is required. Earlier phase entries below are historical status records.
 
+## Neutral hybrid refinement — 22 October 2026
+
+Refined the mixed theme with a neutral mid-grey canvas, dark charcoal-teal navigation, stronger secondary text and restrained teal actions. Metric surfaces and chart controls use quieter grey/green tones to reduce the previous blue wash. Existing functional flows remain unchanged. Validation: lint, TypeScript and production build pass; production demo screenshot reviewed. Private dashboard and physical-phone acceptance remain separate. Next: owner review of the deployed palette.
+
 ## Hybrid brightness adjustment — 22 October 2026
 
 Balanced the redesign with dark navigation, a muted slate-grey canvas and softer mid-tone cards/forms instead of near-white surfaces. Desktop/sidebar and mobile dock retain dark contrast; content stays readable in the lighter workspace. Browser/PWA chrome follows the muted canvas. Validation: lint, TypeScript and production build pass; production demo visual review completed. This palette-only follow-up does not change calculations or storage. Next: owner review on the deployed dashboard and physical-device checks.
