@@ -9,6 +9,12 @@ TradeMirror is being built as a trading journal and performance analytics platfo
 > **Current status: Free-only V1 candidate — computed reviews, saved snapshots, Zerodha statement costs and journal export implemented; paid AI disabled.**
 > Account analytics use saved executions; public demos use synthetic data. Migration `202610100004_report_snapshots.sql` is applied. Statement net is shown separately from FIFO execution gross: costs are not allocated to individual slices or days. Paid AI is excluded from the current free-only scope and disabled server-side by default. No AI API key is required. Earlier phase entries below are historical status records.
 
+## Interactive demo refresh — 22 October 2026
+
+The demo uses a soft charcoal workspace, compact single-row desktop scope toolbar, segmented navigation and responsive range controls. All history / Last 7 days / Last 14 days update the existing chart, metrics, broker summary and journal scope together. Ranges are inclusive calendar days anchored to the latest recorded exit, not today's date; the control explains this for historical/demo data. Small card hover feedback respects the existing reduced-motion override. Account calculations and exports retain exact precision.
+
+Validation: 85 tests, lint, TypeScript and production build pass. Actual production-build browser interaction verified Last 7 days → 16 slices / INR 820.00, All history → 48 slices / INR 2,800.00, plus Metrics open/close. Desktop visual review and effective 390px responsive review passed with document width equal to viewport width. This is emulation, not physical-device acceptance. Existing hosted download receipt and phone-device limits remain open. Next: verify deployed refresh and run actual device acceptance.
+
 ## Hosted follow-up — 22 October 2026
 
 The deployed demo now has fresh desktop acceptance for instrument/option journal drilldowns, scoped weekly comparison links, the Metrics popup and cumulative chart selection. No errors were returned by the captured console query. See the [hosted acceptance record](docs/HOSTED_ACCEPTANCE_2026-10-22.md).

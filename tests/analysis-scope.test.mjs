@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {stripTypeScriptTypes} from 'node:module';
 const source=(await readFile(new URL('../lib/analytics/scope.ts',import.meta.url),'utf8')).replace(/^import type .*;$/gm,'');
-const {journalScopeQuery,readJournalScope}=await import('data:text/javascript;base64,'+Buffer.from(stripTypeScriptTypes(source)).toString('base64'));
+const {journalScopeQuery,readJournalScope,recentExitRange}=await import('data:text/javascript;base64,'+Buffer.from(stripTypeScriptTypes(source)).toString('base64'));
 const filters={start:'2026-09-22',end:'2026-10-07',symbol:'NIFTY26OCT25000CE',side:'LONG',option:'CE'};
 test('dashboard journal scope preserves date, instrument, side, option and explicit examples',()=>{
  const query=new URLSearchParams(journalScopeQuery(filters,'',true));
@@ -21,3 +21,5 @@ test('journal scope rejects unsupported option/side and oversized or non-string 
  assert.equal(readJournalScope({symbol:['A','B']}).initialSymbol,'');
  const symbol='NIFTY + & CE';assert.equal(new URLSearchParams(journalScopeQuery({...filters,symbol})).get('symbol'),symbol);
 });
+
+test('quick ranges anchor to recorded exits and use inclusive calendar days across months',()=>{assert.deepEqual(recentExitRange(['2026-09-30','2026-10-07','2026-09-21'],7),{start:'2026-10-01',end:'2026-10-07'});assert.deepEqual(recentExitRange(['2026-10-07'],14),{start:'2026-09-24',end:'2026-10-07'});assert.deepEqual(recentExitRange([],7),{start:'',end:''});assert.deepEqual(recentExitRange(['2026-10-07'],0),{start:'',end:''});});

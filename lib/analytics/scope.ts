@@ -16,3 +16,12 @@ export function readJournalScope(query: { symbol?: string; side?: string; option
     initialOption: ['CE', 'PE', 'Other'].includes(query.option || '') ? query.option! : '',
   };
 }
+
+// Relative to the latest recorded exit, so historical demo/account data remains explorable.
+export function recentExitRange(dates: string[], days: number): {start: string; end: string} {
+  const end = [...dates].sort().at(-1) || '';
+  if (!end || days === 0) return {start: '', end: ''};
+  const date = new Date(end + 'T00:00:00Z');
+  date.setUTCDate(date.getUTCDate() - days + 1);
+  return {start: date.toISOString().slice(0, 10), end};
+}
