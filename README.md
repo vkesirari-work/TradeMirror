@@ -9,6 +9,12 @@ TradeMirror is being built as a trading journal and performance analytics platfo
 > **Current status: Free-only V1 candidate — computed reviews, saved snapshots, Zerodha statement costs and journal export implemented; paid AI disabled.**
 > Account analytics use saved executions; public demos use synthetic data. Migration `202610100004_report_snapshots.sql` is applied. Statement net is shown separately from FIFO execution gross: costs are not allocated to individual slices or days. Paid AI is excluded from the current free-only scope and disabled server-side by default. No AI API key is required. Earlier phase entries below are historical status records.
 
+## Import workspace redesign — 22 October 2026
+
+Import trades now uses a three-step progress indicator, a dedicated CSV drop area with replace/clear-preview actions, a concise broker export checklist and a bounded preview table. Validation and explicit Save executions remain separate; Clear preview does not delete saved imports. Saving disables file changes. Recent imports has a consistent history panel and status badges. Existing parser, duplicate handling and persistence actions are unchanged.
+
+Validation: 85 tests, lint, TypeScript and production build pass. Local account route correctly requires login, so signed-in visual/preview acceptance is a hosted follow-up; no auth bypass or owner data mutation is used. Next: verify the deployed page with the existing signed-in owner session and a synthetic local-only preview; do not save test executions into the owner account.
+
 ## Neutral hybrid refinement — 22 October 2026
 
 Refined the mixed theme with a neutral mid-grey canvas, dark charcoal-teal navigation, stronger secondary text and restrained teal actions. Metric surfaces and chart controls use quieter grey/green tones to reduce the previous blue wash. Existing functional flows remain unchanged. Validation: lint, TypeScript and production build pass; production demo screenshot reviewed. Private dashboard and physical-phone acceptance remain separate. Next: owner review of the deployed palette.
