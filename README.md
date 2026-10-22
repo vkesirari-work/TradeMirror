@@ -11,6 +11,8 @@ TradeMirror is being built as a trading journal and performance analytics platfo
 
 ## End-user walkthrough and polish — 22 October 2026
 
+Follow-up after another owner CSV: hosted dashboard, journal and daily-report aggregates agreed; calendar drill-down, period reports, notes/risk reads, template loading and auxiliary modules were checked again without changing account data. Costs history is empty, so statement net remains unavailable. See the walkthrough record for boundaries.
+
 Walked through signed-in navigation, every dashboard/breakdown mode, weekly/monthly comparison, journal pagination/filter/detail, Import modes, computed Review, saved notes/process, Reports, Costs, Plans, Connections, Settings and Install. Fixed misleading broker-connect messaging, auxiliary breadcrumb names, report selection feedback, two-decimal UI amounts and costs-picker/section styling. No owner records were changed.
 
 See the [walkthrough matrix, fixes and untested write/device paths](docs/END_USER_WALKTHROUGH.md). 85 tests, lint, TypeScript and build pass; corrected report/demo-cost flows verified locally in a production browser. Post-rollout private-screen acceptance, downloads and physical-device checks remain distinct.

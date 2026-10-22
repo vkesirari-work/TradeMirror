@@ -34,3 +34,11 @@ Walked through the signed-in hosted account using visible UI. Filter/switch/hist
 85 tests, lint, TypeScript and production build pass. Corrected report daily/weekly selection, period-heading update, print navigation and auxiliary demo-cost breadcrumb were verified in the production-build browser. Existing hosted import and core walkthrough observations above predate the patch; the exact patched private screens require post-rollout acceptance.
 
 This is not an exhaustive certification of every possible account/error state. Snapshot/note/template saves, credential recovery, downloads, real statement uploads, native print, physical phones, PWA installation and real broker sessions were not rerun. Earlier evidence remains dated evidence; pending download receipt and physical-device checks are still open.
+
+## Follow-up after another owner upload — 22 October 2026
+
+Reopened the hosted signed-in workspace after the owner added another CSV. Import history showed the latest file as COMPLETED. Dashboard, journal record count and the sum of all visible daily report rows agreed on matched-slice count and gross P&L; daily row count also agreed with active exit days. Private filenames, financial totals and identifiers are intentionally omitted here.
+
+Calendar active-day selection opened the expected day evidence. CE/PE groups reconciled to the dashboard total. Weekly comparison and weekly reports showed matching period evidence; daily/weekly report tabs switched successfully. Execution details, saved notes and planned-risk inputs loaded without editing. Review observations used the new history. Saved-note/process tracking and plan library returned explicit empty states; loading templates succeeded. Costs history returned no saved statements, explaining unavailable net P&L. Connections remained disabled, and Settings/Install rendered.
+
+This follow-up is read-only acceptance: no account data was created, changed or deleted. No new application defect was observed in these checks. It does not replace original-file reconciliation, write-flow acceptance, download receipts or physical-device/PWA testing. No application code changed in this follow-up, so the preceding 85-test/lint/TypeScript/build results remain the latest code validation.
