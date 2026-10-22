@@ -9,6 +9,12 @@ TradeMirror is being built as a trading journal and performance analytics platfo
 > **Current status: Free-only V1 candidate — computed reviews, saved snapshots, Zerodha statement costs and journal export implemented; paid AI disabled.**
 > Account analytics use saved executions; public demos use synthetic data. Migration `202610100004_report_snapshots.sql` is applied. Statement net is shown separately from FIFO execution gross: costs are not allocated to individual slices or days. Paid AI is excluded from the current free-only scope and disabled server-side by default. No AI API key is required. Earlier phase entries below are historical status records.
 
+## Studio analytics layout — 22 October 2026
+
+Reworked the shared analytics layout rather than repeating a palette-only change: joined metric strip, flatter navigation/scope controls, wider chart column and border-light day highlights. Demo header is tighter and primary controls use soft ice-blue against the ink background. Semantic mint/coral results remain. No calculations, import or storage behaviour changed.
+
+Validation: lint, TypeScript and production build pass. Production-build desktop screenshot reviewed; Last 7 days updated gross to INR 820 and All history restored the scope. Effective 390px browser review showed no document overflow. Private account rendering and physical-device checks remain separate acceptance items. Next: review the deployed layout with the owner before further visual changes.
+
 ## Modern colour pass — 22 October 2026
 
 Dashboard and demo share a dusk palette: deep ink backgrounds, blue-violet controls, mint profit, soft coral loss and restrained lavender/cyan metric accents. Removed the extra framed demo container to reduce nested boxes. Print styles are unchanged. Validation: lint, TypeScript and production build pass; actual production-build demo screenshot reviewed. This visual pass adds no calculation or persistence changes. Private dashboard and physical-device acceptance remain separate checks. Next: confirm the deployed palette with the owner.
