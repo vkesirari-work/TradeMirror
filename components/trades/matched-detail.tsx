@@ -4,7 +4,7 @@ import type { Match } from '@/lib/analytics/matching';
 import type {Annotation} from '@/lib/journal/annotation';
 import type {PlanTemplate} from '@/lib/journal/plan';
 import { JournalEditor } from './journal-editor';
-import { exactMoney } from '@/lib/analytics/format';
+import { exactMoney, displayMoney } from '@/lib/analytics/format';
 
 export function MatchedDetail({ match, onClose, demo=false,plan,initialAnnotation,onSaved }: {plan?:PlanTemplate;initialAnnotation?:Annotation;onSaved?:(data:Annotation)=>void; match: Match; onClose: () => void; demo?:boolean }) {
   const dialog = useRef<HTMLDialogElement>(null);
@@ -17,7 +17,7 @@ export function MatchedDetail({ match, onClose, demo=false,plan,initialAnnotatio
     <div className="spread"><span className="eyebrow">FIFO MATCHING SLICE</span><button className="button secondary" onClick={requestClose}>Close details</button></div>
     {confirmClose&&<div className="inline-notice" role="alert"><p>You have an unsaved draft. Keep editing or discard it before closing.</p><button className="button secondary" onClick={()=>setConfirmClose(false)}>Keep editing</button> <button className="button secondary" onClick={()=>dialog.current?.close()}>Discard draft and close</button></div>}
     <h2 id="match-dialog-title">{match.symbol}</h2><p>{match.side} · {match.quantity} quantity · {match.broker}</p>
-    <strong className={`match-detail-pnl ${match.grossPnl.startsWith('-') ? 'negative' : 'positive'}`}>{exactMoney(match.grossPnl)}</strong><p>Realized gross P&L · before charges</p>
+    <strong className={`match-detail-pnl ${match.grossPnl.startsWith('-') ? 'negative' : 'positive'}`}>{displayMoney(match.grossPnl)}</strong><p>Realized gross P&L · before charges</p>
     <dl className="detail-list">{[
       ['Entry price', exactMoney(match.entryPrice)], ['Exit price', exactMoney(match.exitPrice)],
       ['Entry time', timestamp(match.entryTime)], ['Exit time', timestamp(match.exitTime)], ['Holding time', holding + ' minutes'],

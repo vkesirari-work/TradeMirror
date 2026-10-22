@@ -9,6 +9,12 @@ TradeMirror is being built as a trading journal and performance analytics platfo
 > **Current status: Free-only V1 candidate — computed reviews, saved snapshots, Zerodha statement costs and journal export implemented; paid AI disabled.**
 > Account analytics use saved executions; public demos use synthetic data. Migration `202610100004_report_snapshots.sql` is applied. Statement net is shown separately from FIFO execution gross: costs are not allocated to individual slices or days. Paid AI is excluded from the current free-only scope and disabled server-side by default. No AI API key is required. Earlier phase entries below are historical status records.
 
+## End-user walkthrough and polish — 22 October 2026
+
+Walked through signed-in navigation, every dashboard/breakdown mode, weekly/monthly comparison, journal pagination/filter/detail, Import modes, computed Review, saved notes/process, Reports, Costs, Plans, Connections, Settings and Install. Fixed misleading broker-connect messaging, auxiliary breadcrumb names, report selection feedback, two-decimal UI amounts and costs-picker/section styling. No owner records were changed.
+
+See the [walkthrough matrix, fixes and untested write/device paths](docs/END_USER_WALKTHROUGH.md). 85 tests, lint, TypeScript and build pass; corrected report/demo-cost flows verified locally in a production browser. Post-rollout private-screen acceptance, downloads and physical-device checks remain distinct.
+
 ## Import workspace redesign — 22 October 2026
 
 Import trades now uses a three-step progress indicator, a dedicated CSV drop area with replace/clear-preview actions, a concise broker export checklist and a bounded preview table. Validation and explicit Save executions remain separate; Clear preview does not delete saved imports. Saving disables file changes. Recent imports has a consistent history panel and status badges. Existing parser, duplicate handling and persistence actions are unchanged.
