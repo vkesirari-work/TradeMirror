@@ -82,3 +82,5 @@ body{background:var(--bg)}.topbar{background:#c8cfd7ed;border-color:#b0bdca}.sid
 .demo-experience>.card+.card,.demo-experience>#current-period-review+.card{margin-top:18px}
 .review-prompts>div{background:#d4e1e7;border-color:#adc3ce;color:#3c5d72}.review-prompts>div>span{color:#286f77}
 }
+
+@media screen{.import-receipt{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:16px 0}.import-receipt>div{padding:15px;border:1px solid #a8c6c5;border-radius:10px;background:#d0e2df}.import-receipt dt{font-size:11px;color:#486975}.import-receipt dd{margin:7px 0 0;font-size:25px;font-weight:700;color:#286b64}.import-receipt-actions{display:flex;gap:14px;align-items:center;flex-wrap:wrap}.import-history>.fineprint{margin:15px 0 0;line-height:1.7}}

@@ -12,8 +12,8 @@ test('CSV transaction isolates owners, deduplicates repeated and overlapping imp
  const execution={symbol:'NIFTY',exchange:'NFO',segment:'FO',side:'BUY',quantity:'75',price:'124.50',tradeId:'1',orderId:'10',executedAt:'2026-10-07T09:24:00+05:30'};
  const run=async(records)=> (await db.query('select public.import_zerodha_executions($1,$2::jsonb) as result',['test.csv',JSON.stringify(records)])).rows[0].result;
  assert.equal((await run([execution])).inserted,1);
- assert.equal((await run([execution])).already_imported,true);
- assert.equal((await run([execution,{...execution,tradeId:'2'}])).inserted,1);
+ assert.deepEqual(await run([execution]),{import_id:(await db.query('select id from broker_imports')).rows[0].id,inserted:0,duplicates:1,already_imported:true});
+ const overlap=await run([execution,{...execution,tradeId:'2'}]);assert.equal(overlap.inserted,1);assert.equal(overlap.duplicates,1);assert.equal(overlap.already_imported,false);
  assert.equal((await db.query('select count(*)::int as n from orders')).rows[0].n,2);
  await assert.rejects(run([{...execution,tradeId:'3'},{...execution,price:'999'}]),/Conflicting execution/);
  assert.equal((await db.query('select count(*)::int as n from orders')).rows[0].n,2);

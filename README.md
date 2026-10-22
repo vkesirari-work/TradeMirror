@@ -9,6 +9,14 @@ TradeMirror is being built as a trading journal and performance analytics platfo
 > **Current status: Free-only V1 candidate — computed reviews, saved snapshots, Zerodha statement costs and journal export implemented; paid AI disabled.**
 > Account analytics use saved executions; public demos use synthetic data. Migration `202610100004_report_snapshots.sql` is applied. Statement net is shown separately from FIFO execution gross: costs are not allocated to individual slices or days. Paid AI is excluded from the current free-only scope and disabled server-side by default. No AI API key is required. Earlier phase entries below are historical status records.
 
+## Clear import receipt — 22 October 2026
+
+After Save executions succeeds, the import screen shows separate **new executions saved** and **repeated executions skipped** counts, plus direct dashboard, journal, report and broker-cost links. Re-importing identical evidence explicitly says it is already in the workspace. Save stays disabled after success until a file is chosen again, preventing accidental repeat clicks.
+
+Recent imports now labels its count **File executions** and explains why overlapping file totals must not be added together or confused with dashboard execution counts and FIFO slices. Existing transactions, ownership checks and duplicate rules are unchanged; no schema migration is required.
+
+Validation: 85 tests pass, including database assertions for all-duplicate and overlapping import receipt counts; lint, TypeScript and production build pass. The successful-save receipt still needs owner UI acceptance with a real save; this phase does not create or alter owner records during validation. Next: import the original Zerodha F&O P&L XLSX to validate charges and statement net; physical-device and download acceptance remain open.
+
 ## End-user walkthrough and polish — 22 October 2026
 
 Follow-up after another owner CSV: hosted dashboard, journal and daily-report aggregates agreed; calendar drill-down, period reports, notes/risk reads, template loading and auxiliary modules were checked again without changing account data. Costs history is empty, so statement net remains unavailable. See the walkthrough record for boundaries.
