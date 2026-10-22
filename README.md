@@ -9,6 +9,12 @@ TradeMirror is being built as a trading journal and performance analytics platfo
 > **Current status: Free-only V1 candidate — computed reviews, saved snapshots, Zerodha statement costs and journal export implemented; paid AI disabled.**
 > Account analytics use saved executions; public demos use synthetic data. Migration `202610100004_report_snapshots.sql` is applied. Statement net is shown separately from FIFO execution gross: costs are not allocated to individual slices or days. Paid AI is excluded from the current free-only scope and disabled server-side by default. No AI API key is required. Earlier phase entries below are historical status records.
 
+## Current precheck — 22 October 2026
+
+Existing modules and domain models have been rechecked: 84 tests, lint, explicit TypeScript and production build pass. The interrupted scope-navigation fixes are recovered: dashboard/calendar/period drilldowns retain filters; demo dates reflect actual history; calendar amounts and browser colors are consistent. No new feature module, paid service or database migration is introduced.
+
+See the [precheck findings and remaining acceptance](docs/PRECHECK_2026-10-22.md). The browser connection recovered during the 19 October checks, superseding the older connection-blocker notes below. The interrupted filtered-download receipt and physical-device checks remain pending; no fresh hosted-owner acceptance is claimed.
+
 ## Current release checkpoint — 15 October 2026
 
 Desktop V1 acceptance is complete for the implemented free scope: owner imports, snapshots, real Zerodha statement persistence, all export families and actual browser-generated PDF. Chrome phone-size layout/navigation checks also pass. Physical iOS/Android file selection, download and print/share checks are deferred because no devices are connected. This is not a claim of native-app or physical-device certification.

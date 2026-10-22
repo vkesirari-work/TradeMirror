@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import type { GrossDay } from '@/lib/analytics/daily';
-import { exactMoney } from '@/lib/analytics/format';
+import { displayMoney as exactMoney } from '@/lib/analytics/format';
 
 export function PerformanceCalendar({ days, selected, onSelect }: {
   days: GrossDay[]; selected: string; onSelect: (date: string) => void;
