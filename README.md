@@ -13,7 +13,7 @@ TradeMirror is being built as a trading journal and performance analytics platfo
 
 Import trades now uses a three-step progress indicator, a dedicated CSV drop area with replace/clear-preview actions, a concise broker export checklist and a bounded preview table. Validation and explicit Save executions remain separate; Clear preview does not delete saved imports. Saving disables file changes. Recent imports has a consistent history panel and status badges. Existing parser, duplicate handling and persistence actions are unchanged.
 
-Validation: 85 tests, lint, TypeScript and production build pass. Local account route correctly requires login, so signed-in visual/preview acceptance is a hosted follow-up; no auth bypass or owner data mutation is used. Next: verify the deployed page with the existing signed-in owner session and a synthetic local-only preview; do not save test executions into the owner account.
+Validation: 85 tests, lint, TypeScript and production build pass. Hosted signed-in browser acceptance verified the new layout, synthetic local-only CSV preview (2 valid executions, no errors), and Clear preview removing both preview and Save control. No Save action or account data mutation occurred. Actual browser viewport was 483px and document width matched it; physical-device acceptance remains separate. Local account route correctly required login. Next: owner review of the deployed upload/save flow; existing persistence tests remain applicable.
 
 ## Neutral hybrid refinement — 22 October 2026
 
