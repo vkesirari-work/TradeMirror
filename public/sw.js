@@ -1,5 +1,5 @@
 /* TradeMirror PWA: no private response, API, export, auth or account-data caching. */
-const CACHE='trademirror-public-v1';
+const CACHE='trademirror-public-v2';
 const ASSETS=['/offline.html','/icons/icon-192.png','/icons/icon-512.png','/icons/maskable-512.png','/icons/apple-touch-icon.png'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)));});
 self.addEventListener('activate',event=>{event.waitUntil((async()=>{for(const key of await caches.keys())if(key.startsWith('trademirror-public-')&&key!==CACHE)await caches.delete(key);await self.clients.claim();})());});

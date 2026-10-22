@@ -11,7 +11,7 @@ export default function DemoPage() {
   const period=dates.length?`${format(dates[0])} – ${format(dates.at(-1)!)} · IST`:'No matched exits';
   return <>
     <header className="demo-intro">
-      <div className="demo-intro-top"><h1>Your performance. A clearer picture.</h1><Link href="/" className="demo-home-link"><ArrowLeft size={14}/>Home</Link></div>
+      <div className="demo-intro-top"><h1>A fresh perspective on your trading.</h1><Link href="/" className="demo-home-link"><ArrowLeft size={14}/>Home</Link></div>
       <p>Explore the results behind every trading decision.</p>
       <ul className="demo-context" aria-label="Demo data scope"><li><ShieldCheck size={13}/>Synthetic data</li><li><Layers size={13}/>{advancedDemo.matches.length} matched slices</li><li><CalendarDays size={13}/>{period}</li></ul>
     </header>

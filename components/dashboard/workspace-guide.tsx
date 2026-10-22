@@ -11,8 +11,8 @@ export function WorkspaceGuide({name='trader',ready=false}:{name?:string;ready?:
  ];
  return <section className="workspace-guide" aria-labelledby="workspace-guide-title">
   <span className="eyebrow">{ready?'YOUR NEXT STEP':'START HERE'}</span>
-  <h2 id="workspace-guide-title">{ready?'Turn your results into a review.':`Welcome, ${name}. Start with your tradebook.`}</h2>
-  <p>{ready?'Follow your history from executions to costs, then keep a review you can revisit.':'Explore the demo, then use your own account to import, journal and review your history.'}</p>
+  <h2 id="workspace-guide-title">{ready?'Turn your results into a review.':`Welcome, ${name}. Let’s build your trading picture.`}</h2>
+  <p>{ready?'Follow your history from executions to costs, then keep a review you can revisit.':'Your workspace starts with one CSV. Import your history, review your decisions and track your progress.'}</p>
   <ol className="guide-steps">{steps.map((step,index)=><li key={step.title}><span>{String(index+1).padStart(2,'0')}</span><h3>{step.title}</h3><p>{step.description}</p><Link href={step.href} className="text-link">{step.action} →</Link></li>)}</ol>
   <p className="fineprint">A preview does not save data. After saving executions, reopen the dashboard to see your imported history. Gross analytics require matched buys and sells; unmatched quantities stay visible. Charges are not allocated to individual matching slices or days.</p>
  </section>;

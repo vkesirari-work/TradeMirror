@@ -9,6 +9,14 @@ TradeMirror is being built as a trading journal and performance analytics platfo
 > **Current status: Free-only V1 candidate — computed reviews, saved snapshots, Zerodha statement costs and journal export implemented; paid AI disabled.**
 > Account analytics use saved executions; public demos use synthetic data. Migration `202610100004_report_snapshots.sql` is applied. Statement net is shown separately from FIFO execution gross: costs are not allocated to individual slices or days. Paid AI is excluded from the current free-only scope and disabled server-side by default. No AI API key is required. Earlier phase entries below are historical status records.
 
+## Full visual system redesign — 22 October 2026
+
+Replaced the dark base with a muted mist-grey/blue canvas, ink typography, cobalt actions and teal/coral financial states. A dedicated `app/styles/atelier.css` now owns the shared appearance across landing, authentication, workspace shell, empty-state onboarding, analytics, journal filters/tables, reports, plans/dialogs, imports and PWA offline content. Typography uses the local Avenir Next / Segoe UI stack; buttons, focus states, transitions and reduced-motion behaviour are consistent. Functional calculation/persistence files are intentionally unchanged.
+
+Browser/PWA colours match the new base. Offline fallback changed, so the public-only worker cache is v2; upgrade tests confirm v1 is removed while unrelated caches remain. Private data is still never cached. Existing print styles remain separate.
+
+Validation: 85 tests, lint, TypeScript and production build pass. Production-build browser review covered landing, demo, login, journal and reports; inherited dark table/metric styles and weak form-label contrast found during review were corrected. Demo quick-range interaction remains functional. Responsive browser checks are emulated, not physical-device acceptance. Signed-in private workflows and hosted download receipt retain their documented limits. Next: review the deployed complete theme with the owner and run physical-device acceptance.
+
 ## Studio analytics layout — 22 October 2026
 
 Reworked the shared analytics layout rather than repeating a palette-only change: joined metric strip, flatter navigation/scope controls, wider chart column and border-light day highlights. Demo header is tighter and primary controls use soft ice-blue against the ink background. Semantic mint/coral results remain. No calculations, import or storage behaviour changed.
