@@ -9,6 +9,12 @@ TradeMirror is being built as a trading journal and performance analytics platfo
 > **Current status: Free-only V1 candidate — computed reviews, saved snapshots, Zerodha statement costs and journal export implemented; paid AI disabled.**
 > Account analytics use saved executions; public demos use synthetic data. Migration `202610100004_report_snapshots.sql` is applied. Statement net is shown separately from FIFO execution gross: costs are not allocated to individual slices or days. Paid AI is excluded from the current free-only scope and disabled server-side by default. No AI API key is required. Earlier phase entries below are historical status records.
 
+## Review readability — 23 October 2026
+
+Removed legacy dark-surface colors from review prompts and coverage counters. Prompt text now follows the active theme, and count tiles use the shared secondary surface with readable primary text. This fixes pale prompt text on the current light panels and dark text on legacy navy tiles without changing analytics or account records.
+
+Validation: 91 tests, lint, TypeScript and production build pass. Local production browser inspection measured 5.32:1 prompt contrast and 8.89:1 coverage-label/count contrast from final computed colors. Desktop prompts and a 390×844 mobile layout were visually checked; mobile page content did not overflow horizontally. Temporary viewport settings were restored. These checks cover the specific elements, not a full-site accessibility audit or physical-device acceptance. Next: continue module usability checks; owner decision-content and device prerequisites remain in the [acceptance checklist](docs/V1_ACCEPTANCE_STATUS.md).
+
 ## Review date-scope clarity — 23 October 2026
 
 Review date filters now describe their actual scope: tagged setup results and computed observations use selected IST exit dates, while residual lots and saved-note connections retain full-history context. Computed-observation drilldowns carry the selected start/end dates into Trades in both demo and account modes. Empty filtered observations explain changing dates rather than asking users to import again. Source-limit wording describes what execution CSV contains without assuming the owner has never recorded separate risk inputs.

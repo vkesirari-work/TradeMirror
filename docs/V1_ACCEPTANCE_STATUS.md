@@ -1,6 +1,6 @@
 # V1 acceptance status
 
-23 October 2026. Current phase clarifies review date scope and preserves dates in computed-observation drilldowns. Latest code checks: 91 tests, lint, TypeScript and production build pass. Later documentation commits do not represent additional code validation.
+23 October 2026. Current phase fixes review prompt and coverage-counter contrast, with local desktop/mobile browser checks. Latest code checks: 91 tests, lint, TypeScript and production build pass. Later documentation commits do not represent additional code validation.
 
 | Check | Status | Evidence / remaining action |
 | --- | --- | --- |
