@@ -9,6 +9,10 @@ TradeMirror is being built as a trading journal and performance analytics platfo
 > **Current status: Free-only V1 candidate — computed reviews, saved snapshots, Zerodha statement costs and journal export implemented; paid AI disabled.**
 > Account analytics use saved executions; public demos use synthetic data. Migration `202610100004_report_snapshots.sql` is applied. Statement net is shown separately from FIFO execution gross: costs are not allocated to individual slices or days. Paid AI is excluded from the current free-only scope and disabled server-side by default. No AI API key is required. Earlier phase entries below are historical status records.
 
+## V1 acceptance checkpoint — 23 October 2026
+
+See the [current acceptance checklist](docs/V1_ACCEPTANCE_STATUS.md) for completed checks and precise remaining inputs. Native Chrome Save as PDF preview rendered a two-page synthetic review including values, daily evidence and scope limits. The Save attempt was interrupted by browser control changes; no native PDF file receipt or rendered-file verification is claimed. Populated hosted decision-journal acceptance awaits owner-authored content. Physical-device installation, fresh inconsistent-report evidence and the latest successful-save receipt UI remain open. No application code changed in this checkpoint.
+
 ## Decision-journal acceptance and demo risk fix — 23 October 2026
 
 Browser checks covered custom demo-plan application, synthetic notes/tags/checklist saving, unsaved-close protection and reopening the same matching slice. A defect was reproduced: saved demo risk values were lost when closing/reopening the dialog. Risk state now belongs to the journal page and is keyed by exact slice identity, matching demo-note lifetime. Reopening retains saved values, another slice stays independent, and full page reload clears the temporary edits. Real account load/save actions and schema are unchanged.
