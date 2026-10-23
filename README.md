@@ -9,6 +9,12 @@ TradeMirror is being built as a trading journal and performance analytics platfo
 > **Current status: Free-only V1 candidate — computed reviews, saved snapshots, Zerodha statement costs and journal export implemented; paid AI disabled.**
 > Account analytics use saved executions; public demos use synthetic data. Migration `202610100004_report_snapshots.sql` is applied. Statement net is shown separately from FIFO execution gross: costs are not allocated to individual slices or days. Paid AI is excluded from the current free-only scope and disabled server-side by default. No AI API key is required. Earlier phase entries below are historical status records.
 
+## Reconciliation gap guidance — 23 October 2026
+
+Non-aligned statements now show imported-minus-statement gross, per-instrument differences and whether evidence is present in both sources, only the statement, or only imported matches. Journal links retain the selected contract and statement date range. Guidance distinguishes missing history/settlement review from charges; a zero aggregate gap does not imply instrument alignment. No trades, settlements or per-slice net values are synthesized.
+
+The synthetic costs demo switches between complete history and a clearly labelled missing-contract scenario. The statement stays fixed while the hypothetical imported subset changes. Validation: 87 tests, lint, TypeScript and production build pass. Regression coverage includes offsetting contract gaps, empty history and broker/date isolation. Production-browser checks verified aligned/missing-history modes, the gap table and scoped journal navigation. Owner executions and saved statements were unchanged. Next: source-specific investigation for unresolved historical differences and remaining physical-device/download acceptance.
+
 ## Hosted statement acceptance — 23 October 2026
 
 With explicit owner approval for the selected financial file and destination, previewed and saved an original Zerodha F&O statement in the hosted signed-in account. Internal report validation passed; imported gross aligned by instrument for its period. Full page reload → Load statements restored the saved report and matching evidence; charge breakdown opened correctly. A parsed statement record is now retained. No executions or personal journal decisions were changed.

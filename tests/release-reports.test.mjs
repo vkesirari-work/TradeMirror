@@ -105,3 +105,11 @@ test('statement charge differences retain sub-paisa precision and reject both di
   assert.throws(()=>parseZerodhaStatement(input),error=>error.message.includes('breakdown minus summary: INR '+delta+'.')&&error.message.includes('not been saved'));
  }
 });
+
+test('gross reconciliation exposes offsetting contract gaps and respects broker/date scope',()=>{
+ const s=parseZerodhaStatement(sheet());
+ const input=[{...match('one','2026-10-07T10:00:00+05:30','9'),symbol:'NIFTY'}, {...match('two','2026-10-07T10:00:00+05:30','1'),symbol:'OTHER'}, {...match('old','2026-09-30T10:00:00+05:30','100'),symbol:'NIFTY'}, {...match('foreign','2026-10-07T10:00:00+05:30','100'),broker:'OTHER'}];
+ const r=reconcileStatement(s,input);assert.equal(r.grossDifference,'0');assert.equal(r.aligned,false);assert.equal(r.slices,2);
+ assert.deepEqual(r.differences.map(d=>[d.symbol,d.difference,d.source]),[['NIFTY','-1','both'],['OTHER','1','import-only']]);
+ const empty=reconcileStatement(s,[]);assert.equal(empty.grossDifference,'-10');assert.equal(empty.differences[0].source,'statement-only');assert.equal(empty.aligned,false);
+});
