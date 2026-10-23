@@ -1,12 +1,13 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import type { Match } from '@/lib/analytics/matching';
+import type {RiskInputs} from '@/lib/journal/risk';
 import type {Annotation} from '@/lib/journal/annotation';
 import type {PlanTemplate} from '@/lib/journal/plan';
 import { JournalEditor } from './journal-editor';
 import { exactMoney, displayMoney } from '@/lib/analytics/format';
 
-export function MatchedDetail({ match, onClose, demo=false,plan,initialAnnotation,onSaved }: {plan?:PlanTemplate;initialAnnotation?:Annotation;onSaved?:(data:Annotation)=>void; match: Match; onClose: () => void; demo?:boolean }) {
+export function MatchedDetail({ match, onClose, demo=false,plan,initialAnnotation,onSaved,initialRisk,onRiskSaved }: {initialRisk?:RiskInputs;onRiskSaved?:(risk:RiskInputs)=>void;plan?:PlanTemplate;initialAnnotation?:Annotation;onSaved?:(data:Annotation)=>void; match: Match; onClose: () => void; demo?:boolean }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const [dirty,setDirty]=useState(false);const [confirmClose,setConfirmClose]=useState(false);
   const requestClose=()=>{if(dirty)setConfirmClose(true);else dialog.current?.close();};
@@ -23,7 +24,7 @@ export function MatchedDetail({ match, onClose, demo=false,plan,initialAnnotatio
       ['Entry time', timestamp(match.entryTime)], ['Exit time', timestamp(match.exitTime)], ['Holding time', holding + ' minutes'],
       ['Entry execution identity', match.entryId], ['Exit execution identity', match.exitId],
     ].map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
-    <JournalEditor match={match} demo={demo} plan={plan} initialAnnotation={initialAnnotation} onSaved={onSaved} onDirtyChange={setDirty}/>
+    <JournalEditor match={match} demo={demo} plan={plan} initialAnnotation={initialAnnotation} onSaved={onSaved} initialRisk={initialRisk} onRiskSaved={onRiskSaved} onDirtyChange={setDirty}/>
     <p className="fineprint">One FIFO slice may be part of a larger position. Charges, net P&L and intratrade market prices are unavailable. Optional planned stop/target inputs are self-reported separately. Source identities are preserved for reconciliation.</p>
   </dialog>;
 }

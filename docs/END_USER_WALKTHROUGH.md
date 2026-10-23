@@ -64,3 +64,11 @@ Independent Decimal checks confirmed statement summary arithmetic and charge/ins
 At a browser viewport override of 390×844, loaded dashboard, filtered journal and import routes had document width no greater than viewport width. Journal columns stayed inside their scroll region, and mobile drawer open/close worked. Import history's new file-execution labels and overlap explanation were visible. Install instructions rendered. Check for app update reported a waiting worker; explicit Apply update reloaded the install page, and the waiting-update button disappeared. No app installation, offline simulation or physical Android/iOS test was performed. Viewport override was reset.
 
 No application code changed. Latest automated validation remains 87 tests, lint, TypeScript and production build. Remaining acceptance: populated personal journal/plan/risk saves and exports, physical-device/PWA installation, native PDF output, successful-save receipt UI and fresh broker evidence for the inconsistent source report.
+
+## Decision editor browser acceptance — 23 October 2026
+
+On hosted synthetic demo data, a note/checklist edit triggered the unsaved-close guard; Keep editing retained it and Save demo journal succeeded. Reopening retained the saved note and checkbox. Saved risk values, however, disappeared after dialog close/reopen. This defect was reproduced before patching.
+
+The patch lifts demo risk state to the journal page, keyed by the same exact slice identity used for notes. In the corrected production build, applied a synthetic two-question plan, explicitly replaced the slice checklist, saved a clearly labelled synthetic note/tag/answer, and saved risk values including an explicit zero and eight decimal places. Same-slice reopen retained all saved content. A different contract's risk fields were blank. Full demo reload restored default notes/checklist/plan and removed temporary risk state. Screenshot evidence is local synthetic data only.
+
+87 tests, lint, TypeScript and production build pass, including existing isolated PostgreSQL write/ownership/revision tests. No real owner annotations, plan templates or risk inputs were created or changed. This does not claim hosted populated-account write acceptance or recovery across a real account reload. Those checks need the owner's actual decision content.

@@ -9,6 +9,12 @@ TradeMirror is being built as a trading journal and performance analytics platfo
 > **Current status: Free-only V1 candidate — computed reviews, saved snapshots, Zerodha statement costs and journal export implemented; paid AI disabled.**
 > Account analytics use saved executions; public demos use synthetic data. Migration `202610100004_report_snapshots.sql` is applied. Statement net is shown separately from FIFO execution gross: costs are not allocated to individual slices or days. Paid AI is excluded from the current free-only scope and disabled server-side by default. No AI API key is required. Earlier phase entries below are historical status records.
 
+## Decision-journal acceptance and demo risk fix — 23 October 2026
+
+Browser checks covered custom demo-plan application, synthetic notes/tags/checklist saving, unsaved-close protection and reopening the same matching slice. A defect was reproduced: saved demo risk values were lost when closing/reopening the dialog. Risk state now belongs to the journal page and is keyed by exact slice identity, matching demo-note lifetime. Reopening retains saved values, another slice stays independent, and full page reload clears the temporary edits. Real account load/save actions and schema are unchanged.
+
+Validation: 87 tests, lint, TypeScript and production build pass. The corrected production browser retained an explicit zero target and an eight-decimal risk budget after save/close/reopen; another slice remained blank, and reload reset notes, checklist, plan and demo risk. Existing isolated PostgreSQL tests cover owner isolation, schema limits and stale revisions. No synthetic decision content was saved to the real account. Next: owner-authored real journal/plan/risk acceptance, physical-device installation and native PDF output; inconsistent source reports still require original evidence.
+
 ## Download receipt and responsive acceptance — 23 October 2026
 
 Actual hosted browser downloads were received and inspected for seven export flows: statement JSON, weekly CSV/JSON, saved snapshot JSON, journal JSON, plans/risk JSON and filtered journal CSV. Exact arithmetic, period/slice scope and snapshot consistency passed; empty journal exports reflected the actual empty saved-note state. Download receipt is now verified for these exercised cases, superseding earlier timeout notes. This does not establish a complete account backup or restore capability.
