@@ -9,6 +9,12 @@ TradeMirror is being built as a trading journal and performance analytics platfo
 > **Current status: Free-only V1 candidate — computed reviews, saved snapshots, Zerodha statement costs and journal export implemented; paid AI disabled.**
 > Account analytics use saved executions; public demos use synthetic data. Migration `202610100004_report_snapshots.sql` is applied. Statement net is shown separately from FIFO execution gross: costs are not allocated to individual slices or days. Paid AI is excluded from the current free-only scope and disabled server-side by default. No AI API key is required. Earlier phase entries below are historical status records.
 
+## Snapshot acceptance and export feedback — 23 October 2026
+
+Hosted owner acceptance now covers weekly snapshot save, full page reload, history reload, reopening and identical-evidence reuse. The saved-print route rendered frozen evidence. A real snapshot was retained; source executions and personal journal content were unchanged. See the [acceptance record](docs/END_USER_WALKTHROUGH.md).
+
+Journal CSV requests now announce how many slices were prepared and direct users to browser downloads. The message describes the request, not guaranteed file receipt. A local production-build demo click verified its count and visible status. Validation: 86 tests, lint, TypeScript and production build pass. Real statement upload/save awaits the specific financial-file confirmation; native PDF, physical-device/PWA and actual download receipt remain open.
+
 ## Real statement validation — 23 October 2026
 
 Ran the production XLSX/statement parser locally against original owner reports, with no upload or account writes. Three reports passed internal charges, instrument totals and debit/credit validation. A fourth failed an exact sub-paisa charge reconciliation. Paired CSV comparison found one fully aligned period and another with unmatched lots/instrument differences; validation is not the same as reconciliation.
