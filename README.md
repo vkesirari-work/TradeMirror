@@ -9,6 +9,12 @@ TradeMirror is being built as a trading journal and performance analytics platfo
 > **Current status: Free-only V1 candidate — computed reviews, saved snapshots, Zerodha statement costs and journal export implemented; paid AI disabled.**
 > Account analytics use saved executions; public demos use synthetic data. Migration `202610100004_report_snapshots.sql` is applied. Statement net is shown separately from FIFO execution gross: costs are not allocated to individual slices or days. Paid AI is excluded from the current free-only scope and disabled server-side by default. No AI API key is required. Earlier phase entries below are historical status records.
 
+## Hosted statement acceptance — 23 October 2026
+
+With explicit owner approval for the selected financial file and destination, previewed and saved an original Zerodha F&O statement in the hosted signed-in account. Internal report validation passed; imported gross aligned by instrument for its period. Full page reload → Load statements restored the saved report and matching evidence; charge breakdown opened correctly. A parsed statement record is now retained. No executions or personal journal decisions were changed.
+
+Private report filenames, values, IDs and screenshots are excluded from Git. This documentation-only acceptance uses the latest 86-test/lint/TypeScript/build validation; no application code changed. Statement net remains period-specific and separate from dashboard FIFO gross. Overall net and per-slice/day costs are not inferred. Next: resolve the other source-report discrepancies; physical-device/PWA, native PDF and actual download receipts remain open.
+
 ## Snapshot acceptance and export feedback — 23 October 2026
 
 Hosted owner acceptance now covers weekly snapshot save, full page reload, history reload, reopening and identical-evidence reuse. The saved-print route rendered frozen evidence. A real snapshot was retained; source executions and personal journal content were unchanged. See the [acceptance record](docs/END_USER_WALKTHROUGH.md).
