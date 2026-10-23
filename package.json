@@ -15,7 +15,8 @@
     "@supabase/supabase-js": "2.117.3",
     "fast-xml-parser": "^5.11.2",
     "lucide-react": "1.52.0",
-    "next": "16.4.0",
+    "next": "16.4.3",
+    "pdf-lib": "1.17.1",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "recharts": "3.10.1"
@@ -27,12 +28,12 @@
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
     "eslint": "9.39.5",
-    "eslint-config-next": "16.4.0",
+    "eslint-config-next": "16.4.3",
     "tailwindcss": "4.3.3",
     "typescript": "6.0.3"
   },
   "engines": {
     "node": ">=20.19.0"
   },
-  "description": "A trading journal for Indian options traders — understand performance, costs, and behaviour. Account-owned CSV imports, exact FIFO analytics, calendar drill-downs, performance breakdowns and computed reviews."
+  "description": "A trading journal for Indian options traders \u2014 understand performance, costs, and behaviour. Account-owned CSV imports, exact FIFO analytics, calendar drill-downs, performance breakdowns and computed reviews."
 }

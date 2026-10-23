@@ -1,0 +1,23 @@
+import {test} from 'node:test';import assert from 'node:assert/strict';import {readFile} from 'node:fs/promises';import {stripTypeScriptTypes} from 'node:module';import {PDFDocument} from 'pdf-lib';
+const uri=s=>'data:text/javascript;base64,'+Buffer.from(stripTypeScriptTypes(s)).toString('base64');const read=async p=>(await readFile(new URL(p,import.meta.url),'utf8')).replace(/^import type .*;$/gm,'');
+const daily=uri(await read('../lib/analytics/daily.ts'));const advanced=uri((await read('../lib/analytics/advanced.ts')).replace("'./daily'",JSON.stringify(daily)));
+const snapshot=uri((await read('../lib/reports/snapshot.ts')).replace("'../analytics/advanced'",JSON.stringify(advanced)).replace("'../analytics/daily'",JSON.stringify(daily)));
+const format=uri(await read('../lib/analytics/format.ts'));
+const pdf=uri((await read('../lib/reports/pdf.ts')).replace("'pdf-lib'",JSON.stringify(import.meta.resolve('pdf-lib'))).replace("'./snapshot'",JSON.stringify(snapshot)).replace("'../analytics/format'",JSON.stringify(format)));
+const {reportSnapshot}=await import(snapshot);const {reportPdf}=await import(pdf);
+const fill={id:'synthetic',broker:'ZERODHA',symbol:'SYNTHETIC',side:'LONG',quantity:'1',entryPrice:'100',exitPrice:'110',entryTime:'2026-10-05T09:00:00+05:30',exitTime:'2026-10-05T09:01:00+05:30',entryId:'a',exitId:'b',grossPnl:'10'};
+const payload=reportSnapshot([fill],'weekly','2026-10-05');const state={user:null,reads:0,savedReads:0,allowed:false};globalThis.__pdfTest=state;
+const stub=uri(`export async function getSignedInUser(){return globalThis.__pdfTest.user;}export async function getAccountAnalytics(){globalThis.__pdfTest.reads++;return {result:{matches:[${JSON.stringify(fill)}]}};}export const advancedDemo={matches:[${JSON.stringify(fill)}]};export async function readSavedExport(kind,id){globalThis.__pdfTest.savedReads++;if(!globalThis.__pdfTest.allowed)return {ok:false,error:'Not found',status:404};return {ok:true,kind:'snapshot',record:{id:'11111111-1111-4111-8111-111111111111',created_at:'2026-10-23T10:00:00Z',payload:${JSON.stringify(payload)}}};}`);
+let source=await read('../app/api/exports/report-pdf/route.ts');for(const path of ['@/lib/auth/session','@/lib/workspace/analytics','@/data/advanced-demo','@/lib/exports/saved-record'])source=source.replace(`'${path}'`,JSON.stringify(stub));source=source.replace("'@/lib/reports/snapshot'",JSON.stringify(snapshot)).replace("'@/lib/reports/pdf'",JSON.stringify(pdf)).replace("'@/lib/exports/http'",JSON.stringify(uri(await read('../lib/exports/http.ts'))));const {GET}=await import(uri(source));
+const request=q=>new Request('https://example.test/api/exports/report-pdf?'+q);
+test('PDF downloads isolate public demo, require owner authentication and send private attachments',async()=>{
+ state.user=null;state.reads=0;let r=await GET(request('mode=weekly&date=2026-10-05'));assert.equal(r.status,401);assert.equal(state.reads,0);assert.equal(r.headers.get('content-disposition'),null);
+ r=await GET(request('mode=weekly&date=2026-10-05&demo=1'));assert.equal(r.status,200);assert.equal(state.reads,0);assert.equal(r.headers.get('content-type'),'application/pdf');assert.match(r.headers.get('cache-control'),/no-store/);assert.equal(r.headers.get('x-content-type-options'),'nosniff');assert.match(r.headers.get('content-disposition'),/trademirror-demo-weekly-2026-10-05.pdf/);const doc=await PDFDocument.load(await r.arrayBuffer());assert.match(doc.getSubject(),/Synthetic demo/);assert.ok(doc.getPageCount()>=1);
+ state.user={id:'owner'};r=await GET(request('mode=daily&date=2026-10-05'));assert.equal(r.status,200);assert.equal(state.reads,1);assert.match((await PDFDocument.load(await r.arrayBuffer())).getSubject(),/Private account/);
+});
+test('saved PDF uses frozen owner-checked evidence and rejects ambiguous or invalid selections',async()=>{
+ state.allowed=false;let r=await GET(request('snapshot=11111111-1111-4111-8111-111111111111'));assert.equal(r.status,404);assert.equal(r.headers.get('content-disposition'),null);
+ state.allowed=true;const reads=state.reads;r=await GET(request('snapshot=11111111-1111-4111-8111-111111111111'));assert.equal(r.status,200);assert.equal(state.reads,reads);assert.match((await PDFDocument.load(await r.arrayBuffer())).getTitle(),/2026-10-05/);
+ for(const q of ['snapshot=x&demo=1','snapshot=x&date=2026-10-05','mode=monthly&date=2026-10-05','mode=daily&date=2026-02-30&demo=1','mode=weekly&date=2026-10-05&demo=2']){r=await GET(request(q));assert.equal(r.status,400);assert.equal(r.headers.get('content-disposition'),null);}
+ await assert.rejects(reportPdf({...payload,summary:{...payload.summary,grossPnl:'999'}}),/inconsistent/);
+});
