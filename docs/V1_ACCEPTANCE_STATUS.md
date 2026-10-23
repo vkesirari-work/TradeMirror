@@ -1,6 +1,6 @@
 # V1 acceptance status
 
-23 October 2026. Current phase adds direct PDF download plus a Next.js security patch. Latest code checks: 89 tests, lint, TypeScript and production build pass. Later documentation commits do not represent additional code validation.
+23 October 2026. Current phase verifies hosted private current-report and frozen-snapshot PDF receipts. Latest code checks: 89 tests, lint, TypeScript and production build pass. Later documentation commits do not represent additional code validation.
 
 | Check | Status | Evidence / remaining action |
 | --- | --- | --- |
@@ -16,7 +16,7 @@
 | Responsive navigation / PWA update | Verified in browser | 390×844 layout/drawer checks and explicit waiting-worker apply/reload; viewport restored |
 | Physical Android/iPhone installation | Pending device | Browser emulation does not establish home-screen install, launch or device-specific file handling |
 | Native print preview | Verified with synthetic report | Chrome Save as PDF preview rendered two pages including metrics, dates and scope limits |
-| Direct PDF download / render | Verified locally | Production browser received a demo PDF; exact text and rendered A4 page inspected. Private hosted current/snapshot PDF receipt remains pending |
+| Direct PDF download / render | Verified locally and hosted private | Actual demo, private current-period and frozen-snapshot files received. Private PDF text, period, totals and scope checked; both one-page A4 renders visually inspected without clipping |
 | Native PDF file save / render | Pending receipt | Save attempt interrupted by active browser control change; no output file was verified. Do not mark native PDF complete |
 | Successful execution-save receipt UI | Pending owner run | Structured new/skipped counts implemented; duplicate transactions tested, latest receipt UI not exercised by a new owner save |
 | Inconsistent source report | Pending fresh source | Exact charge discrepancy preserved; export a fresh original report rather than edit or infer totals |

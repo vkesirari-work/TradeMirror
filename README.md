@@ -9,6 +9,12 @@ TradeMirror is being built as a trading journal and performance analytics platfo
 > **Current status: Free-only V1 candidate — computed reviews, saved snapshots, Zerodha statement costs and journal export implemented; paid AI disabled.**
 > Account analytics use saved executions; public demos use synthetic data. Migration `202610100004_report_snapshots.sql` is applied. Statement net is shown separately from FIFO execution gross: costs are not allocated to individual slices or days. Paid AI is excluded from the current free-only scope and disabled server-side by default. No AI API key is required. Earlier phase entries below are historical status records.
 
+## Hosted private PDF acceptance — 23 October 2026
+
+The signed-in hosted Reports page delivered actual current-week and saved-snapshot PDF files. Text extraction confirmed the selected period, displayed totals, daily dates, private-account label and net-P&L limitation. Both files were rendered and visually inspected: each is one A4 page with readable, unclipped content. Current output identifies rebuilt evidence; snapshot output identifies its frozen saved evidence. No account records were changed. Private files, amounts and snapshot identifiers remain outside Git.
+
+This documentation-only phase closes the hosted direct-PDF receipt check; the latest application baseline remains 89 tests, lint, TypeScript and production build passing. Native print-dialog save acceptance is separate and unchanged. Next: owner-authored journal/plan/risk save and export acceptance, an owner execution-save receipt, physical-device installation/file handling and fresh original evidence for the inconsistent broker report. See the [acceptance checklist](docs/V1_ACCEPTANCE_STATUS.md).
+
 ## Direct PDF downloads and security patch — 23 October 2026
 
 Reports now offer **Download PDF** alongside CSV, JSON and native Print. Opened saved snapshots also offer **Download snapshot PDF** using frozen owner-checked evidence. The app generates PDFs with pdf-lib, without a browser print dialog or external PDF provider. Private PDF routes retain authentication/owner filtering, no-store headers and safe attachment names. Demo output is labelled synthetic. Display currency uses INR and two decimals; exact source evidence remains in CSV/JSON. Execution net and costs are not inferred.
