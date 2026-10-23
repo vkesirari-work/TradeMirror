@@ -9,6 +9,12 @@ TradeMirror is being built as a trading journal and performance analytics platfo
 > **Current status: Free-only V1 candidate — computed reviews, saved snapshots, Zerodha statement costs and journal export implemented; paid AI disabled.**
 > Account analytics use saved executions; public demos use synthetic data. Migration `202610100004_report_snapshots.sql` is applied. Statement net is shown separately from FIFO execution gross: costs are not allocated to individual slices or days. Paid AI is excluded from the current free-only scope and disabled server-side by default. No AI API key is required. Earlier phase entries below are historical status records.
 
+## Download receipt and responsive acceptance — 23 October 2026
+
+Actual hosted browser downloads were received and inspected for seven export flows: statement JSON, weekly CSV/JSON, saved snapshot JSON, journal JSON, plans/risk JSON and filtered journal CSV. Exact arithmetic, period/slice scope and snapshot consistency passed; empty journal exports reflected the actual empty saved-note state. Download receipt is now verified for these exercised cases, superseding earlier timeout notes. This does not establish a complete account backup or restore capability.
+
+A 390×844 browser check found no page-level horizontal overflow on loaded dashboard, journal and import routes. Drawer navigation and updated import labels worked. Install update detection and explicit apply/reload passed; viewport was restored. These are browser checks, not physical Android/iOS installation or offline acceptance. See the [detailed acceptance record](docs/END_USER_WALKTHROUGH.md). Documentation only: latest 87-test/lint/TypeScript/build results remain applicable. Next: physical-device/PWA and native PDF acceptance, populated decision-journal write/export checks and the fresh source-report prerequisite.
+
 ## Historical source investigation — 23 October 2026
 
 Locally traced the remaining annual-report gross gap to two contracts with buy executions but no corresponding sell executions in the supplied tradebook. The statement records full-buy-cost realized losses and zero open quantities for those contracts; the CSV lists their expiry dates. This explains the entire aggregate gap without changing FIFO results. It is consistent with broker expiry/settlement treatment outside execution data, but original settlement event details remain unverified.
