@@ -9,6 +9,12 @@ TradeMirror is being built as a trading journal and performance analytics platfo
 > **Current status: Free-only V1 candidate — computed reviews, saved snapshots, Zerodha statement costs and journal export implemented; paid AI disabled.**
 > Account analytics use saved executions; public demos use synthetic data. Migration `202610100004_report_snapshots.sql` is applied. Statement net is shown separately from FIFO execution gross: costs are not allocated to individual slices or days. Paid AI is excluded from the current free-only scope and disabled server-side by default. No AI API key is required. Earlier phase entries below are historical status records.
 
+## Historical source investigation — 23 October 2026
+
+Locally traced the remaining annual-report gross gap to two contracts with buy executions but no corresponding sell executions in the supplied tradebook. The statement records full-buy-cost realized losses and zero open quantities for those contracts; the CSV lists their expiry dates. This explains the entire aggregate gap without changing FIFO results. It is consistent with broker expiry/settlement treatment outside execution data, but original settlement event details remain unverified.
+
+An independent Python Decimal FIFO calculation reproduced the application's matched gross, slice count and residual lots. No calculation defect was found in this source review. No synthetic closing fills or inferred settlement prices were added. Private figures and source identities remain outside Git; a separate local report holds the detailed bridge. Documentation-only phase: latest application validation remains 87 tests, lint, TypeScript and production build. Next: obtain original settlement evidence before designing explicit settlement ingestion; continue physical-device and download acceptance independently.
+
 ## Reconciliation gap guidance — 23 October 2026
 
 Non-aligned statements now show imported-minus-statement gross, per-instrument differences and whether evidence is present in both sources, only the statement, or only imported matches. Journal links retain the selected contract and statement date range. Guidance distinguishes missing history/settlement review from charges; a zero aggregate gap does not imply instrument alignment. No trades, settlements or per-slice net values are synthesized.
