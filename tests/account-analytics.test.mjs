@@ -1,11 +1,11 @@
 import {test} from 'node:test';import assert from 'node:assert/strict';import {readFile} from 'node:fs/promises';import{stripTypeScriptTypes}from'node:module';
 import{matchExecutions}from'../lib/analytics/matching.ts';
 import{isExampleExecution}from'../lib/analytics/examples.ts';
-let client;globalThis.analyticsTest={createClient:async()=>client,getSignedInUser:async()=>(await client.auth.getUser()).data.user,matchExecutions,isExampleExecution};
+let client;let requestId=0;globalThis.analyticsRequest=()=>requestId;globalThis.analyticsTest={createClient:async()=>client,getSignedInUser:async()=>(await client.auth.getUser()).data.user,matchExecutions,isExampleExecution};
 const source=(await readFile(new URL('../lib/workspace/analytics.ts',import.meta.url),'utf8')).replace(/^import .*;$/gm,'');
-const analyticsModule=await import('data:text/javascript;base64,'+Buffer.from("const cache=f=>f;const {createClient,getSignedInUser,matchExecutions,isExampleExecution}=globalThis.analyticsTest;"+stripTypeScriptTypes(source)).toString('base64'));
+const analyticsModule=await import('data:text/javascript;base64,'+Buffer.from("const cache=f=>{const requests=new Map();return (...args)=>{const key=JSON.stringify([globalThis.analyticsRequest(),args]);if(!requests.has(key))requests.set(key,f(...args));return requests.get(key);};};const {createClient,getSignedInUser,matchExecutions,isExampleExecution}=globalThis.analyticsTest;"+stripTypeScriptTypes(source)).toString('base64'));
 function fixture(rows,{count=rows.length,finalCount=count,auth=true}={}){
- const calls=[];
+ requestId++;const calls=[];
  client={auth:{getUser:async()=>({data:{user:auth?{id:'owner'}:null},error:null})},from:table=>{
   assert.equal(table,'orders');const q={head:false,select(fields,options){this.head=!!options.head;if(!this.head)assert.match(fields,/quantity::text,price::text/);return this;},eq(column,value){assert.equal(column,'user_id');assert.equal(value,'owner');return this;},order(){return this;},range(start,end){calls.push([start,end]);return Promise.resolve({data:rows.slice(start,end+1),count,error:null});},then(resolve,reject){return Promise.resolve({count:finalCount,error:null}).then(resolve,reject);}};return q;
  }};return calls;
@@ -28,4 +28,12 @@ test('example scope excludes only fixture executions before FIFO and inclusion r
  const all=await analyticsModule.getAccountAnalytics(true);assert.equal(all.fills.length,2);assert.equal(all.containsExample,true);
  assert.equal(isExampleExecution({...all.fills[0],price:'124.5001'}),false);
  assert.equal(isExampleExecution({...all.fills[0],symbol:'OTHER'}),false);
+});
+
+test('real and inclusive scopes share one complete read only within the same request',async()=>{
+ const first=fixture([row(1)]);
+ const [real,all]=await Promise.all([analyticsModule.getAccountAnalytics(),analyticsModule.getAccountAnalytics(true)]);
+ assert.deepEqual(first,[[0,999]]);assert.equal(real.fills.length,1);assert.equal(all.fills.length,1);
+ const second=fixture([row(2),row(3)]);
+ const fresh=await analyticsModule.getAccountAnalytics();assert.deepEqual(second,[[0,999]]);assert.equal(fresh.fills.length,2);assert.equal(fresh.fills[0].id,row(2).execution_id);
 });

@@ -9,6 +9,12 @@ TradeMirror is being built as a trading journal and performance analytics platfo
 > **Current status: Free-only V1 candidate — computed reviews, saved snapshots, Zerodha statement costs and journal export implemented; paid AI disabled.**
 > Account analytics use saved executions; public demos use synthetic data. Migration `202610100004_report_snapshots.sql` is applied. Statement net is shown separately from FIFO execution gross: costs are not allocated to individual slices or days. Paid AI is excluded from the current free-only scope and disabled server-side by default. No AI API key is required. Earlier phase entries below are historical status records.
 
+## Request-scoped execution loading — 23 October 2026
+
+Real-only and example-inclusive analytics now share one validated raw execution-history read within a server render/request. Review previously loaded that same history separately for its displayed results and full-history note connections. Filtering still happens before FIFO matching for each scope. React request caching is not a persistent account-data cache; later requests read fresh history, and owner checks, exact decimal strings, pagination limits and final-count consistency checks remain in place.
+
+Validation: 90 tests, lint, TypeScript and production build pass. A regression check covers concurrent scopes sharing one paginated read and a later request loading changed history afresh. Local production browser checks confirmed signed-out Review and Trades redirect to login. Hosted authenticated latency has not been benchmarked; this removes duplicate database work without claiming a measured speedup. Next: owner-authored journal save/reload/export and physical-device acceptance; the [remaining checklist](docs/V1_ACCEPTANCE_STATUS.md) stays explicit.
+
 ## Hosted private PDF acceptance — 23 October 2026
 
 The signed-in hosted Reports page delivered actual current-week and saved-snapshot PDF files. Text extraction confirmed the selected period, displayed totals, daily dates, private-account label and net-P&L limitation. Both files were rendered and visually inspected: each is one A4 page with readable, unclipped content. Current output identifies rebuilt evidence; snapshot output identifies its frozen saved evidence. No account records were changed. Private files, amounts and snapshot identifiers remain outside Git.

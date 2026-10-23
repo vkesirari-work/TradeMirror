@@ -1,6 +1,6 @@
 # V1 acceptance status
 
-23 October 2026. Current phase verifies hosted private current-report and frozen-snapshot PDF receipts. Latest code checks: 89 tests, lint, TypeScript and production build pass. Later documentation commits do not represent additional code validation.
+23 October 2026. Current phase removes duplicate execution-history reads across analytics scopes within a request. Latest code checks: 90 tests, lint, TypeScript and production build pass. Later documentation commits do not represent additional code validation.
 
 | Check | Status | Evidence / remaining action |
 | --- | --- | --- |

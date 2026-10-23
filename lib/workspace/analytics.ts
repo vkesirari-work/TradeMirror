@@ -4,7 +4,8 @@ import { getSignedInUser } from '@/lib/auth/session';
 import { isExampleExecution } from '@/lib/analytics/examples';
 import { createClient } from '@/lib/supabase/server';
 import { matchExecutions,type Fill } from '@/lib/analytics/matching';
-export const getAccountAnalytics=cache(async(includeExample=false)=>{
+// React cache lasts for one server render/request; never share private fills across requests.
+const getAccountFills=cache(async()=>{
  const client=await createClient();if(!client)throw new Error('Account data is not configured.');
  const user=await getSignedInUser();if(!user)throw new Error('Your session expired. Log in again.');
  const fills:Fill[]=[];let expected:number|null=null;
@@ -24,6 +25,10 @@ export const getAccountAnalytics=cache(async(includeExample=false)=>{
  }
  const {count:finalCount,error:finalError}=await client.from('orders').select('id',{count:'exact',head:true}).eq('user_id',user.id);
  if(finalError||finalCount!==fills.length)throw new Error('Your imports changed during analysis. Refresh to retry.');
+ return fills;
+});
+export const getAccountAnalytics=cache(async(includeExample=false)=>{
+ const fills=await getAccountFills();
  const exampleCount=fills.filter(isExampleExecution).length;
  const included=includeExample?fills:fills.filter(fill=>!isExampleExecution(fill));
  return {fills:included,result:matchExecutions(included),containsExample:includeExample&&exampleCount>0,exampleCount,includeExample};
