@@ -9,6 +9,14 @@ TradeMirror is being built as a trading journal and performance analytics platfo
 > **Current status: Free-only V1 candidate — computed reviews, saved snapshots, Zerodha statement costs and journal export implemented; paid AI disabled.**
 > Account analytics use saved executions; public demos use synthetic data. Migration `202610100004_report_snapshots.sql` is applied. Statement net is shown separately from FIFO execution gross: costs are not allocated to individual slices or days. Paid AI is excluded from the current free-only scope and disabled server-side by default. No AI API key is required. Earlier phase entries below are historical status records.
 
+## Real statement validation — 23 October 2026
+
+Ran the production XLSX/statement parser locally against original owner reports, with no upload or account writes. Three reports passed internal charges, instrument totals and debit/credit validation. A fourth failed an exact sub-paisa charge reconciliation. Paired CSV comparison found one fully aligned period and another with unmatched lots/instrument differences; validation is not the same as reconciliation.
+
+Charge mismatch errors now show the exact breakdown total, summary total and signed difference, plus a fresh-export instruction. Strict validation remains unchanged: no tolerance, automatic rounding adjustment or inferred net result is introduced. Private source files, values and client IDs stay outside Git.
+
+Validation: 86 tests, lint, TypeScript and production build pass. The regression checks reject both directions of a 0.0001 charge discrepancy. Existing statement action tests cover surfacing parser errors. Hosted real-file preview/save and physical-device acceptance remain open. Next: owner selects an internally valid statement for hosted preview and explicit save; resolve source/history discrepancies before treating any period as reconciled.
+
 ## Clear import receipt — 22 October 2026
 
 After Save executions succeeds, the import screen shows separate **new executions saved** and **repeated executions skipped** counts, plus direct dashboard, journal, report and broker-cost links. Re-importing identical evidence explicitly says it is already in the workspace. Save stays disabled after success until a file is chosen again, preventing accidental repeat clicks.

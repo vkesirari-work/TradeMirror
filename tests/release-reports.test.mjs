@@ -98,3 +98,10 @@ test('stored broker statement validation rejects impossible dates, negative fees
  for(const invalid of [{...good,start:'2026-02-30'},{...good,charges:'-2',net:'11',chargeItems:[{label:'Fee',amount:'-2'}]},{...good,chargeItems:[{label:'Fee',amount:'-1'},{label:'Another fee',amount:'3.0001'}]},{...good,chargeItems:[{label:'Fee',amount:'1'},{label:'Fee ',amount:'1.0001'}]},{...good,instruments:[{symbol:'NIFTY',gross:'5'},{symbol:'NIFTY ',gross:'5'}]}])assert.throws(()=>validateStatement(invalid));
  assert.deepEqual(validateStatement(JSON.parse(JSON.stringify(good))),good);
 });
+
+test('statement charge differences retain sub-paisa precision and reject both directions',()=>{
+ for(const [charge,delta] of [['2.0002','-0.0001'],['2','0.0001']]){
+  const input=sheet();input.get('F&O')[1].C=charge;
+  assert.throws(()=>parseZerodhaStatement(input),error=>error.message.includes('breakdown minus summary: INR '+delta+'.')&&error.message.includes('not been saved'));
+ }
+});
