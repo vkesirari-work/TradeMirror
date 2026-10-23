@@ -1,6 +1,6 @@
 # V1 acceptance status
 
-23 October 2026. Current phase removes duplicate execution-history reads across analytics scopes within a request. Latest code checks: 90 tests, lint, TypeScript and production build pass. Later documentation commits do not represent additional code validation.
+23 October 2026. Current phase clarifies review date scope and preserves dates in computed-observation drilldowns. Latest code checks: 91 tests, lint, TypeScript and production build pass. Later documentation commits do not represent additional code validation.
 
 | Check | Status | Evidence / remaining action |
 | --- | --- | --- |

@@ -10,3 +10,13 @@ const annotation=uri(await read('../lib/journal/annotation.ts')),review=uri((awa
 test('retained full-history journal links include examples and resolve IST exit dates',()=>{const entry={slice_key:'a'.repeat(64),connection:'linked',evidence:{...match('2026-10-07'),exitTime:'2026-10-07T18:45:00Z'},notes:'Synthetic note',tags:[],checklist:[false],plan_items:['Risk recorded?'],revision:1};const html=renderToStaticMarkup(createElement(JournalReview,{entries:[entry]}));assert.match(html,/examples=include&amp;start=2026-10-08&amp;end=2026-10-08/);});
 
 test('comparison drilldowns retain partial date boundaries and contract scope',()=>{const html=renderToStaticMarkup(createElement(PeriodComparison,{matches:[match('2026-10-05'),match('2026-09-30')],journalHref:'/demo/trades',scope:{start:'2026-09-30',end:'2026-10-06',symbol:'SYNTHETIC',side:'LONG',option:'Other'}}));assert.match(html,/start=2026-10-05&amp;end=2026-10-06&amp;symbol=SYNTHETIC&amp;side=LONG&amp;option=Other/);assert.match(html,/start=2026-09-30&amp;end=2026-10-04/);});
+
+let accountReviewSource=await read('../components/dashboard/account-review.tsx');
+for(const [a,b] of [['next/link',ui],['@/lib/analytics/advanced',advanced],['@/lib/analytics/format',format],['@/components/ui/primitives',ui]])accountReviewSource=accountReviewSource.replace(`'${a}'`,JSON.stringify(b));
+const {AccountReview}=await import(tsx(accountReviewSource));
+test('computed review drilldowns preserve selected exit dates and disclose full-history residual scope',()=>{
+ const html=renderToStaticMarkup(createElement(AccountReview,{result:{matches:[match('2026-10-05')],positions:[]},journalHref:'/demo/trades',start:'2026-10-01',end:'2026-10-06'}));
+ assert.match(html,/href="\/demo\/trades\?start=2026-10-01&amp;end=2026-10-06"/);
+ assert.match(html,/selected date scope/);assert.match(html,/full imported history, independent of these date filters/);
+ const all=renderToStaticMarkup(createElement(AccountReview,{result:{matches:[match('2026-10-05')],positions:[]}}));assert.match(all,/href="\/trades"/);
+});

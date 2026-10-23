@@ -9,6 +9,12 @@ TradeMirror is being built as a trading journal and performance analytics platfo
 > **Current status: Free-only V1 candidate — computed reviews, saved snapshots, Zerodha statement costs and journal export implemented; paid AI disabled.**
 > Account analytics use saved executions; public demos use synthetic data. Migration `202610100004_report_snapshots.sql` is applied. Statement net is shown separately from FIFO execution gross: costs are not allocated to individual slices or days. Paid AI is excluded from the current free-only scope and disabled server-side by default. No AI API key is required. Earlier phase entries below are historical status records.
 
+## Review date-scope clarity — 23 October 2026
+
+Review date filters now describe their actual scope: tagged setup results and computed observations use selected IST exit dates, while residual lots and saved-note connections retain full-history context. Computed-observation drilldowns carry the selected start/end dates into Trades in both demo and account modes. Empty filtered observations explain changing dates rather than asking users to import again. Source-limit wording describes what execution CSV contains without assuming the owner has never recorded separate risk inputs.
+
+Validation: 91 tests, lint, TypeScript and production build pass. Regression coverage checks bounded and unfiltered journal links plus residual-scope wording. Local production browser verified a selected-period demo review, clicked through to the same 12 filtered slices with both date fields retained, and checked empty-period guidance. No account data changed. Hosted signed-in rollout and owner/device acceptance remain separate from this local check. Next: continue end-user usability checks; real decision save/export still awaits owner-authored content.
+
 ## Request-scoped execution loading — 23 October 2026
 
 Real-only and example-inclusive analytics now share one validated raw execution-history read within a server render/request. Review previously loaded that same history separately for its displayed results and full-history note connections. Filtering still happens before FIFO matching for each scope. React request caching is not a persistent account-data cache; later requests read fresh history, and owner checks, exact decimal strings, pagination limits and final-count consistency checks remain in place.
